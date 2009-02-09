@@ -46,6 +46,8 @@ public class BlueToothExp extends MIDlet implements CommandListener, Runnable {
     Image tomato;
     Image stain;
     private LayerManager mLayerManager;
+    
+    private GameplayCanvas testCanvas;
  
     public BlueToothExp() {
         initialize();
@@ -80,7 +82,9 @@ public class BlueToothExp extends MIDlet implements CommandListener, Runnable {
  
     private void initialize() {
     	try {
-    		getDisplay().setCurrent(getMenu());
+    		testCanvas = new GameplayCanvas();
+    		testCanvas.showNotify();
+    		getDisplay().setCurrent(testCanvas);  //getMenu());
     	} catch (Exception e) {
     		e.printStackTrace();
     	}
@@ -152,93 +156,6 @@ public class BlueToothExp extends MIDlet implements CommandListener, Runnable {
     	} catch (IOException ioe) {
     		ioe.printStackTrace();
     	}
-    }
-    
-    public void parseXML() {
-    	System.out.println("Start of XMLParser");
-		
-		/*try {
-			//FileConnection fc = (FileConnection) Connector.open("file://input.xml");
-		} catch (IOException exec) {
-			System.out.println("Error with opening xml input file.");
-		}*/
-		
-		String xmlStr;
-		StringBuffer xmlString = new StringBuffer();
-		SAXParserFactory factory = SAXParserFactory.newInstance();
-		SAXParser saxParser = null;
-		try {
-			saxParser = factory.newSAXParser();
-		} catch (ParserConfigurationException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (SAXException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		
-		
-		xmlString.append("<Game>");
-		xmlString.append("<Level name='Shapes' numRounds=\"2\">");
-		xmlString.append("<Round name=\"square\" ann_show_path=\"\" ann_say_path=\"\">");
-		xmlString.append("<Token imagePath=\"\">");
-		xmlString.append("<Location x=\"\" y=\"\"></Location></Token>");
-		xmlString.append("<Token imagePath=\"\">");
-		xmlString.append("<Location x=\"\" y=\"\"></Location>");
-		xmlString.append("</Token>");
-		xmlString.append("<Token imagePath=\"\">");
-		xmlString.append("<Location x=\"\" y=\"\"></Location>");
-		xmlString.append("</Token></Round>");
-		xmlString.append("<Round name=\"triangle\" ann_show_path=\"\" ann_say_path=\"\">");
-		xmlString.append("<Token imagePath=\"\">");
-		xmlString.append("<Location x=\"\" y=\"\"></Location></Token>");
-		xmlString.append("<Token imagePath=\"\">");
-		xmlString.append("<Location x=\"\" y=\"\"></Location></Token>");
-		xmlString.append("<Token imagePath=\"\">");
-		xmlString.append("<Location x=\"\" y=\"\"></Location></Token></Round>");
-		xmlString.append("</Level>");
-		xmlString.append("<Level name='Colors' numRounds=\"2\">");
-		xmlString.append("<Round name=\"red\" ann_show_path=\"\" ann_say_path=\"\">");
-		xmlString.append("<Token imagePath=\"\">");
-		xmlString.append("<Location x=\"\" y=\"\"></Location></Token>");
-		xmlString.append("<Token imagePath=\"\">");
-		xmlString.append("<Location x=\"\" y=\"\"></Location>");
-		xmlString.append("</Token>");
-		xmlString.append("<Token imagePath=\"\">");
-		xmlString.append("<Location x=\"\" y=\"\"></Location>");
-		xmlString.append("</Token></Round>");
-		xmlString.append("<Round name=\"blue\" ann_show_path=\"\" ann_say_path=\"\">");
-		xmlString.append("<Token imagePath=\"\">");
-		xmlString.append("<Location x=\"\" y=\"\"></Location></Token>");
-		xmlString.append("<Token imagePath=\"\">");
-		xmlString.append("<Location x=\"\" y=\"\"></Location></Token>");
-		xmlString.append("<Token imagePath=\"\">");
-		xmlString.append("<Location x=\"\" y=\"\"></Location></Token></Round>");
-		xmlString.append("</Level></Game>");
-		
-		FileConnection fc;
-		InputStream is = null;
-		try {
-			fc = (FileConnection) Connector.open("file:///root1/input.xml");
-			//fc.create();
-			is = fc.openInputStream();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		//xmlStr = xmlString.toString();
-		InputSource inputSource = new InputSource(is);
-		try {
-			saxParser.parse(inputSource, new XMLParser(this));
-		} catch (Exception e) {
-			
-		} 
-    }
-    
-    protected void alert(String msg)
-    {
-    	System.out.println("XML File");
-    	System.out.println(msg);
     }
     
 }
