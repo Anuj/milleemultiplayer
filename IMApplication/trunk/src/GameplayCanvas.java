@@ -81,26 +81,17 @@ public class GameplayCanvas extends GameCanvas implements Runnable {
 	}
 
 	// When the game canvas is hidden, stop the thread.
-
 	protected void hideNotify(){
 		thread = null;
 	}
 
 	// The game loop.
 	public void run(){
-		int w = getWidth();
-		int h = getHeight() - 1;
+		//int w = getWidth();
+		//int h = getHeight() - 1;
 
-		layers.paint(graphics, 0, getHeight()-(TILE_HEIGHT*TILE_DIMENSIONS));
-
-		/*
-		while( thread == Thread.currentThread() ){
-		
-		tiledLayer.setCell(j, i, random.nextInt(2)+1);
-
-			// Increment or decrement the scrolling interval
-			// based on key presses
-
+		while( thread == Thread.currentThread() ) {
+			// Detect key presses and speed up or slow down accordingly
 			int state = getKeyStates();
 
 			if( ( state & DOWN_PRESSED ) != 0 ){
@@ -112,6 +103,8 @@ public class GameplayCanvas extends GameCanvas implements Runnable {
 				if( sleepTime < 0 ) sleepTime = 0;
 			}
 
+			/* Some starfield stuff we don't care about
+			
 			// Repaint the screen by first scrolling the
 			// existing starfield down one and painting in
 			// new stars...
@@ -130,39 +123,36 @@ public class GameplayCanvas extends GameCanvas implements Runnable {
 					graphics.drawLine( i, 0, w, 0 );
 				}
 			}
-
+			
+			*/
+			
+			// Move the flower
+			flower.move(1, 1);
+			
+			// Affect the tiled layer in a random way
+			tiledLayer.setCell(random.nextInt(TILE_WIDTH), random.nextInt(TILE_HEIGHT), random.nextInt(2)+1);
+			
+			// Redraw with the LayerManager
+			layers.paint(graphics, 0, getHeight()-(TILE_HEIGHT*TILE_DIMENSIONS));
 			flushGraphics();
-
+			
 			// Now wait...
-
 			try {
-				Thread.currentThread().sleep( sleepTime );
+				Thread.sleep( sleepTime );
 			}
 			catch( InterruptedException e ){
 			}
 		}
-		*/
 	}
 
-	// When the canvas is shown, start a thread to
-	// run the game loop.
-
+	// When the canvas is shown, start a thread to run the game loop.
 	protected void showNotify(){
 		random = new Random();
-
 		thread = new Thread( this );
 		thread.start();
 	}
 	
 	
-	
-	
-	
-	
-	
-	
-	
-
 	/**OLDSTUFF
 	 * @param suppressKeyEvents
 	 
@@ -188,5 +178,4 @@ public class GameplayCanvas extends GameCanvas implements Runnable {
 	}
 	
 	*/
-
 }
