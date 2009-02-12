@@ -82,9 +82,11 @@ public class BlueToothExp extends MIDlet implements CommandListener, Runnable {
  
     private void initialize() {
     	try {
-    		testCanvas = new GameplayCanvas();
-    		testCanvas.showNotify();
-    		getDisplay().setCurrent(testCanvas);  //getMenu());
+    		//testCanvas = new GameplayCanvas();
+    		//testCanvas.showNotify();
+    		
+    		MIDlet sampleApp = new ApplicationMain();
+    		//getDisplay().setCurrent(testCanvas);  //getMenu());
     	} catch (Exception e) {
     		e.printStackTrace();
     	}

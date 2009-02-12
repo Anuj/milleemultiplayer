@@ -16,7 +16,7 @@ import javax.microedition.lcdui.game.TiledLayer;
  * @author Simon
  *
  */
-public class GameplayCanvas extends GameCanvas implements Runnable {
+public class SampleCanvas extends GameCanvas implements Runnable {
 	
 	private static final int SLEEP_INCREMENT = 10;
 	private static final int SLEEP_INITIAL = 150;
@@ -34,13 +34,18 @@ public class GameplayCanvas extends GameCanvas implements Runnable {
 	private int             sleepTime = SLEEP_INITIAL;
 	private volatile Thread thread;
 	
+	private boolean stopGame = false;
+	
 	// Drawing stuff
 	private LayerManager layers;
 	private TiledLayer tiledLayer;
 	private Sprite flower;
 
-	public GameplayCanvas(){
+	public SampleCanvas(){
 		super( true );
+	}
+	
+	public void start() {
 		
 		random = new Random();
 
@@ -80,6 +85,14 @@ public class GameplayCanvas extends GameCanvas implements Runnable {
 		// (ie. The flower object is put on the screen last, so it becomes the top layer)
 		layers.append(flower);
 		layers.append(tiledLayer);
+		
+		showNotify();
+	}
+	
+	public void showNotify() {
+		// Start this thread
+		thread = new Thread( this );
+		thread.start();
 	}
 
 	// When the game canvas is hidden, stop the thread.
@@ -92,51 +105,11 @@ public class GameplayCanvas extends GameCanvas implements Runnable {
 		//int w = getWidth();
 		//int h = getHeight() - 1;
 
-		while( thread == Thread.currentThread() ) {
-			// Detect key presses and speed up or slow down accordingly
-			int state = getKeyStates();
-
-			if( ( state & DOWN_PRESSED ) != 0 ){
-				sleepTime += SLEEP_INCREMENT;
-				if( sleepTime > SLEEP_MAX ) 
-					sleepTime = SLEEP_MAX;
-			} else if( ( state & UP_PRESSED ) != 0 ){
-				sleepTime -= SLEEP_INCREMENT;
-				if( sleepTime < 0 ) sleepTime = 0;
-			}
-
-			/* Some starfield stuff we don't care about
+		while( thread == Thread.currentThread() && !stopGame) {
 			
-			// Repaint the screen by first scrolling the
-			// existing starfield down one and painting in
-			// new stars...
-
-			graphics.copyArea( 0, 0, w, h, 0, 1,
-			Graphics.TOP | Graphics.LEFT );
-
-			graphics.setColor( 0, 0, 0 );
-			graphics.drawLine( 0, 0, w, 1 );
-			graphics.setColor( 200, 200, 200); //255, 255, 255 );
-
-			for( int i = 0; i < w; ++i ){
-				int test = Math.abs( random.nextInt() ) % 200;
-				if( test < 4 ){
-					//System.out.println("w = " + i);
-					graphics.drawLine( i, 0, w, 0 );
-				}
-			}
+			checkUserInput();
+			updateGameScreen(getGraphics());
 			
-			*/
-			
-			// Move the flower
-			flower.move(1, 1);
-			
-			// Affect the tiled layer in a random way
-			tiledLayer.setCell(random.nextInt(TILE_WIDTH), random.nextInt(TILE_HEIGHT), random.nextInt(2)+1);
-			
-			// Redraw with the LayerManager
-			layers.paint(graphics, 0, getHeight()-(TILE_HEIGHT*TILE_DIMENSIONS));
-			flushGraphics();
 			
 			// Now wait...
 			try {
@@ -145,14 +118,47 @@ public class GameplayCanvas extends GameCanvas implements Runnable {
 			catch( InterruptedException e ){
 			}
 		}
+		
+		this.setTitle("End of this Runnable");
+		this.notifyAll();
+	}
+	
+	private void verifyGameState() {
+		  // doesn't do anything yet
 	}
 
-	// When the canvas is shown, start a thread to run the game loop.
-	protected void showNotify(){
-		random = new Random();
-		thread = new Thread( this );
-		thread.start();
+	private void checkUserInput() {
+
+		// Detect key presses and speed up or slow down accordingly
+		int state = getKeyStates();
+
+		if( ( state & DOWN_PRESSED ) != 0 ){
+			sleepTime += SLEEP_INCREMENT;
+			if( sleepTime > SLEEP_MAX ) 
+				sleepTime = SLEEP_MAX;
+		} else if( ( state & UP_PRESSED ) != 0 ){
+			sleepTime -= SLEEP_INCREMENT;
+			this.hideNotify();
+			if( sleepTime < 0 ) sleepTime = 0;
+		} else if (( state & KEY_NUM0 ) != 0) {
+			
+		}
 	}
+
+	private void updateGameScreen(Graphics g) {
+
+		// Move the flower
+		flower.move(1, 1);
+		
+		// Affect the tiled layer in a random way
+		tiledLayer.setCell(random.nextInt(TILE_WIDTH), random.nextInt(TILE_HEIGHT), random.nextInt(2)+1);
+		
+		// Redraw with the LayerManager
+		layers.paint(graphics, 0, getHeight()-(TILE_HEIGHT*TILE_DIMENSIONS));
+		// this call paints off screen buffer to screen
+		flushGraphics();
+	}
+
 	
 	
 	/**OLDSTUFF
