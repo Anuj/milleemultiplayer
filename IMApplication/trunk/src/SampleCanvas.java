@@ -1,6 +1,7 @@
 import java.io.IOException;
 import java.util.Random;
 
+import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.game.GameCanvas;
@@ -27,7 +28,8 @@ public class SampleCanvas extends GameCanvas implements Runnable {
 	private static final int TILE_HEIGHT = 11;
 	private static final int TILE_DIMENSIONS = 15;
 	
-	private static final String FLOWER_IMAGE = "/flower2.png";
+	private static final String FLOWER_IMAGE = "/stain.png";
+	private static final String TOMATO_IMAGE = "/tomato.png";
 
 	private Graphics        graphics;
 	private Random          random;
@@ -39,8 +41,13 @@ public class SampleCanvas extends GameCanvas implements Runnable {
 	// Drawing stuff
 	private LayerManager layers;
 	private TiledLayer tiledLayer;
-	private Sprite flower;
-
+	private Sprite flower, tomato;
+	
+	private int flowerX;
+	private int flowerY;
+	
+	Command exitCmd, okCmd;
+	
 	public SampleCanvas(){
 		super( true );
 	}
@@ -60,10 +67,12 @@ public class SampleCanvas extends GameCanvas implements Runnable {
 		
 		Image tiledImage = null;
 		Image flowerImage = null;
+		Image tomatoImage = null;
 		
 		try {
 			tiledImage = Image.createImage(TILE_IMAGE);
 			flowerImage = Image.createImage(FLOWER_IMAGE);
+			tomatoImage = Image.createImage(TOMATO_IMAGE);
 		} catch (IOException e) {
 			System.err.println("Failed to gather image resources: " + e);
 		}
@@ -79,10 +88,19 @@ public class SampleCanvas extends GameCanvas implements Runnable {
 		}
 		
 		// Create a sprite on top
-		flower = new Sprite(flowerImage); 
+		flower = new Sprite(flowerImage);
+		flowerX = flower.getX();
+		flowerY = flower.getY();
+		
+		tomato = new Sprite(tomatoImage);
+		int tomatoX = random.nextInt(getWidth());
+		int tomatoY = random.nextInt(getHeight());
+		System.out.println("tomatoX: " + tomatoX + ", tomatoY: " + tomatoY);
+		tomato.setPosition(tomatoX, tomatoY);
 		
 		// Items get put on the screen in reverse order from how they were appended.
 		// (ie. The flower object is put on the screen last, so it becomes the top layer)
+		layers.append(tomato);
 		layers.append(flower);
 		layers.append(tiledLayer);
 		
@@ -107,6 +125,7 @@ public class SampleCanvas extends GameCanvas implements Runnable {
 
 		while( thread == Thread.currentThread() && !stopGame) {
 			
+			verifyGameState();
 			checkUserInput();
 			updateGameScreen(getGraphics());
 			
@@ -119,8 +138,8 @@ public class SampleCanvas extends GameCanvas implements Runnable {
 			}
 		}
 		
-		this.setTitle("End of this Runnable");
-		this.notifyAll();
+		//this.setTitle("End of this Runnable");
+		//this.notifyAll();
 	}
 	
 	private void verifyGameState() {
@@ -133,30 +152,50 @@ public class SampleCanvas extends GameCanvas implements Runnable {
 		int state = getKeyStates();
 
 		if( ( state & DOWN_PRESSED ) != 0 ){
-			sleepTime += SLEEP_INCREMENT;
+			/*sleepTime += SLEEP_INCREMENT;
 			if( sleepTime > SLEEP_MAX ) 
-				sleepTime = SLEEP_MAX;
+				sleepTime = SLEEP_MAX;*/
+			flowerY+=3;
 		} else if( ( state & UP_PRESSED ) != 0 ){
-			sleepTime -= SLEEP_INCREMENT;
+			/*sleepTime -= SLEEP_INCREMENT;
 			this.hideNotify();
-			if( sleepTime < 0 ) sleepTime = 0;
-		} else if (( state & KEY_NUM0 ) != 0) {
-			
+			if( sleepTime < 0 ) sleepTime = 0;*/
+			flowerY-=3;
+		} else if ((state & LEFT_PRESSED) != 0) {
+			flowerX-=3;
+		} else if ((state & RIGHT_PRESSED) != 0) {
+			flowerX+=3;
+		}
+		
+		if (flower.collidesWith(tomato, true)) {
+			stopGame = true;
 		}
 	}
 
 	private void updateGameScreen(Graphics g) {
-
-		// Move the flower
-		flower.move(1, 1);
 		
-		// Affect the tiled layer in a random way
-		tiledLayer.setCell(random.nextInt(TILE_WIDTH), random.nextInt(TILE_HEIGHT), random.nextInt(2)+1);
+		if (stopGame) {
+			
+			exitCmd = new Command("Exit", Command.EXIT, 0);
+			okCmd = new Command("OK", Command.OK, 1);
+			this.addCommand(exitCmd);
+			this.addCommand(okCmd);
+			g.drawString("COLLISION!!", getWidth()/2, getHeight()/2, g.TOP | g.LEFT);
 		
-		// Redraw with the LayerManager
-		layers.paint(graphics, 0, getHeight()-(TILE_HEIGHT*TILE_DIMENSIONS));
-		// this call paints off screen buffer to screen
+		} else {
+			// Move the flower
+			//flower.move(1, 1);
+			flower.setPosition(flowerX, flowerY);
+			
+			// Affect the tiled layer in a random way
+			tiledLayer.setCell(random.nextInt(TILE_WIDTH), random.nextInt(TILE_HEIGHT), random.nextInt(2)+1);
+			
+			// Redraw with the LayerManager
+			layers.paint(graphics, 0, getHeight()-(TILE_HEIGHT*TILE_DIMENSIONS));
+			// this call paints off screen buffer to screen
+		}
 		flushGraphics();
+
 	}
 
 	
