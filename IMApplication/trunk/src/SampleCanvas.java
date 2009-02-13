@@ -52,6 +52,14 @@ public class SampleCanvas extends GameCanvas implements Runnable {
 		super( true );
 	}
 	
+	public Command getOkCommand() {
+		return this.okCmd;
+	}
+	
+	public Command getExitCommand() {
+		return this.exitCmd;
+	}
+	
 	public void start() {
 		
 		random = new Random();

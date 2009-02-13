@@ -8,21 +8,23 @@ import javax.microedition.lcdui.Form;
 import javax.microedition.lcdui.Image;
 
 
-public class StartScreen extends Form {
-	Command cmd;
-	Image startImage;
+public class StartScreen extends Screen {
+	private Image startImage;
 	
 	public StartScreen (String title) {
 		super(title);
 		// TODO Auto-generated constructor stub
-        cmd=new Command("Start",Command.SCREEN,1);
+		
         try {
 	        startImage = Image.createImage("/mainScreen.png");
         } catch (IOException e) {
         	
         }
         this.append(startImage);
-        this.addCommand(cmd);
+        this.addCommand(startCommand);
 	}
-
+	
+	public Command startCommand() {
+		return startCommand;
+	}
 }

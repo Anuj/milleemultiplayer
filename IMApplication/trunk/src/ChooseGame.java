@@ -8,26 +8,23 @@ import javax.microedition.lcdui.Form;
 import javax.microedition.lcdui.Image;
 
 
-public class ChooseCharacter extends Screen {
+public class ChooseGame extends Screen {
 
-	Image horrorImage, comedyImage, actionImage;
+	private Image horrorImage, comedyImage, actionImage;
 	
-	public ChooseCharacter(String title) {
+	public ChooseGame(String title) {
 		super(title);
-		// TODO Auto-generated constructor stub
-		// Create the Form
-		//form=new Form("Choice Group Demo");
-        choiceGroup=new ChoiceGroup("Choose your character:",Choice.EXCLUSIVE);
-        try {
+		choiceGroup=new ChoiceGroup("Which game would you like?",Choice.EXCLUSIVE);
+		try {
 	        horrorImage = Image.createImage("/flower2.png");
 	        comedyImage = Image.createImage("/mainScreen.png");
 	        actionImage = Image.createImage("/flower2.png");
         } catch (IOException e) {
         	
         }
-        choiceGroup.append("Horror",horrorImage);
-        choiceGroup.append("Comedy",comedyImage);
-        choiceGroup.append("Action",actionImage);
+        choiceGroup.append("Raj",horrorImage);
+        choiceGroup.append("Sri",comedyImage);
+        choiceGroup.append("Neha",actionImage);
         this.append(choiceGroup);
         this.addCommand(okCommand);
         this.addCommand(backCommand);

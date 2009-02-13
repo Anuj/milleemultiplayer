@@ -17,10 +17,15 @@ import javax.microedition.midlet.MIDletStateChangeException;
 
 public class ApplicationMain extends MIDlet implements CommandListener {
 	
+	int characterChoice, gameChoice;
+	
 	SampleCanvas game;
 	Display display;
 	ChooseCharacter charForm;
 	StartScreen startScreen;
+	ChooseGame chooseGame;
+	JoinGame joinGame;
+	LevelStartPage levelStartPage;
 	
 	public ApplicationMain () {
 		display = Display.getDisplay(this);
@@ -31,6 +36,12 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 		charForm.setCommandListener(this);
 		startScreen = new StartScreen ("Colour Colour");		
 		startScreen.setCommandListener(this);
+		chooseGame = new ChooseGame ("Choose a Game");		
+		chooseGame.setCommandListener(this);
+		joinGame = new JoinGame ("Join a Game");		
+		joinGame.setCommandListener(this);
+		levelStartPage = new LevelStartPage("Level 1");
+		levelStartPage.setCommandListener(this);
 	}
 	protected void destroyApp(boolean arg0) throws MIDletStateChangeException {
 		// TODO Auto-generated method stub
@@ -51,22 +62,37 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 	
 	public void commandAction(Command c, Displayable d) {
         
-		if (c == startScreen.cmd) {
+		if (c == startScreen.startCommand()) {
 			display.setCurrent(charForm);
-		}
-		else if (c == charForm.cmd && charForm.choiceGroup.isSelected(0)) {
+		} else if (c == charForm.okCommand()) {
+			characterChoice = charForm.getListSelection();
+			display.setCurrent(chooseGame);
+		} else if (c == chooseGame.okCommand()) {
+			gameChoice = chooseGame.getListSelection();
+			joinGame.setCharacterChoice(characterChoice);
+			joinGame.setGameChoice(gameChoice);
+			display.setCurrent(joinGame);
+		} else if (c == joinGame.okCommand()) {
+			display.setCurrent(levelStartPage);
+		} else if (c == levelStartPage.startCommand()) {
 			game.start();
 			display.setCurrent(game);
-			/** TODO: Fix this incomplete statement
-			while (Thread.currentThread() == game) {
-				wait();
-			}
-			*/
-		} else if (c.getLabel() == "Exit") {
+		} 
+		
+		
+		
+		
+		else if (c.getLabel() == "Exit") {
 			System.out.println("exiting");
-		} else if (c.getLabel() == "OK") {
-			display.setCurrent(charForm);
 		}
+		
+		//game.start();
+		//display.setCurrent(game);
+		/** TODO: Fix this incomplete statement
+		while (Thread.currentThread() == game) {
+			wait();
+		}
+		*/
     }
 
 }
