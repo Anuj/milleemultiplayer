@@ -17,6 +17,9 @@ import javax.microedition.midlet.MIDletStateChangeException;
 
 public class ApplicationMain extends MIDlet implements CommandListener {
 	
+	private static final int NUM_ROUNDS = 2;
+	private static final int NUM_LEVELS = 2;
+	
 	int characterChoice, gameChoice;
 	int numLevelsLeft, numRoundsLeft;
 	
@@ -30,7 +33,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 	
 	public ApplicationMain () {
 		display = Display.getDisplay(this);
-		game = createNewRound();
+		
 		charForm = new ChooseCharacter("Choose your character");
 		charForm.setCommandListener(this);
 		startScreen = new StartScreen ("Colour Colour");		
@@ -54,8 +57,8 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 
 	protected void startApp() throws MIDletStateChangeException {
 		
-		numLevelsLeft = 2;
-		numRoundsLeft = 4;
+		numLevelsLeft = NUM_LEVELS;
+		numRoundsLeft = NUM_ROUNDS;
 		//game.start();
 		//display.setCurrent(game);
 		display.setCurrent(startScreen);
@@ -76,6 +79,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 		} else if (c == joinGame.okCommand()) {
 			display.setCurrent(levelStartPage);
 		} else if (c == levelStartPage.startCommand()) {
+			game = createNewRound();
 			game.start();
 			display.setCurrent(game);
 		} else if (c == game.okCmd) {
@@ -86,6 +90,13 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 				game = createNewRound();
 				game.start();
 				display.setCurrent(game);
+			} else if (numLevelsLeft > 0) {
+				game.hideNotify();
+				numLevelsLeft--;
+				numRoundsLeft = NUM_ROUNDS;
+				levelStartPage = new LevelStartPage("Level 1");
+				levelStartPage.setCommandListener(this);
+				display.setCurrent(levelStartPage);
 			}
 		}
 
