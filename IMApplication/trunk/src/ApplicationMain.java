@@ -23,7 +23,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 	int characterChoice, gameChoice;
 	int numLevelsLeft, numRoundsLeft;
 	
-	SampleCanvas game;
+	Round game;
 	Display display;
 	ChooseCharacter charForm;
 	StartScreen startScreen;
@@ -120,8 +120,37 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 		*/
     }
 	
-	private SampleCanvas createNewRound() {
-		SampleCanvas game = new SampleCanvas();
+	private Round createNewRound() {
+		String[] playerNames = new String[3], playerImagePaths = new String[3];
+		int[] scoreAssignment = new int[3];
+		String[] possibleTokenPaths = new String[4], possibleTokenText = new String[4];
+		
+		playerNames[0] = "Raj";
+		playerNames[1] = "Sri";
+		playerNames[2] = "Neha";
+		
+		playerImagePaths[0] = "/dancer.png";
+		playerImagePaths[1] = "/dancer.png";
+		playerImagePaths[2] = "/dancer.png";
+		
+		scoreAssignment[0] = 5;
+		scoreAssignment[1] = 10;
+		scoreAssignment[2] = 20;
+		
+		possibleTokenPaths[0] = "/tomato.png";
+		possibleTokenPaths[1] = "/tomato.png";
+		possibleTokenPaths[2] = "/tomato.png";
+		possibleTokenPaths[3] = "/tomato.png";
+		
+		possibleTokenText[0] = "Red";
+		possibleTokenText[1] = "Blue";
+		possibleTokenText[2] = "Green";
+		possibleTokenText[3] = "Yellow";
+		
+		
+		
+		Round game = new Round(3, numRoundsLeft, numLevelsLeft, false, "Colours", playerNames, playerImagePaths, 
+								scoreAssignment, "/tiles.png", possibleTokenPaths, possibleTokenText, 4);
 		game.setCommandListener(this);
 		return game;
 	}
