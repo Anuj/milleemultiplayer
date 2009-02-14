@@ -2,6 +2,7 @@ import java.io.IOException;
 import java.util.Random;
 
 import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.game.GameCanvas;
@@ -101,8 +102,12 @@ public class SampleCanvas extends GameCanvas implements Runnable {
 		flowerY = flower.getY();
 		
 		tomato = new Sprite(tomatoImage);
+		//int tomatoX = random.nextInt(getWidth());
+		//int tomatoY = random.nextInt(getHeight());
+		
 		int tomatoX = random.nextInt(getWidth());
 		int tomatoY = random.nextInt(getHeight());
+		
 		System.out.println("tomatoX: " + tomatoX + ", tomatoY: " + tomatoY);
 		tomato.setPosition(tomatoX, tomatoY);
 		
@@ -177,6 +182,7 @@ public class SampleCanvas extends GameCanvas implements Runnable {
 		
 		if (flower.collidesWith(tomato, true)) {
 			stopGame = true;
+			System.out.println("want to stop the game");
 		}
 	}
 
@@ -189,6 +195,7 @@ public class SampleCanvas extends GameCanvas implements Runnable {
 			this.addCommand(exitCmd);
 			this.addCommand(okCmd);
 			g.drawString("COLLISION!!", getWidth()/2, getHeight()/2, g.TOP | g.LEFT);
+			System.out.println("stopping the game");
 		
 		} else {
 			// Move the flower

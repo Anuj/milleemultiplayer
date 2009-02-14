@@ -18,6 +18,7 @@ import javax.microedition.midlet.MIDletStateChangeException;
 public class ApplicationMain extends MIDlet implements CommandListener {
 	
 	int characterChoice, gameChoice;
+	int numLevelsLeft, numRoundsLeft;
 	
 	SampleCanvas game;
 	Display display;
@@ -29,9 +30,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 	
 	public ApplicationMain () {
 		display = Display.getDisplay(this);
-		game = new SampleCanvas();
-		
-		game.setCommandListener(this);
+		game = createNewRound();
 		charForm = new ChooseCharacter("Choose your character");
 		charForm.setCommandListener(this);
 		startScreen = new StartScreen ("Colour Colour");		
@@ -55,6 +54,8 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 
 	protected void startApp() throws MIDletStateChangeException {
 		
+		numLevelsLeft = 2;
+		numRoundsLeft = 4;
 		//game.start();
 		//display.setCurrent(game);
 		display.setCurrent(startScreen);
@@ -77,11 +78,17 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 		} else if (c == levelStartPage.startCommand()) {
 			game.start();
 			display.setCurrent(game);
-		} 
-		
-		
-		
-		
+		} else if (c == game.okCmd) {
+			System.out.println("numRoundsLeft: " + numRoundsLeft);
+			if (numRoundsLeft > 0) {
+				game.hideNotify();
+				numRoundsLeft--;
+				game = createNewRound();
+				game.start();
+				display.setCurrent(game);
+			}
+		}
+
 		else if (c.getLabel() == "Exit") {
 			System.out.println("exiting");
 		}
@@ -94,5 +101,11 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 		}
 		*/
     }
+	
+	private SampleCanvas createNewRound() {
+		SampleCanvas game = new SampleCanvas();
+		game.setCommandListener(this);
+		return game;
+	}
 
 }
