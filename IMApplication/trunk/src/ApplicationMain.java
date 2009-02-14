@@ -30,6 +30,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 	ChooseGame chooseGame;
 	JoinGame joinGame;
 	LevelStartPage levelStartPage;
+	WinnerScreen winnerScreen;
 	
 	public ApplicationMain () {
 		display = Display.getDisplay(this);
@@ -44,6 +45,9 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 		joinGame.setCommandListener(this);
 		levelStartPage = new LevelStartPage("Level 1");
 		levelStartPage.setCommandListener(this);
+		
+		winnerScreen = new WinnerScreen("Winner!");
+		winnerScreen.setCommandListener(this);
 	}
 	protected void destroyApp(boolean arg0) throws MIDletStateChangeException {
 		// TODO Auto-generated method stub
@@ -80,23 +84,26 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 			display.setCurrent(levelStartPage);
 		} else if (c == levelStartPage.startCommand()) {
 			game = createNewRound();
+			numLevelsLeft--;
+			//System.out.println("numLevelsLeft: " + numLevelsLeft + ", numRoundsLeft: " + numRoundsLeft);
 			game.start();
 			display.setCurrent(game);
 		} else if (c == game.okCmd) {
-			System.out.println("numRoundsLeft: " + numRoundsLeft);
-			if (numRoundsLeft > 0) {
+			numRoundsLeft--;
+			System.out.println("numLevelsLeft: " + numLevelsLeft + ", numRoundsLeft: " + numRoundsLeft);
+			if (numLevelsLeft <= 0 && numRoundsLeft <= 0) {		// end of game
+				display.setCurrent(winnerScreen);
+			} else if (numRoundsLeft <= 0) {	// end of current level
 				game.hideNotify();
-				numRoundsLeft--;
-				game = createNewRound();
-				game.start();
-				display.setCurrent(game);
-			} else if (numLevelsLeft > 0) {
-				game.hideNotify();
-				numLevelsLeft--;
 				numRoundsLeft = NUM_ROUNDS;
 				levelStartPage = new LevelStartPage("Level 1");
 				levelStartPage.setCommandListener(this);
 				display.setCurrent(levelStartPage);
+			} else if (numRoundsLeft > 0) {	// end of current round, move on to next round
+				game.hideNotify();
+				game = createNewRound();
+				game.start();
+				display.setCurrent(game);
 			}
 		}
 

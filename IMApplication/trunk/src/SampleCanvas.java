@@ -102,11 +102,11 @@ public class SampleCanvas extends GameCanvas implements Runnable {
 		flowerY = flower.getY();
 		
 		tomato = new Sprite(tomatoImage);
+		int tomatoX = random.nextInt(50);
+		int tomatoY = random.nextInt(100);
+		
 		//int tomatoX = random.nextInt(getWidth());
 		//int tomatoY = random.nextInt(getHeight());
-		
-		int tomatoX = random.nextInt(getWidth());
-		int tomatoY = random.nextInt(getHeight());
 		
 		System.out.println("tomatoX: " + tomatoX + ", tomatoY: " + tomatoY);
 		tomato.setPosition(tomatoX, tomatoY);
