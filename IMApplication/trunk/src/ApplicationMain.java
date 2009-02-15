@@ -20,6 +20,8 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 	private static final int NUM_ROUNDS = 2;
 	private static final int NUM_LEVELS = 2;
 	
+	public static Display theDisplay;
+	
 	int characterChoice, gameChoice;
 	int numLevelsLeft, numRoundsLeft;
 	
@@ -35,7 +37,8 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 	StartAGame startAGame;
 	
 	public ApplicationMain () {
-		display = Display.getDisplay(this);
+		theDisplay = display = Display.getDisplay(this);
+		
 		
 		charForm = new ChooseCharacter("Choose your character");
 		charForm.setCommandListener(this);
@@ -85,16 +88,21 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 			display.setCurrent(startOrJoinGame);
 		} else if (c == startOrJoinGame.okCommand()){
 			if (startOrJoinGame.getListSelection() == 0) {
+				startAGame.startServer();
 				display.setCurrent(startAGame);
 			} else {
 				display.setCurrent(chooseGame);
 			}
+		} else if (c == startAGame.startCommand()) {
+			display.setCurrent(levelStartPage);
+			
 		} else if (c == chooseGame.okCommand()) {
 			gameChoice = chooseGame.getListSelection();
 			joinGame.setCharacterChoice(characterChoice);
 			joinGame.setGameChoice(gameChoice);
+			joinGame.initClient();
 			display.setCurrent(joinGame);
-		} else if (c == joinGame.okCommand()) {
+		} else if (c == joinGame.startCommand()) {
 			display.setCurrent(levelStartPage);
 		} else if (c == levelStartPage.startCommand()) {
 			game = createNewRound();

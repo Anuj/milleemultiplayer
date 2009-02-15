@@ -203,7 +203,6 @@ public class Round extends GameCanvas implements Runnable {
 			checkRemotePlayerInput();
 			updateGameScreen(getGraphics());
 			
-			
 			// Now wait...
 			try {
 				Thread.sleep( sleepTime );

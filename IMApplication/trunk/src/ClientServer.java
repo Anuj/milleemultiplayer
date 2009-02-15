@@ -11,7 +11,9 @@ import javax.bluetooth.UUID;
 import javax.microedition.io.Connector;
 import javax.microedition.io.StreamConnection;
 import javax.microedition.io.StreamConnectionNotifier;
+import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Form;
+import javax.microedition.lcdui.StringItem;
 import javax.microedition.lcdui.TextBox;
 import javax.microedition.lcdui.TextField;
 
@@ -68,7 +70,9 @@ public class ClientServer implements DiscoveryListener {
     public void InitServer(int numConnections) {
         
         try {
-        	this.printToScreen("Application", "Connecting...");
+        	System.out.println("Connecting...");
+        	//ApplicationMain.theDisplay.setCurrent(new TextBox("Server: ", "Connecting...", 30, TextField.ANY));
+        	//this.printToScreen("Application", "Connecting...");
         	streamConnections = new StreamConnection[numConnections];
         	
         	
@@ -76,8 +80,9 @@ public class ClientServer implements DiscoveryListener {
         		m_strUrl = "btspp://localhost:" + RFCOMM_UUID[0] + ";name=rfcommtest;authorize=true";
         		m_LclDevice = LocalDevice.getLocalDevice();
                 m_LclDevice.setDiscoverable(DiscoveryAgent.GIAC);
+                System.out.println("waiting to connect to clients...");
                 m_StrmNotf = (StreamConnectionNotifier) Connector.open(m_strUrl);
-                
+                System.out.println("finished connecting");
                 StreamConnection m_StrmConn = m_StrmNotf.acceptAndOpen();                
                 streamConnections[i] = m_StrmConn;
         	}
@@ -91,6 +96,7 @@ public class ClientServer implements DiscoveryListener {
     
     // Starts the inquiry process for a client.
     public void InitClient() {
+    	System.out.println("initializing the client");
     	SearchAvailDevices();
     }
     
@@ -113,12 +119,14 @@ public class ClientServer implements DiscoveryListener {
             
             try {
 
-            	this.printToScreen("Application", "Connecting...");
+            	//this.printToScreen("Application", "Connecting...");
+            	System.out.println("Client Connecting...");
             	StreamConnection m_StrmConn = (StreamConnection) Connector.open(m_strUrl);
             	streamConnections = new StreamConnection[1];
             	
             	streamConnections[0] = m_StrmConn;
-            	this.printToScreen("Application", "Connected.");
+            	System.out.println("Connected");
+            	//this.printToScreen("Application", "Connected.");
             	
             	synchronized(connected) {
             		connected.notifyAll();
@@ -164,5 +172,14 @@ public class ClientServer implements DiscoveryListener {
 		}
 		return msg;
     }
+
+	/*public void run() {
+		// TODO Auto-generated method stub
+		//if (this.m_bIsServer) {
+			this.InitServer(1);
+		//} else {
+		//	this.InitClient();
+		//}
+	}*/
 }
 
