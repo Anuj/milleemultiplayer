@@ -10,6 +10,8 @@ import javax.microedition.lcdui.game.LayerManager;
 import javax.microedition.lcdui.game.Sprite;
 import javax.microedition.lcdui.game.TiledLayer;
 
+import millee.game.mechanics.GameGrid;
+import millee.game.mechanics.Goodie;
 import millee.game.mechanics.Player;
 
 /**
@@ -21,6 +23,8 @@ import millee.game.mechanics.Player;
  *
  */
 public class Round extends GameCanvas implements Runnable {
+	
+	private GameGrid _grid;
 	
 	private static final int SLEEP_INCREMENT = 10;
 	private static final int SLEEP_INITIAL = 150;
@@ -38,6 +42,8 @@ public class Round extends GameCanvas implements Runnable {
 	private Random          random;
 	private int             sleepTime = SLEEP_INITIAL;
 	private volatile Thread thread;
+	
+	private static char _possibleCommands[] = {'U', 'D', 'R', 'L'};
 	
 	private boolean stopGame = false;
 	
@@ -115,16 +121,50 @@ public class Round extends GameCanvas implements Runnable {
 		graphics.fillRect( 0, 0, getWidth(), getHeight() );
 		
 		// Set up the layer manager and the first tiled layer
-		layers = new LayerManager();
+		//layers = new LayerManager();
 		
-		Image tiledImage = null;
+		Image tmpImage = null;
 		/*Image flowerImage = null;
 		Image tomatoImage = null;*/
 		
+		
+		
+		// Loading and using images to build grid
 		try {
+			tmpImage = Image.createImage(backgroundPath);
+			// TODO: Eliminate hard-coding of grid dimensions
+			_grid = new GameGrid(12, 11, tmpImage, 15);
+			
+			for (int i = 0; i < numPlayers; i++) {
+				tmpImage = Image.createImage(playerImagePaths[i]);
+				players[i] = new Player(playerNames[i], tmpImage, (i == localPlayer));
+				_grid.insertPlayer(players[i], random.nextInt(12), random.nextInt(11));
+			}
+			
+			for (int i = 0; i<totalNumTokensToDisplay; i++) {
+				tmpImage = Image.createImage(this.possibleTokenPaths[random.nextInt(4)]);
+				_grid.insertGoodie(new Goodie(Goodie.TOMATO, tmpImage), random.nextInt(12), random.nextInt(11));
+
+				//tempSprite.setPosition(random.nextInt(100), random.nextInt(100));
+				//tokenSprites[i] = tempSprite;
+				//layers.append(tempSprite);
+			}
+			
+		} catch (IOException e) {
+			System.err.println("Failed to gather image resources: " + e);
+		}
+			
+			
+			/*
+			
 			for (int i = 0; i<numPlayers; i++) {
 				
-				Player player = new Player(playerNames[i], playerImagePaths[i], (i == localPlayer));
+				Image img = Image.createImage(playerImagePaths[i]);
+				
+				Player player = new Player(playerNames[i], img, (i == localPlayer));
+				_grid.insertPlayer(player);
+				
+				
 				players[i] = player;
 				layers.append(player.getSprite());
 				localPlayerX = player.getSprite().getX();
@@ -132,20 +172,17 @@ public class Round extends GameCanvas implements Runnable {
 				//System.out.println("playername: " + playe)
 			}
 			
-			for (int i = 0; i<totalNumTokensToDisplay; i++) {
-				int num = random.nextInt(4)%4;
-				Image img = Image.createImage(this.possibleTokenPaths[num]);
-				Sprite tempSprite = new Sprite(img);
-				tempSprite.setPosition(random.nextInt(100), random.nextInt(100));
-				tokenSprites[i] = tempSprite;
-				layers.append(tempSprite);
-			}
-			tiledImage = Image.createImage(backgroundPath);
+
+			
 		} catch (IOException e) {
 			System.err.println("Failed to gather image resources: " + e);
 		} catch (NullPointerException e) {
 			System.err.println("null pointer exception");
 		}
+		
+		
+		
+		_grid
 		
 		tiledLayer = new TiledLayer(TILE_WIDTH, TILE_HEIGHT, tiledImage, TILE_DIMENSIONS, TILE_DIMENSIONS);
 		
@@ -156,7 +193,7 @@ public class Round extends GameCanvas implements Runnable {
 				tiledLayer.setCell(j, i, 1);
 			}
 		}
-		
+*/		
 		
 		// Create a sprite on top
 		/*flower = new Sprite(flowerImage);
@@ -177,7 +214,7 @@ public class Round extends GameCanvas implements Runnable {
 		// (ie. The flower object is put on the screen last, so it becomes the top layer)
 		//layers.append(tomato);
 		//layers.append(flower);
-		layers.append(tiledLayer);
+		//layers.append(tiledLayer);
 		
 		showNotify();
 	}
@@ -222,26 +259,43 @@ public class Round extends GameCanvas implements Runnable {
 	}
 	
 	private void checkRemotePlayerInput() {
+		if (stopGame) { return; }
+
 		for (int i = 1; i<numPlayers; i++) {
-			players[i].updateSpriteLocation();
+			char command = getCommand(); // Is this supposed to be a hook into network stuff later?
+			switch (command) {
+				case 'U':
+					_grid.movePlayer(i, 0, -1);
+					break;
+				case 'D':
+					_grid.movePlayer(i, 0, 1);
+					break;
+				case 'R':
+					_grid.movePlayer(i, 1, 0);
+					break;
+				case 'L':
+					_grid.movePlayer(i, -1, 0);
+					break;
+			}
 		}
 	}
 
 	private void checkUserInput() {
-
 		// Detect key presses and speed up or slow down accordingly
 		int state = getKeyStates();
 
 		if(( state & DOWN_PRESSED ) != 0 ){
-			localPlayerY+=5;
+			_grid.movePlayer(localPlayer, 0, 1);
 		} else if(( state & UP_PRESSED ) != 0 ){
-			localPlayerY-=5;
+			_grid.movePlayer(localPlayer, 0, -1);
 		} else if ((state & LEFT_PRESSED) != 0) {
-			localPlayerX-=5;
+			_grid.movePlayer(localPlayer, -1, 0);
 		} else if ((state & RIGHT_PRESSED) != 0) {
-			localPlayerX+=5;
+			_grid.movePlayer(localPlayer, 1, 0);
 		}
 		
+		// Moved collision detection to GameGrid
+		/*
 		for (int i = 0; i < numPlayers; i++) {
 			for (int j = 0; j<this.totalNumTokensToDisplay; j++) {
 				if (players[i].getSprite().collidesWith( this.tokenSprites[j], true)) {
@@ -250,7 +304,7 @@ public class Round extends GameCanvas implements Runnable {
 				}
 			}
 		}
-		
+		*/
 		/*if (flower.collidesWith(tomato, true)) {
 			stopGame = true;
 			System.out.println("want to stop the game");
@@ -271,43 +325,22 @@ public class Round extends GameCanvas implements Runnable {
 			// Move the flower
 			//flower.move(1, 1);
 			//flower.setPosition(flowerX, flowerY);
-			players[localPlayer].getSprite().setPosition(localPlayerX, localPlayerY);
+			//players[localPlayer].getSprite().setPosition(localPlayerX, localPlayerY);
 			// Affect the tiled layer in a random way
 			//tiledLayer.setCell(random.nextInt(TILE_WIDTH), random.nextInt(TILE_HEIGHT), random.nextInt(2)+1);
 			
 			// Redraw with the LayerManager
-			layers.paint(graphics, 0, getHeight()-(TILE_HEIGHT*TILE_DIMENSIONS));
+			_grid.redraw(graphics);
+			//layers.paint(graphics, 0, getHeight()-(TILE_HEIGHT*TILE_DIMENSIONS));
 			// this call paints off screen buffer to screen
 		}
 		flushGraphics();
 
 	}
 
-	
-	
-	/**OLDSTUFF
-	 * @param suppressKeyEvents
-	 
-	public GameplayCanvas(boolean suppressKeyEvents) {
-		super(suppressKeyEvents);
-	}
-
-	/* (non-Javadoc)
-	 * @see java.lang.Runnable#run()
-	 
-	public void run() {
-	    Graphics g = getGraphics();
-	    
-	      while(true) {
-	         // update the game state
-	         // ...
-	    	  g.drawString("Hello", 5, 5, Graphics.LEFT);
-	    	  //g.drawLine(30,15,30,30);
-	         int k = getKeyStates();
-	         // respond to key events
-	         flushGraphics();
-	      }
+	private char getCommand() {
+		int index = random.nextInt(4);
+		return _possibleCommands[index];
 	}
 	
-	*/
 }

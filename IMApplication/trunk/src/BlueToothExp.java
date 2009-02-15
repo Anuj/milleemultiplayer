@@ -47,7 +47,7 @@ public class BlueToothExp extends MIDlet implements CommandListener, Runnable {
     Image stain;
     private LayerManager mLayerManager;
     
-    private GameplayCanvas testCanvas;
+    private Round testCanvas;
  
     public BlueToothExp() {
         initialize();
@@ -82,7 +82,7 @@ public class BlueToothExp extends MIDlet implements CommandListener, Runnable {
  
     private void initialize() {
     	try {
-    		//testCanvas = new GameplayCanvas();
+    		//testCanvas = new Round(0, 0, 0, 0, m_bIsServer, null, null, null, null, null, null, null, 0);
     		//testCanvas.showNotify();
     		
     		MIDlet sampleApp = new ApplicationMain();

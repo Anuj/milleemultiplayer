@@ -82,7 +82,16 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 	public void commandAction(Command c, Displayable d) {
         
 		if (c == startScreen.startCommand()) {
-			display.setCurrent(charForm);
+			
+			// TODO: Reverse these blocks so that the intro screens are shown
+			game = createNewRound();
+			numLevelsLeft--;
+			//System.out.println("numLevelsLeft: " + numLevelsLeft + ", numRoundsLeft: " + numRoundsLeft);
+			game.start();
+			display.setCurrent(game);
+			
+			
+			//display.setCurrent(charForm);
 		} else if (c == charForm.okCommand()) {
 			characterChoice = charForm.getListSelection();
 			display.setCurrent(startOrJoinGame);
@@ -151,9 +160,9 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 		playerNames[1] = "Sri";
 		playerNames[2] = "Neha";
 		
-		playerImagePaths[0] = "/dancer.png";
-		playerImagePaths[1] = "/dancer.png";
-		playerImagePaths[2] = "/dancer.png";
+		playerImagePaths[0] = "/dancer_small.png";
+		playerImagePaths[1] = "/dancer_small.png";
+		playerImagePaths[2] = "/dancer_small.png";
 		
 		scoreAssignment[0] = 5;
 		scoreAssignment[1] = 10;

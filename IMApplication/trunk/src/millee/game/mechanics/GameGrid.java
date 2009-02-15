@@ -1,8 +1,13 @@
 package millee.game.mechanics;
 
+import java.util.Random;
 import java.util.Vector;
 
+import javax.microedition.lcdui.Graphics;
+import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.game.LayerManager;
+import javax.microedition.lcdui.game.Sprite;
+import javax.microedition.lcdui.game.TiledLayer;
 
 /**
  * A two-dimensional grid of Cells
@@ -10,9 +15,6 @@ import javax.microedition.lcdui.game.LayerManager;
  *
  */
 public class GameGrid {
-	
-	//private LayerManager lm = new LayerManager();
-	
 	// Dimensions in cells
 	private int _width;
 	private int _height;
@@ -21,16 +23,79 @@ public class GameGrid {
 	private GameCell[][] _cells;
 	
 	// Player objects
-	private Vector _players;
+	private Vector _players = new Vector();
 	
-	public GameGrid(int width, int height) {
+	// Constants
+	private int _tileDimensions;
+	
+	// Drawing stuff
+	private LayerManager _layers = new LayerManager();
+	private TiledLayer _tiledLayer;
+	
+	// Utility variables
+	private Random random;
+	
+	// Builds the game world and prepares to draw it
+	public GameGrid(int width, int height, Image backgroundImage, int tileDimensions) {
 		_width = width;
 		_height = height;
-		_cells = new GameCell[height][width];
-	}
+		_cells = new GameCell[_height][_width];
+		_tileDimensions = tileDimensions;
+		_tiledLayer = new TiledLayer(_width, _height, backgroundImage, _tileDimensions, _tileDimensions);
+		
+		random = new Random();
+		
+		// Populate GameCell arrays and tiledArray
+		for (int i = 0; i < _height; i++) {
+			for (int j = 0; j < _width; j++) {
+				// Currently, cell can be one of two tiles (id: 1 or 2)
+				_cells[i][j] =  new GameCell(null, null);
+				_tiledLayer.setCell(j, i, random.nextInt(2)+1);
+			}
+		}
 
+		_layers.append(_tiledLayer);
+	}
 	
+	// Place one player on the field
+	public void insertPlayer(Player p, int cellX, int cellY) {
+		p.x = cellX;
+		p.y = cellY;
+		p.sprite.setPosition(_tileDimensions*cellX, _tileDimensions*cellY);
+		
+		_players.addElement(p);
+		_layers.insert(p.sprite, 0);
+	}
 	
+	// Place one "token" on the field
+	public void insertGoodie(Goodie g, int cellX, int cellY) {
+		g.x = cellX;
+		g.y = cellY;
+		g.sprite.setPosition(_tileDimensions*cellX, _tileDimensions*cellY);
+		
+		_cells[cellY][cellX].setGoodie(g);
+		_layers.insert(g.sprite, 0);
+	}
 	
+	// Moves one player character in terms of cells
+	public void movePlayer(int id, int dx, int dy) {
+		Player p = (Player) _players.elementAt(id);
+		
+		// Wraps around borders
+		p.x = (p.x + _width + dx) % _width;
+		p.y = (p.y + _height + dy) % _height;
+		System.out.println("P: " + p.x + ", " + p.y);
+		p.sprite.setPosition(_tileDimensions*p.x, _tileDimensions*p.y);
+		
+		// Now check for 'collisions'
+		if (_cells[p.y][p.x].hasGoodie()) {
+			_cells[p.y][p.x].unsetGoodie();
+		}
+	}
+	
+	// Tells the entire grid to redraw itself, players and all
+	public void redraw(Graphics g) {
+		_layers.paint(g, 0, 0);
+	}
 
 }

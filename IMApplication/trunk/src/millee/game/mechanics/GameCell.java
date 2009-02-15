@@ -23,6 +23,7 @@ public class GameCell {
 		_item = g;
 	}
 	
+	// Not sure if we need to keep track of players in each cell
 	public Vector getPlayers() {
 		return _occupants;
 	}
@@ -41,6 +42,7 @@ public class GameCell {
 	}
 	
 	public void unsetGoodie() {
+		_item.sprite.setVisible(false);
 		_item = null;
 	}
 

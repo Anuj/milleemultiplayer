@@ -7,60 +7,78 @@ import javax.microedition.lcdui.game.Sprite;
 
 public class Player {
 	private String name;
-	private String imagePath;
-	private Sprite sprite;
+	
 	private Random random;
 	private boolean localPlayer;
 	private boolean finishedRound;
 	
+	// Location in cell coordinates
+	protected int x;
+	protected int y;
 	
-	public Player(String name, String imagePath, boolean localPlayer) {
+	// Sprite must have its own coordinates
+	protected Sprite sprite;
+	
+	public Player(String name, Image avatar, boolean localPlayer) {
 		
 		random = new Random();
 		
 		this.name = name;
-		this.imagePath = imagePath;
 		this.localPlayer = localPlayer;
 		this.finishedRound = false;
 		
-		try {
-			Image img = Image.createImage(imagePath);
-			sprite = new Sprite(img);
-			sprite.setPosition(getInitialXPosition(), getInitialYPosition());
-		} catch (Exception e) {
-			System.out.println("Couldn't create player: " + name);
-		}
+		sprite = new Sprite(avatar);
 	}
 	
-	private int getInitialXPosition() {
-		return random.nextInt(100);
+	protected int getInitialXPosition() {
+		return random.nextInt(12);
 	}
 	
-	private int getInitialYPosition() {
-		return random.nextInt(100);
+	protected int getInitialYPosition() {
+		return random.nextInt(11);
 	}
 	
-	public void updateSpriteLocation() {
-		if (!finishedRound) {
-			char command = getCommand();
-			int x = sprite.getX();
-			int y = sprite.getY();
-			if (command == 'U')
-				sprite.setPosition(x, y-4);
-			else if (command == 'D')
-				sprite.setPosition(x, y+4);
-			else if (command == 'R')
-				sprite.setPosition(x+4, y);
-			else if (command == 'L')
-				sprite.setPosition(x-4, y);
-		}
-	}
-	
-	private char getCommand() {
-		char commands[] = {'U', 'D', 'R', 'L'};
-		int index = random.nextInt(4)%4;
-		return commands[index];
-	}
+//	public void interpretMove() {
+//		if (!finishedRound) {
+//			char command = getCommand();
+//			
+//			switch (command) {
+//				case 'U':
+//					y--;
+//					sprite.move(0, -15);
+//					break;
+//				case 'D':
+//					y++;
+//					sprite.move(0, 15);
+//					break;
+//				case 'R':
+//					x++;
+//					sprite.move(15, 0);
+//					break;
+//				case 'L':
+//					x--;
+//					sprite.move(-15, 0);
+//					break;
+//			}
+//
+//			/*
+//			if (command == 'U')
+//				sprite.setPosition(x, y-1);
+//			else if (command == 'D')
+//				sprite.setPosition(x, y+1);
+//			else if (command == 'R')
+//				sprite.setPosition(x+1, y);
+//			else if (command == 'L')
+//				sprite.setPosition(x-1, y);
+//				
+//				*/
+//		}
+//	}
+//	
+//	private char getCommand() {
+//		int index = random.nextInt(4);
+//		return _possibleCommands[index];
+//	}
 	
 	public Sprite getSprite() {
 		return sprite;
