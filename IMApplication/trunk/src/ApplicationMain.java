@@ -31,6 +31,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 	JoinGame joinGame;
 	LevelStartPage levelStartPage;
 	WinnerScreen winnerScreen;
+	StartOrJoinGame startOrJoinGame;
 	
 	public ApplicationMain () {
 		display = Display.getDisplay(this);
@@ -45,6 +46,9 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 		joinGame.setCommandListener(this);
 		levelStartPage = new LevelStartPage("Level 1");
 		levelStartPage.setCommandListener(this);
+
+		startOrJoinGame = new StartOrJoinGame("Start or join a game?");
+		startOrJoinGame.setCommandListener(this);
 		
 		winnerScreen = new WinnerScreen("Winner!");
 		winnerScreen.setCommandListener(this);
@@ -74,7 +78,13 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 			display.setCurrent(charForm);
 		} else if (c == charForm.okCommand()) {
 			characterChoice = charForm.getListSelection();
-			display.setCurrent(chooseGame);
+			display.setCurrent(startOrJoinGame);
+		} else if (c == startOrJoinGame.okCommand()){
+			if (startOrJoinGame.getListSelection() == 0) {
+				//display.setCurrent(nextDisplayable)
+			} else {
+				display.setCurrent(chooseGame);
+			}
 		} else if (c == chooseGame.okCommand()) {
 			gameChoice = chooseGame.getListSelection();
 			joinGame.setCharacterChoice(characterChoice);
