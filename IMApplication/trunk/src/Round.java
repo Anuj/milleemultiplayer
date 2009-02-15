@@ -59,20 +59,25 @@ public class Round extends GameCanvas implements Runnable {
 	String backgroundPath;
 	String[] possibleTokenPaths, possibleTokenText;
 	int totalNumTokensToDisplay;
+	int localPlayer;
 	
 	/* Static Variables */
 	int[] scores;
 	
 	/* Instance Variables */
-	Sprite[] playerSprites;
+	//Sprite[] playerSprites;
 	Sprite[] tokenSprites;
 	Image backgroundImage;
+	Player[] players;
 	
-	public Round (int numPlayers, int round, int level, boolean lastRoundInLevel, String levelName, String[] playerNames, String[] playerImagePaths,
+	int localPlayerX, localPlayerY;
+	
+	public Round (int localPlayer, int numPlayers, int round, int level, boolean lastRoundInLevel, String levelName, String[] playerNames, String[] playerImagePaths,
 					int[] scoreAssignment, String backgroundPath, String[] possibleTokenPaths, String[] possibleTokenText,
 					int totalNumTokensToDisplay){
 		super( true );
 		
+		this.localPlayer = localPlayer;
 		this.numPlayers = numPlayers;
 		this.round = round;
 		this.level = level;
@@ -86,8 +91,9 @@ public class Round extends GameCanvas implements Runnable {
 		this.possibleTokenText = possibleTokenText;
 		this.totalNumTokensToDisplay = totalNumTokensToDisplay;
 		
-		playerSprites = new Sprite[numPlayers];
+		//playerSprites = new Sprite[numPlayers];
 		tokenSprites = new Sprite[totalNumTokensToDisplay];
+		players = new Player[numPlayers];
 	}
 	
 	public Command getOkCommand() {
@@ -115,18 +121,20 @@ public class Round extends GameCanvas implements Runnable {
 		
 		try {
 			for (int i = 0; i<numPlayers; i++) {
-				Image img = Image.createImage(playerImagePaths[i]);
-				Sprite tempSprite = new Sprite(img);
-				tempSprite.setPosition(random.nextInt(50), random.nextInt(100));
-				playerSprites[i] = tempSprite;
-				layers.append(tempSprite);
+				
+				Player player = new Player(playerNames[i], playerImagePaths[i], (i == localPlayer));
+				players[i] = player;
+				layers.append(player.getSprite());
+				localPlayerX = player.getSprite().getX();
+				localPlayerY = player.getSprite().getY();
+				//System.out.println("playername: " + playe)
 			}
 			
 			for (int i = 0; i<totalNumTokensToDisplay; i++) {
 				int num = random.nextInt(4)%4;
 				Image img = Image.createImage(this.possibleTokenPaths[num]);
 				Sprite tempSprite = new Sprite(img);
-				tempSprite.setPosition(random.nextInt(75), random.nextInt(100));
+				tempSprite.setPosition(random.nextInt(100), random.nextInt(100));
 				tokenSprites[i] = tempSprite;
 				layers.append(tempSprite);
 			}
@@ -192,6 +200,7 @@ public class Round extends GameCanvas implements Runnable {
 			
 			verifyGameState();
 			checkUserInput();
+			checkRemotePlayerInput();
 			updateGameScreen(getGraphics());
 			
 			
@@ -210,26 +219,24 @@ public class Round extends GameCanvas implements Runnable {
 	private void verifyGameState() {
 		  // doesn't do anything yet
 	}
+	
+	private void checkRemotePlayerInput() {
+		
+	}
 
 	private void checkUserInput() {
 
 		// Detect key presses and speed up or slow down accordingly
 		int state = getKeyStates();
 
-		if( ( state & DOWN_PRESSED ) != 0 ){
-			/*sleepTime += SLEEP_INCREMENT;
-			if( sleepTime > SLEEP_MAX ) 
-				sleepTime = SLEEP_MAX;*/
-			//flowerY+=3;
-		} else if( ( state & UP_PRESSED ) != 0 ){
-			/*sleepTime -= SLEEP_INCREMENT;
-			this.hideNotify();
-			if( sleepTime < 0 ) sleepTime = 0;*/
-			//flowerY-=3;
+		if(( state & DOWN_PRESSED ) != 0 ){
+			localPlayerY+=5;
+		} else if(( state & UP_PRESSED ) != 0 ){
+			localPlayerY-=5;
 		} else if ((state & LEFT_PRESSED) != 0) {
-			//flowerX-=3;
+			localPlayerX-=5;
 		} else if ((state & RIGHT_PRESSED) != 0) {
-			//flowerX+=3;
+			localPlayerX+=5;
 		}
 		
 		/*if (flower.collidesWith(tomato, true)) {
@@ -252,7 +259,7 @@ public class Round extends GameCanvas implements Runnable {
 			// Move the flower
 			//flower.move(1, 1);
 			//flower.setPosition(flowerX, flowerY);
-			
+			players[localPlayer].getSprite().setPosition(localPlayerX, localPlayerY);
 			// Affect the tiled layer in a random way
 			//tiledLayer.setCell(random.nextInt(TILE_WIDTH), random.nextInt(TILE_HEIGHT), random.nextInt(2)+1);
 			
