@@ -10,6 +10,8 @@ import javax.microedition.lcdui.game.LayerManager;
 import javax.microedition.lcdui.game.Sprite;
 import javax.microedition.lcdui.game.TiledLayer;
 
+import millee.game.mechanics.Player;
+
 /**
  * 
  */

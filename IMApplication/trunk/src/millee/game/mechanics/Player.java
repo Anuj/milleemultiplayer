@@ -1,3 +1,4 @@
+package millee.game.mechanics;
 import java.util.Random;
 
 import javax.microedition.lcdui.Image;

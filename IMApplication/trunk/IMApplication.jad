@@ -1,5 +1,5 @@
 MIDlet-1: BlueToothExp,,BlueToothExp
-MIDlet-2: TestImage,,TestImage
+
 MIDlet-Jar-URL: IMApplication.jar
 MIDlet-Name: IMApplication Midlet Suite
 MIDlet-Vendor: Midlet Suite Vendor
