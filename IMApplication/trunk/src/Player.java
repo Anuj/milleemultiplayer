@@ -10,6 +10,7 @@ public class Player {
 	private Sprite sprite;
 	private Random random;
 	private boolean localPlayer;
+	private boolean finishedRound;
 	
 	
 	public Player(String name, String imagePath, boolean localPlayer) {
@@ -19,6 +20,7 @@ public class Player {
 		this.name = name;
 		this.imagePath = imagePath;
 		this.localPlayer = localPlayer;
+		this.finishedRound = false;
 		
 		try {
 			Image img = Image.createImage(imagePath);
@@ -38,17 +40,19 @@ public class Player {
 	}
 	
 	public void updateSpriteLocation() {
-		char command = getCommand();
-		int x = sprite.getX();
-		int y = sprite.getY();
-		if (command == 'U')
-			sprite.setPosition(x, y-4);
-		else if (command == 'D')
-			sprite.setPosition(x, y+4);
-		else if (command == 'R')
-			sprite.setPosition(x+4, y);
-		else if (command == 'L')
-			sprite.setPosition(x-4, y);
+		if (!finishedRound) {
+			char command = getCommand();
+			int x = sprite.getX();
+			int y = sprite.getY();
+			if (command == 'U')
+				sprite.setPosition(x, y-4);
+			else if (command == 'D')
+				sprite.setPosition(x, y+4);
+			else if (command == 'R')
+				sprite.setPosition(x+4, y);
+			else if (command == 'L')
+				sprite.setPosition(x-4, y);
+		}
 	}
 	
 	private char getCommand() {
@@ -59,5 +63,9 @@ public class Player {
 	
 	public Sprite getSprite() {
 		return sprite;
+	}
+	
+	public void finishedRound() {
+		this.finishedRound = true;
 	}
 }

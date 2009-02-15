@@ -221,7 +221,9 @@ public class Round extends GameCanvas implements Runnable {
 	}
 	
 	private void checkRemotePlayerInput() {
-		
+		for (int i = 1; i<numPlayers; i++) {
+			players[i].updateSpriteLocation();
+		}
 	}
 
 	private void checkUserInput() {
@@ -237,6 +239,15 @@ public class Round extends GameCanvas implements Runnable {
 			localPlayerX-=5;
 		} else if ((state & RIGHT_PRESSED) != 0) {
 			localPlayerX+=5;
+		}
+		
+		for (int i = 0; i < numPlayers; i++) {
+			for (int j = 0; j<this.totalNumTokensToDisplay; j++) {
+				if (players[i].getSprite().collidesWith( this.tokenSprites[j], true)) {
+					this.tokenSprites[j].setVisible(false);
+					players[i].finishedRound();
+				}
+			}
 		}
 		
 		/*if (flower.collidesWith(tomato, true)) {
