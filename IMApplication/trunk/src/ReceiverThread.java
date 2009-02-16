@@ -49,7 +49,8 @@ public class ReceiverThread extends Thread {
 			        str.append(charData);
 					currIndex++;
 
-			        if (currIndex >= 10) {			        	
+			        //if (currIndex >= 1) {
+					if (charData == '\0') {
 		        		rcvMsg.addElement(str);
 		        		if (isServer) {
 		        			senderThread.sendMsg(str.toString(), new Integer(hashcode));

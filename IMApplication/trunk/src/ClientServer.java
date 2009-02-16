@@ -39,6 +39,7 @@ public class ClientServer implements DiscoveryListener {
     private static String m_strUrl;
         
     public ClientServer (boolean isServer, int numClients) {
+    	System.out.println("initializing clientServer");
     	this.isServer = isServer;
     	this.numClients = numClients;
     }
@@ -84,6 +85,7 @@ public class ClientServer implements DiscoveryListener {
                 m_StrmNotf = (StreamConnectionNotifier) Connector.open(m_strUrl);
                 System.out.println("finished connecting");
                 StreamConnection m_StrmConn = m_StrmNotf.acceptAndOpen();                
+                System.out.println("looook here: " + m_StrmConn);
                 streamConnections[i] = m_StrmConn;
         	}
         	
@@ -165,7 +167,13 @@ public class ClientServer implements DiscoveryListener {
     public String receiveMessage(ReceiverThread recvThread) {
     	String msg = null;
 	
+    	//System.out.println("beginning of receiveMessage");
+    	//System.out.println("recvThread: " + recvThread);
+    	//System.out.println("recvThread.rcvMsg: " + recvThread.rcvMsg);
+    	//System.out.println("recvThread.rcvMsg.size: " + recvThread.rcvMsg.size());
+    	
 		if (recvThread.rcvMsg.size() > 0) {
+			//System.out.println("inside if statement");
 			msg = recvThread.rcvMsg.firstElement().toString();
 			recvThread.rcvMsg.removeElementAt(0);
 			return msg;

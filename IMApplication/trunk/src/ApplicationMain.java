@@ -24,6 +24,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 	
 	int characterChoice, gameChoice;
 	int numLevelsLeft, numRoundsLeft;
+	boolean isServer;
 	
 	Round game;
 	Display display;
@@ -35,10 +36,13 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 	WinnerScreen winnerScreen;
 	StartOrJoinGame startOrJoinGame;
 	StartAGame startAGame;
+	Network network;
 	
 	public ApplicationMain () {
 		theDisplay = display = Display.getDisplay(this);
 		
+
+		network = new Network();
 		
 		charForm = new ChooseCharacter("Choose your character");
 		charForm.setCommandListener(this);
@@ -46,19 +50,20 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 		startScreen.setCommandListener(this);
 		chooseGame = new ChooseGame ("Choose a Game");		
 		chooseGame.setCommandListener(this);
-		joinGame = new JoinGame ("Join a Game");		
+		joinGame = new JoinGame ("Join a Game", network);		
 		joinGame.setCommandListener(this);
-		levelStartPage = new LevelStartPage("Level 1");
+		levelStartPage = new LevelStartPage("Level 1", network);
 		levelStartPage.setCommandListener(this);
 
 		startOrJoinGame = new StartOrJoinGame("Start or join a game?");
 		startOrJoinGame.setCommandListener(this);
 		
-		startAGame = new StartAGame("Start a game?");
+		startAGame = new StartAGame("Start a game?", network);
 		startAGame.setCommandListener(this);
 		
 		winnerScreen = new WinnerScreen("Winner!");
 		winnerScreen.setCommandListener(this);
+		
 	}
 	protected void destroyApp(boolean arg0) throws MIDletStateChangeException {
 		// TODO Auto-generated method stub
@@ -84,22 +89,24 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 		if (c == startScreen.startCommand()) {
 			
 			// TODO: Reverse these blocks so that the intro screens are shown
-			game = createNewRound();
+			/*game = createNewRound();
 			numLevelsLeft--;
 			//System.out.println("numLevelsLeft: " + numLevelsLeft + ", numRoundsLeft: " + numRoundsLeft);
 			game.start();
-			display.setCurrent(game);
+			display.setCurrent(game);*/
 			
 			
-			//display.setCurrent(charForm);
+			display.setCurrent(charForm);
 		} else if (c == charForm.okCommand()) {
 			characterChoice = charForm.getListSelection();
 			display.setCurrent(startOrJoinGame);
 		} else if (c == startOrJoinGame.okCommand()){
 			if (startOrJoinGame.getListSelection() == 0) {
+				isServer = true;
 				startAGame.startServer();
 				display.setCurrent(startAGame);
 			} else {
+				isServer = false;
 				display.setCurrent(chooseGame);
 			}
 		} else if (c == startAGame.startCommand()) {
@@ -112,6 +119,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 			joinGame.initClient();
 			display.setCurrent(joinGame);
 		} else if (c == joinGame.startCommand()) {
+			//network.sendReceive();
 			display.setCurrent(levelStartPage);
 		} else if (c == levelStartPage.startCommand()) {
 			game = createNewRound();
@@ -127,8 +135,9 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 			} else if (numRoundsLeft <= 0) {	// end of current level
 				game.hideNotify();
 				numRoundsLeft = NUM_ROUNDS;
-				levelStartPage = new LevelStartPage("Level 1");
+				levelStartPage = new LevelStartPage("Level 1", network);
 				levelStartPage.setCommandListener(this);
+				//network.sendReceive();
 				display.setCurrent(levelStartPage);
 			} else if (numRoundsLeft > 0) {	// end of current round, move on to next round
 				game.hideNotify();
@@ -180,8 +189,8 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 		
 		
 		
-		Round game = new Round(0, 3, numRoundsLeft, numLevelsLeft, false, "Colours", playerNames, playerImagePaths, 
-								scoreAssignment, "/tiles.png", possibleTokenPaths, possibleTokenText, 4);
+		Round game = new Round(0, 2, numRoundsLeft, numLevelsLeft, false, "Colours", playerNames, playerImagePaths, 
+								scoreAssignment, "/tiles.png", possibleTokenPaths, possibleTokenText, 4, isServer, network);
 		game.setCommandListener(this);
 		return game;
 	}

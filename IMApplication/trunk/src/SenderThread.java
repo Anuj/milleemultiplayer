@@ -21,18 +21,27 @@ public class SenderThread extends Thread {
      * bad way to store it...this needs to be fixed soon!
      */
 
-public SenderThread (StreamConnection[] streamConns) {
+    public SenderThread (StreamConnection[] streamConns) {
 		
 		msgQueue = new Vector();
 		msgHashcodeQueue = new Vector();
 		
 		try {
+			System.out.println("before outputStreams");
 			outputStreams = new DataOutputStream[streamConns.length];
+			System.out.println("after outputStreams");
 			outputStreamsHashcodes = new int[streamConns.length];
+			System.out.println("after outputStreamsHashcodes");
 			for (int i = 0; i<streamConns.length; i++) {
+				System.out.println("start of for loop: " + i);
+				System.out.println("streamConns: " + streamConns);
+				System.out.println("streamConns[i]: " + streamConns[i]);
 				outputStreams[i] = streamConns[i].openDataOutputStream();
+				System.out.println("middle of for loop");
 				outputStreamsHashcodes[i] = streamConns[i].hashCode();
+				System.out.println("end of for loop");
 			}
+			System.out.println("after for loop");
 	        
 		} catch (Exception e) {
             e.printStackTrace();

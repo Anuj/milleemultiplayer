@@ -1,10 +1,13 @@
 import java.io.IOException;
 import java.util.Random;
 
+import javax.microedition.io.StreamConnection;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Displayable;
+import javax.microedition.lcdui.Form;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
+import javax.microedition.lcdui.TextField;
 import javax.microedition.lcdui.game.GameCanvas;
 import javax.microedition.lcdui.game.LayerManager;
 import javax.microedition.lcdui.game.Sprite;
@@ -46,6 +49,7 @@ public class Round extends GameCanvas implements Runnable {
 	private static char _possibleCommands[] = {'U', 'D', 'R', 'L'};
 	
 	private boolean stopGame = false;
+	private String command = "";
 	
 	// Drawing stuff
 	private LayerManager layers;
@@ -68,6 +72,8 @@ public class Round extends GameCanvas implements Runnable {
 	String[] possibleTokenPaths, possibleTokenText;
 	int totalNumTokensToDisplay;
 	int localPlayer;
+	boolean isServer;
+	Network network;
 	
 	/* Static Variables */
 	int[] scores;
@@ -82,7 +88,7 @@ public class Round extends GameCanvas implements Runnable {
 	
 	public Round (int localPlayer, int numPlayers, int round, int level, boolean lastRoundInLevel, String levelName, String[] playerNames, String[] playerImagePaths,
 					int[] scoreAssignment, String backgroundPath, String[] possibleTokenPaths, String[] possibleTokenText,
-					int totalNumTokensToDisplay){
+					int totalNumTokensToDisplay, boolean isServer, Network network){
 		super( true );
 		
 		this.localPlayer = localPlayer;
@@ -98,6 +104,9 @@ public class Round extends GameCanvas implements Runnable {
 		this.possibleTokenPaths = possibleTokenPaths;
 		this.possibleTokenText = possibleTokenText;
 		this.totalNumTokensToDisplay = totalNumTokensToDisplay;
+		this.isServer = isServer;
+		
+		this.network = network;
 		
 		//playerSprites = new Sprite[numPlayers];
 		tokenSprites = new Sprite[totalNumTokensToDisplay];
@@ -114,6 +123,12 @@ public class Round extends GameCanvas implements Runnable {
 	
 	public void start() {
 		
+		if (isServer)
+			network.send("blah");
+		else
+			network.receive();
+		
+		
 		random = new Random();
 
 		graphics = getGraphics();
@@ -124,8 +139,6 @@ public class Round extends GameCanvas implements Runnable {
 		//layers = new LayerManager();
 		
 		Image tmpImage = null;
-		/*Image flowerImage = null;
-		Image tomatoImage = null;*/
 		
 		
 		
@@ -138,17 +151,42 @@ public class Round extends GameCanvas implements Runnable {
 			for (int i = 0; i < numPlayers; i++) {
 				tmpImage = Image.createImage(playerImagePaths[i]);
 				players[i] = new Player(playerNames[i], tmpImage, (i == localPlayer));
-				_grid.insertPlayer(players[i], random.nextInt(12), random.nextInt(11));
+				if (i == localPlayer) {
+					int x = random.nextInt(12);
+					int y = random.nextInt(11);
+					
+					System.out.println("x: " + String.valueOf(x));
+					
+					network.send(String.valueOf(x));
+					network.send(String.valueOf(y));
+					
+					_grid.insertPlayer(players[i], x, y);
+				} else {
+					int x = Integer.parseInt(network.receive());
+					int y = Integer.parseInt(network.receive());
+					
+					_grid.insertPlayer(players[i], x, y);
+				}
 			}
 			
 			for (int i = 0; i<totalNumTokensToDisplay; i++) {
 				tmpImage = Image.createImage(this.possibleTokenPaths[random.nextInt(4)]);
-				_grid.insertGoodie(new Goodie(Goodie.TOMATO, tmpImage), random.nextInt(12), random.nextInt(11));
-
-				//tempSprite.setPosition(random.nextInt(100), random.nextInt(100));
-				//tokenSprites[i] = tempSprite;
-				//layers.append(tempSprite);
+				if (isServer) {
+					int x = random.nextInt(12);
+					int y = random.nextInt(11);
+					network.send(String.valueOf(x));
+					network.send(String.valueOf(y));
+					_grid.insertGoodie(new Goodie(Goodie.TOMATO, tmpImage), x, y);
+				} else {
+					int x = Integer.parseInt(network.receive());
+					int y = Integer.parseInt(network.receive());
+					//network.send(String.valueOf(x));
+					//network.send(String.valueOf(y));
+					_grid.insertGoodie(new Goodie(Goodie.TOMATO, tmpImage), x, y);
+				}
 			}
+			
+			network.send("n");	// sent initially to avoid deadlock
 			
 		} catch (IOException e) {
 			System.err.println("Failed to gather image resources: " + e);
@@ -219,6 +257,49 @@ public class Round extends GameCanvas implements Runnable {
 		showNotify();
 	}
 	
+	/*private void sendReceive() {
+		SenderThread sendThread = null;
+		ReceiverThread recvThread = null;
+		StreamConnection[] streamConns;
+		ClientServer clientServer;
+		
+		if (isServer) {
+			System.out.println("before clientserver init");
+			clientServer = StartAGame.clientServer;
+			System.out.println("after clientserver init");
+			streamConns = clientServer.getStreamConnections();
+			System.out.println("after getStreamConnection(): " + streamConns);
+			sendThread = new SenderThread(streamConns);
+			System.out.println("after creating sendThread");
+			recvThread = new ReceiverThread(streamConns[0], sendThread, isServer);
+			System.out.println("after creating recvThread");
+			recvThread.start();
+			System.out.println("after starting recvThread");
+	    	sendThread.start();
+			System.out.println("after starting sendThread");
+
+		} else {
+			clientServer = JoinGame.clientServer;
+			streamConns = clientServer.getStreamConnections();
+			sendThread = new SenderThread(streamConns);
+			recvThread = new ReceiverThread(streamConns[0], sendThread, isServer);
+			recvThread.start();
+	    	sendThread.start();
+		}
+		
+		String msg = null;
+		msg = clientServer.receiveMessage(recvThread);
+		boolean exitFlag = false;
+		
+		while (!exitFlag) {
+			if ((msg = clientServer.receiveMessage(recvThread)) != null) {
+				System.out.println("msg received: " + msg);
+			}
+			
+			sendThread.sendMsg("sending: blah blah", new Integer(-1));
+		}
+	}*/
+	
 	public void showNotify() {
 		// Start this thread
 		thread = new Thread( this );
@@ -264,17 +345,19 @@ public class Round extends GameCanvas implements Runnable {
 		for (int i = 1; i<numPlayers; i++) {
 			char command = getCommand(); // Is this supposed to be a hook into network stuff later?
 			switch (command) {
-				case 'U':
+				case 'u':
 					_grid.movePlayer(i, 0, -1);
 					break;
-				case 'D':
+				case 'd':
 					_grid.movePlayer(i, 0, 1);
 					break;
-				case 'R':
+				case 'r':
 					_grid.movePlayer(i, 1, 0);
 					break;
-				case 'L':
+				case 'l':
 					_grid.movePlayer(i, -1, 0);
+					break;
+				case 'n':
 					break;
 			}
 		}
@@ -286,12 +369,16 @@ public class Round extends GameCanvas implements Runnable {
 
 		if(( state & DOWN_PRESSED ) != 0 ){
 			_grid.movePlayer(localPlayer, 0, 1);
+			command = "d";
 		} else if(( state & UP_PRESSED ) != 0 ){
 			_grid.movePlayer(localPlayer, 0, -1);
+			command = "u";
 		} else if ((state & LEFT_PRESSED) != 0) {
 			_grid.movePlayer(localPlayer, -1, 0);
+			command = "l";
 		} else if ((state & RIGHT_PRESSED) != 0) {
 			_grid.movePlayer(localPlayer, 1, 0);
+			command = "r";
 		}
 		
 		// Moved collision detection to GameGrid
@@ -312,6 +399,11 @@ public class Round extends GameCanvas implements Runnable {
 	}
 
 	private void updateGameScreen(Graphics g) {
+		
+		if (command == "")
+			command = "n";
+		network.send(command);
+		command = "";
 		
 		if (stopGame) {
 			
@@ -339,8 +431,8 @@ public class Round extends GameCanvas implements Runnable {
 	}
 
 	private char getCommand() {
-		int index = random.nextInt(4);
-		return _possibleCommands[index];
+		String command = network.receive();
+		return command.charAt(0);
 	}
 	
 }

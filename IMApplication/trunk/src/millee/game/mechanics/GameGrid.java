@@ -84,7 +84,7 @@ public class GameGrid {
 		// Wraps around borders
 		p.x = (p.x + _width + dx) % _width;
 		p.y = (p.y + _height + dy) % _height;
-		System.out.println("P: " + p.x + ", " + p.y);
+		//System.out.println("P: " + p.x + ", " + p.y);
 		p.sprite.setPosition(_tileDimensions*p.x, _tileDimensions*p.y);
 		
 		// Now check for 'collisions'

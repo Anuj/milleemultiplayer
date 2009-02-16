@@ -1,5 +1,6 @@
 import java.io.IOException;
 
+import javax.microedition.io.StreamConnection;
 import javax.microedition.lcdui.Choice;
 import javax.microedition.lcdui.ChoiceGroup;
 import javax.microedition.lcdui.Command;
@@ -17,13 +18,14 @@ public class JoinGame extends Screen implements Runnable {
 	StringItem msg;
 	Gauge gauge;
 	private Command cancelCommand;
+	private Network network;
 	
-	ClientServer clientServer;
+	public static ClientServer clientServer;
 	private boolean m_bRunThread = false;
 	private boolean m_bIsServer = false, isServer = false;
 	 
 	
-	public JoinGame(String title) {
+	public JoinGame(String title, Network network) {
 		super(title);
 		
 		cancelCommand = new Command("Cancel", Command.CANCEL, 0);
@@ -42,6 +44,9 @@ public class JoinGame extends Screen implements Runnable {
         					Gauge.INDEFINITE,
         					Gauge.CONTINUOUS_RUNNING);
         
+        
+        this.network = network;
+        
         this.append(msg);
         this.append(horrorImage);
         this.append(gauge);
@@ -57,10 +62,30 @@ public class JoinGame extends Screen implements Runnable {
 	}
 	
 	public void initClient() {
-		Thread thread = new Thread(this);
+		
+		//Network network = new Network();
+		network.initializeNetwork(false, 1);
+		
+		Thread thread = new Thread(network);
         thread.start();
         
-        m_bRunThread = true;
+        /*try {
+	        synchronized(network.connected) {
+	        	System.out.println("synchronized waiting for netwrk.connected");
+				network.connected.wait();
+			}
+        } catch (Exception e) {
+        	System.err.println(e);
+        }*/
+        
+        System.out.println("client connected!");
+
+    	this.append("All the clients have connected.");
+    	this.append("Choose START to begin the game");
+    	this.addCommand(startCommand);
+    	
+        
+        //m_bRunThread = true;
 		
 	}
 	
@@ -92,6 +117,8 @@ public class JoinGame extends Screen implements Runnable {
         			}
         		}
             	
+                sendReceive();
+            	
             	System.out.println("client connected!");
 
             	this.append("All the clients have connected.");
@@ -105,5 +132,49 @@ public class JoinGame extends Screen implements Runnable {
             }
  
         }
+        
+	}
+	
+	private void sendReceive() {
+		SenderThread sendThread = null;
+		ReceiverThread recvThread = null;
+		StreamConnection[] streamConns;
+		ClientServer clientServer;
+		
+		if (isServer) {
+			System.out.println("before clientserver init");
+			clientServer = StartAGame.clientServer;
+			System.out.println("after clientserver init");
+			streamConns = clientServer.getStreamConnections();
+			System.out.println("after getStreamConnection(): " + streamConns);
+			sendThread = new SenderThread(streamConns);
+			System.out.println("after creating sendThread");
+			recvThread = new ReceiverThread(streamConns[0], sendThread, isServer);
+			System.out.println("after creating recvThread");
+			recvThread.start();
+			System.out.println("after starting recvThread");
+	    	sendThread.start();
+			System.out.println("after starting sendThread");
+
+		} else {
+			clientServer = JoinGame.clientServer;
+			streamConns = clientServer.getStreamConnections();
+			sendThread = new SenderThread(streamConns);
+			recvThread = new ReceiverThread(streamConns[0], sendThread, isServer);
+			recvThread.start();
+	    	sendThread.start();
+		}
+		
+		String msg = null;
+		msg = clientServer.receiveMessage(recvThread);
+		boolean exitFlag = false;
+		
+		while (!exitFlag) {
+			if ((msg = clientServer.receiveMessage(recvThread)) != null) {
+				System.out.println("msg received: " + msg);
+			}
+			
+			//sendThread.sendMsg("sending: blah blah", new Integer(-1));
+		}
 	}
 }
