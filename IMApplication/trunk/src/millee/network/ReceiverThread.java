@@ -1,3 +1,5 @@
+package millee.network;
+
 import java.io.DataInputStream;
 import java.util.Vector;
 

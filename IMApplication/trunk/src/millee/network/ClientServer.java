@@ -1,3 +1,6 @@
+package millee.network;
+import millee.imapplication.BlueToothExp;
+
 import java.io.IOException;
 
 import javax.bluetooth.BluetoothStateException;
@@ -16,6 +19,7 @@ import javax.microedition.lcdui.Form;
 import javax.microedition.lcdui.StringItem;
 import javax.microedition.lcdui.TextBox;
 import javax.microedition.lcdui.TextField;
+
 
 /** ClientServer class is the entity that represents a client or server.  It holds
  * all the information pertaining to that client or server.  It also holds all the methods 

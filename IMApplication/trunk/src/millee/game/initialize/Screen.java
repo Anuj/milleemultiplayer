@@ -1,3 +1,4 @@
+package millee.game.initialize;
 import javax.microedition.lcdui.ChoiceGroup;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Form;

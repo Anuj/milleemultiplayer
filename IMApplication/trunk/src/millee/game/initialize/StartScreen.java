@@ -1,3 +1,5 @@
+package millee.game.initialize;
+
 import java.io.IOException;
 
 import javax.microedition.lcdui.Choice;

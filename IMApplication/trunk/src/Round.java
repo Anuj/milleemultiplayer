@@ -16,6 +16,7 @@ import javax.microedition.lcdui.game.TiledLayer;
 import millee.game.mechanics.GameGrid;
 import millee.game.mechanics.Goodie;
 import millee.game.mechanics.Player;
+import millee.network.Network;
 
 /**
  * 

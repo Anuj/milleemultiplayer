@@ -1,3 +1,7 @@
+package millee.imapplication;
+import ApplicationMain;
+import Round;
+
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -28,10 +32,10 @@ public class BlueToothExp extends MIDlet implements CommandListener, Runnable {
     private boolean m_bRunThread = false;
     private boolean m_bIsServer = false;
     
-    static final int MAX_TEXT_SIZE = 10000;
+    public static final int MAX_TEXT_SIZE = 10000;
     
-    static TextBox textBox;
-    static Display display;
+    public static TextBox textBox;
+    public static Display display;
     static TextBox input;
     static String userInput;
     static Object obj = new Object();

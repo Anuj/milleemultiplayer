@@ -1,3 +1,5 @@
+package millee.game.initialize;
+
 import javax.microedition.lcdui.StringItem;
 
 

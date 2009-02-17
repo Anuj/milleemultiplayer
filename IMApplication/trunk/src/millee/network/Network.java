@@ -1,3 +1,5 @@
+package millee.network;
+
 import java.util.Vector;
 
 import javax.microedition.io.StreamConnection;

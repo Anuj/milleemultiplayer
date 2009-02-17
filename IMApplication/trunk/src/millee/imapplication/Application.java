@@ -1,3 +1,4 @@
+package millee.imapplication;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.CommandListener;

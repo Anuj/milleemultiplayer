@@ -1,8 +1,14 @@
+package millee.imapplication;
+
 import javax.microedition.io.StreamConnection;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Form;
 import javax.microedition.lcdui.TextField;
+
+import millee.network.ClientServer;
+import millee.network.ReceiverThread;
+import millee.network.SenderThread;
 
 /** IMApplication is a sample application that allows for instant messaging over 
  * bluetooth between many phones.  Currently, this application supports IM between 
