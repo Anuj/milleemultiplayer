@@ -123,11 +123,11 @@ public class Round extends GameCanvas implements Runnable {
 	
 	public void start() {
 		
-		if (isServer)
-			network.send("blah");
-		else
-			network.receive();
-		
+		if (isServer) {
+			network.send("1");
+		} else {
+			localPlayer = Integer.parseInt(network.receiveNow());
+		}
 		
 		random = new Random();
 
@@ -151,19 +151,19 @@ public class Round extends GameCanvas implements Runnable {
 			for (int i = 0; i < numPlayers; i++) {
 				tmpImage = Image.createImage(playerImagePaths[i]);
 				players[i] = new Player(playerNames[i], tmpImage, (i == localPlayer));
-				if (i == localPlayer) {
+				if (isServer ) {
 					int x = random.nextInt(12);
 					int y = random.nextInt(11);
 					
 					System.out.println("x: " + String.valueOf(x));
-					
+					System.out.println("network: " + network);
 					network.send(String.valueOf(x));
 					network.send(String.valueOf(y));
 					
 					_grid.insertPlayer(players[i], x, y);
 				} else {
-					int x = Integer.parseInt(network.receive());
-					int y = Integer.parseInt(network.receive());
+					int x = Integer.parseInt(network.receiveNow());
+					int y = Integer.parseInt(network.receiveNow());
 					
 					_grid.insertPlayer(players[i], x, y);
 				}
@@ -178,127 +178,24 @@ public class Round extends GameCanvas implements Runnable {
 					network.send(String.valueOf(y));
 					_grid.insertGoodie(new Goodie(Goodie.TOMATO, tmpImage), x, y);
 				} else {
-					int x = Integer.parseInt(network.receive());
-					int y = Integer.parseInt(network.receive());
+					int x = Integer.parseInt(network.receiveNow());
+					int y = Integer.parseInt(network.receiveNow());
 					//network.send(String.valueOf(x));
 					//network.send(String.valueOf(y));
 					_grid.insertGoodie(new Goodie(Goodie.TOMATO, tmpImage), x, y);
 				}
 			}
 			
-			network.send("n");	// sent initially to avoid deadlock
+			//network.send("n");	// sent initially to avoid deadlock
 			
 		} catch (IOException e) {
 			System.err.println("Failed to gather image resources: " + e);
 		}
-			
-			
-			/*
-			
-			for (int i = 0; i<numPlayers; i++) {
-				
-				Image img = Image.createImage(playerImagePaths[i]);
-				
-				Player player = new Player(playerNames[i], img, (i == localPlayer));
-				_grid.insertPlayer(player);
-				
-				
-				players[i] = player;
-				layers.append(player.getSprite());
-				localPlayerX = player.getSprite().getX();
-				localPlayerY = player.getSprite().getY();
-				//System.out.println("playername: " + playe)
-			}
 			
 
-			
-		} catch (IOException e) {
-			System.err.println("Failed to gather image resources: " + e);
-		} catch (NullPointerException e) {
-			System.err.println("null pointer exception");
-		}
-		
-		
-		
-		_grid
-		
-		tiledLayer = new TiledLayer(TILE_WIDTH, TILE_HEIGHT, tiledImage, TILE_DIMENSIONS, TILE_DIMENSIONS);
-		
-		// Full grassy
-		for (int i = 0; i < TILE_HEIGHT; i++) {
-			for (int j = 0; j < TILE_WIDTH; j++) {
-				// Currently, cell can be one of two tiles (id: 1 or 2)
-				tiledLayer.setCell(j, i, 1);
-			}
-		}
-*/		
-		
-		// Create a sprite on top
-		/*flower = new Sprite(flowerImage);
-		flowerX = flower.getX();
-		flowerY = flower.getY();*/
-		
-		/*tomato = new Sprite(tomatoImage);
-		int tomatoX = random.nextInt(50);
-		int tomatoY = random.nextInt(100);*/
-		
-		//int tomatoX = random.nextInt(getWidth());
-		//int tomatoY = random.nextInt(getHeight());
-		
-		/*System.out.println("tomatoX: " + tomatoX + ", tomatoY: " + tomatoY);
-		tomato.setPosition(tomatoX, tomatoY);*/
-		
-		// Items get put on the screen in reverse order from how they were appended.
-		// (ie. The flower object is put on the screen last, so it becomes the top layer)
-		//layers.append(tomato);
-		//layers.append(flower);
-		//layers.append(tiledLayer);
 		
 		showNotify();
 	}
-	
-	/*private void sendReceive() {
-		SenderThread sendThread = null;
-		ReceiverThread recvThread = null;
-		StreamConnection[] streamConns;
-		ClientServer clientServer;
-		
-		if (isServer) {
-			System.out.println("before clientserver init");
-			clientServer = StartAGame.clientServer;
-			System.out.println("after clientserver init");
-			streamConns = clientServer.getStreamConnections();
-			System.out.println("after getStreamConnection(): " + streamConns);
-			sendThread = new SenderThread(streamConns);
-			System.out.println("after creating sendThread");
-			recvThread = new ReceiverThread(streamConns[0], sendThread, isServer);
-			System.out.println("after creating recvThread");
-			recvThread.start();
-			System.out.println("after starting recvThread");
-	    	sendThread.start();
-			System.out.println("after starting sendThread");
-
-		} else {
-			clientServer = JoinGame.clientServer;
-			streamConns = clientServer.getStreamConnections();
-			sendThread = new SenderThread(streamConns);
-			recvThread = new ReceiverThread(streamConns[0], sendThread, isServer);
-			recvThread.start();
-	    	sendThread.start();
-		}
-		
-		String msg = null;
-		msg = clientServer.receiveMessage(recvThread);
-		boolean exitFlag = false;
-		
-		while (!exitFlag) {
-			if ((msg = clientServer.receiveMessage(recvThread)) != null) {
-				System.out.println("msg received: " + msg);
-			}
-			
-			sendThread.sendMsg("sending: blah blah", new Integer(-1));
-		}
-	}*/
 	
 	public void showNotify() {
 		// Start this thread
@@ -342,23 +239,28 @@ public class Round extends GameCanvas implements Runnable {
 	private void checkRemotePlayerInput() {
 		if (stopGame) { return; }
 
-		for (int i = 1; i<numPlayers; i++) {
-			char command = getCommand(); // Is this supposed to be a hook into network stuff later?
-			switch (command) {
-				case 'u':
-					_grid.movePlayer(i, 0, -1);
-					break;
-				case 'd':
-					_grid.movePlayer(i, 0, 1);
-					break;
-				case 'r':
-					_grid.movePlayer(i, 1, 0);
-					break;
-				case 'l':
-					_grid.movePlayer(i, -1, 0);
-					break;
-				case 'n':
-					break;
+		for (int i = 0; i<numPlayers; i++) {
+			if (i != localPlayer) {
+				char command = getCommand(); // Is this supposed to be a hook into network stuff later?
+				while (command != 'n') {
+					switch (command) {
+						case 'u':
+							_grid.movePlayer(i, 0, -1);
+							break;
+						case 'd':
+							_grid.movePlayer(i, 0, 1);
+							break;
+						case 'r':
+							_grid.movePlayer(i, 1, 0);
+							break;
+						case 'l':
+							_grid.movePlayer(i, -1, 0);
+							break;
+						case 'n':
+							break;
+					}
+					command = getCommand();
+				}
 			}
 		}
 	}
@@ -380,30 +282,13 @@ public class Round extends GameCanvas implements Runnable {
 			_grid.movePlayer(localPlayer, 1, 0);
 			command = "r";
 		}
-		
-		// Moved collision detection to GameGrid
-		/*
-		for (int i = 0; i < numPlayers; i++) {
-			for (int j = 0; j<this.totalNumTokensToDisplay; j++) {
-				if (players[i].getSprite().collidesWith( this.tokenSprites[j], true)) {
-					this.tokenSprites[j].setVisible(false);
-					players[i].finishedRound();
-				}
-			}
-		}
-		*/
-		/*if (flower.collidesWith(tomato, true)) {
-			stopGame = true;
-			System.out.println("want to stop the game");
-		}*/
 	}
 
 	private void updateGameScreen(Graphics g) {
 		
-		if (command == "")
-			command = "n";
-		network.send(command);
-		command = "";
+		if (command != "")
+			network.send(command);
+			command = "";
 		
 		if (stopGame) {
 			
@@ -414,25 +299,16 @@ public class Round extends GameCanvas implements Runnable {
 			g.drawString("COLLISION!!", getWidth()/2, getHeight()/2, g.TOP | g.LEFT);
 		
 		} else {
-			// Move the flower
-			//flower.move(1, 1);
-			//flower.setPosition(flowerX, flowerY);
-			//players[localPlayer].getSprite().setPosition(localPlayerX, localPlayerY);
-			// Affect the tiled layer in a random way
-			//tiledLayer.setCell(random.nextInt(TILE_WIDTH), random.nextInt(TILE_HEIGHT), random.nextInt(2)+1);
-			
 			// Redraw with the LayerManager
 			_grid.redraw(graphics);
-			//layers.paint(graphics, 0, getHeight()-(TILE_HEIGHT*TILE_DIMENSIONS));
-			// this call paints off screen buffer to screen
 		}
 		flushGraphics();
 
 	}
 
 	private char getCommand() {
-		String command = network.receive();
-		return command.charAt(0);
+		String command = network.receiveLater();
+		return (command == null) ? 'n' : command.charAt(0);
 	}
 	
 }

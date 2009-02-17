@@ -58,6 +58,7 @@ public class Network implements Runnable {
         			}
         		}
             	
+            	System.out.println("finished connecting...");
             	
         		if (isServer) {
         			streamConns = clientServer.getStreamConnections();
@@ -77,8 +78,6 @@ public class Network implements Runnable {
             } catch (Exception ex) {
                 System.out.println(ex.getMessage());
             }
- 
-        // }
 	}
 	
 	public void send(String msg) {
@@ -86,16 +85,28 @@ public class Network implements Runnable {
 		sendThread.sendMsg(finalMsg, new Integer(-1));
 	}
 	
-	public String receive() {
+	/** Blocks until a msg is received */
+	public String receiveNow() {
 		String msg = null;
 		
 		while (msg == null) {
 			if ((msg = clientServer.receiveMessage(recvThread)) != null) {
-				System.out.println("msg received: " + msg);
 				msg = msg.substring(0, msg.length()-1);
+				System.out.println("msg received: " + msg);
 			}
 		}
 		
+		return msg;
+	}
+	
+	/** Sends a msg back if it's available, but doesn't block */
+	public String receiveLater() {
+		String msg = null;
+		
+		if ((msg = clientServer.receiveMessage(recvThread)) != null) {
+			System.out.println("msg received: " + msg);
+			msg = msg.substring(0, msg.length()-1);
+		}
 		return msg;
 	}
 	
