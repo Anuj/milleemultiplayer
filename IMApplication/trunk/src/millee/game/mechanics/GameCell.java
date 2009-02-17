@@ -45,5 +45,9 @@ public class GameCell {
 		_item.sprite.setVisible(false);
 		_item = null;
 	}
+	
+	public Goodie getGoodie() {
+		return _item;
+	}
 
 }

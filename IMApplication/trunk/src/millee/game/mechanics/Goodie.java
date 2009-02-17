@@ -24,6 +24,9 @@ public class Goodie {
 	}
 	
 	public static int TOMATO = 1;
+	public static int ORANGE = 2;
+	public static int GRAPE = 3;
+	public static int BANANA = 4;
 	
 	// Maybe include types by color?
 	

@@ -19,6 +19,9 @@ public class Player {
 	// Sprite must have its own coordinates
 	protected Sprite sprite;
 	
+	// Assigned color to collect
+	private int _color;
+	
 	public Player(String name, Image avatar, boolean localPlayer) {
 		
 		random = new Random();
@@ -86,5 +89,14 @@ public class Player {
 	
 	public void finishedRound() {
 		this.finishedRound = true;
+	}
+	
+	// Get and set this player's assigned color
+	public void setColor(int color) {
+		_color = color;
+	}
+	
+	public int assignedColor() {
+		return _color;
 	}
 }

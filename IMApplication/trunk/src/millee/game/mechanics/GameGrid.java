@@ -63,6 +63,9 @@ public class GameGrid {
 		p.y = cellY;
 		p.sprite.setPosition(_tileDimensions*cellX, _tileDimensions*cellY);
 		
+		// TODO: Have this player's color set some other way
+		p.setColor(Goodie.TOMATO);
+		
 		_players.addElement(p);
 		_layers.insert(p.sprite, 0);
 	}
@@ -87,9 +90,10 @@ public class GameGrid {
 		//System.out.println("P: " + p.x + ", " + p.y);
 		p.sprite.setPosition(_tileDimensions*p.x, _tileDimensions*p.y);
 		
+		GameCell c = _cells[p.y][p.x];
 		// Now check for 'collisions'
-		if (_cells[p.y][p.x].hasGoodie()) {
-			_cells[p.y][p.x].unsetGoodie();
+		if (c.hasGoodie() && p.assignedColor() == c.getGoodie().getType()) {
+			c.unsetGoodie();
 		}
 	}
 	
