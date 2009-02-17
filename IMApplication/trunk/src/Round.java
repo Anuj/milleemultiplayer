@@ -75,6 +75,9 @@ public class Round extends GameCanvas implements Runnable {
 	int localPlayer;
 	boolean isServer;
 	Network network;
+	int nonce;
+	
+	String playerName, playerImagePath;
 	
 	/* Static Variables */
 	int[] scores;
@@ -87,7 +90,34 @@ public class Round extends GameCanvas implements Runnable {
 	
 	int localPlayerX, localPlayerY;
 	
-	public Round (int localPlayer, int numPlayers, int round, int level, boolean lastRoundInLevel, String levelName, String[] playerNames, String[] playerImagePaths,
+	public Round (int numPlayers, String backgroundPath, int round, int level, boolean lastRoundInLevel, 
+					String levelName, String playerName, String playerImagePath, int[] scoreAssignment,
+					String[] possibleTokenPaths, String[] possibleTokenText, int totalNumTokensToDisplay,
+					boolean isServer, Network network) {
+		super(true);
+		
+		this.numPlayers = numPlayers;
+		this.round = round;
+		this.level = level;
+		this.lastRoundInLevel = lastRoundInLevel;
+		this.levelName = levelName;
+		this.scoreAssignment = scoreAssignment;
+		this.backgroundPath = backgroundPath;
+		this.possibleTokenPaths = possibleTokenPaths;
+		this.possibleTokenText = possibleTokenText;
+		this.totalNumTokensToDisplay = totalNumTokensToDisplay;
+		this.isServer = isServer;
+		this.playerName = playerName;
+		this.playerImagePath = playerImagePath;
+		
+		this.network = network;
+		
+		tokenSprites = new Sprite[totalNumTokensToDisplay];
+		players = new Player[numPlayers];
+		
+	}
+	
+	/*public Round (int localPlayer, int numPlayers, int round, int level, boolean lastRoundInLevel, String levelName, String[] playerNames, String[] playerImagePaths,
 					int[] scoreAssignment, String backgroundPath, String[] possibleTokenPaths, String[] possibleTokenText,
 					int totalNumTokensToDisplay, boolean isServer, Network network){
 		super( true );
@@ -112,7 +142,7 @@ public class Round extends GameCanvas implements Runnable {
 		//playerSprites = new Sprite[numPlayers];
 		tokenSprites = new Sprite[totalNumTokensToDisplay];
 		players = new Player[numPlayers];
-	}
+	}*/
 	
 	public Command getOkCommand() {
 		return this.okCmd;
@@ -122,28 +152,97 @@ public class Round extends GameCanvas implements Runnable {
 		return this.exitCmd;
 	}
 	
-	public void start() {
+	public void initialize() {
+
+		try {
+			Image tmpImage = null;
 		
-		if (isServer) {
-			network.send("1");
-		} else {
-			localPlayer = Integer.parseInt(network.receiveNow());
+			if (!isServer) {
+				nonce = random.nextInt(100);
+				network.send(String.valueOf(nonce));
+				network.send(playerName);
+				network.send(playerImagePath);	// character image path
+			}
+
+			
+			tmpImage = Image.createImage(backgroundPath);
+			// TODO: Eliminate hard-coding of grid dimensions
+			_grid = new GameGrid(12, 11, tmpImage, 15);
+			
+			for (int i = 0; i < numPlayers; i++) {
+				String playerImagePath, playerName;
+				if (isServer) {
+					if (i == 0) {
+						localPlayer = i;
+						playerImagePath = this.playerImagePath;
+						playerName = this.playerName;
+						nonce = random.nextInt(100);
+					} else {
+						nonce = Integer.parseInt(network.receiveNow());
+						playerName = network.receiveNow();
+						playerImagePath = network.receiveNow();
+					}
+				
+					tmpImage = Image.createImage(playerImagePath);
+					players[i] = new Player(playerName, tmpImage, (i == 0));
+					
+					int x = random.nextInt(12);
+					int y = random.nextInt(11);
+					
+					_grid.insertPlayer(players[i], x, y);
+					
+					network.send(String.valueOf(nonce));
+					network.send(String.valueOf(i));
+					network.send(playerName);
+					network.send(playerImagePath);
+					network.send(String.valueOf(x));
+					network.send(String.valueOf(y));
+				}
+				else {
+
+					int nonce = Integer.parseInt(network.receiveNow());
+					int num = Integer.parseInt(network.receiveNow());
+					playerName = network.receiveNow();
+					playerImagePath = network.receiveNow();
+					int x = Integer.parseInt(network.receiveNow());
+					int y = Integer.parseInt(network.receiveNow());
+					
+					if (this.playerName.equals(playerName) && nonce == this.nonce) {
+						localPlayer = i;
+					}
+					
+					tmpImage = Image.createImage(playerImagePath);
+					players[i] = new Player(playerName, tmpImage, (i == 0));
+					
+					_grid.insertPlayer(players[i], x, y);
+				}
+				
+			}
+			
+			for (int i = 0; i<totalNumTokensToDisplay; i++) {
+				tmpImage = Image.createImage(this.possibleTokenPaths[random.nextInt(4)]);
+				if (isServer) {
+					int x = random.nextInt(12);
+					int y = random.nextInt(11);
+					network.send(String.valueOf(x));
+					network.send(String.valueOf(y));
+					_grid.insertGoodie(new Goodie(Goodie.TOMATO, tmpImage), x, y);
+				} else {
+					int x = Integer.parseInt(network.receiveNow());
+					int y = Integer.parseInt(network.receiveNow());
+					//network.send(String.valueOf(x));
+					//network.send(String.valueOf(y));
+					_grid.insertGoodie(new Goodie(Goodie.TOMATO, tmpImage), x, y);
+				}
+			}
+			
+		} catch (IOException e) {
+			System.err.println("Failed to gather image resources: " + e);
 		}
 		
-		random = new Random();
-
-		graphics = getGraphics();
-		graphics.setColor( 0,  0, 0 );
-		graphics.fillRect( 0, 0, getWidth(), getHeight() );
 		
-		// Set up the layer manager and the first tiled layer
-		//layers = new LayerManager();
+		/*
 		
-		Image tmpImage = null;
-		
-		
-		
-		// Loading and using images to build grid
 		try {
 			tmpImage = Image.createImage(backgroundPath);
 			// TODO: Eliminate hard-coding of grid dimensions
@@ -191,9 +290,27 @@ public class Round extends GameCanvas implements Runnable {
 			
 		} catch (IOException e) {
 			System.err.println("Failed to gather image resources: " + e);
-		}
-			
+		}*/
+		
+	}
+	
+	public void start() {
+		
+		random = new Random();
 
+		graphics = getGraphics();
+		graphics.setColor( 0,  0, 0 );
+		graphics.fillRect( 0, 0, getWidth(), getHeight() );
+		
+		// Set up the layer manager and the first tiled layer
+		//layers = new LayerManager();
+		
+		
+		
+		// Loading and using images to build grid
+		
+		// initialize all players and tokens on the board
+		initialize();
 		
 		showNotify();
 	}

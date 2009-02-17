@@ -7,7 +7,7 @@ import javax.microedition.io.StreamConnection;
 
 public class Network implements Runnable {
 	
-	ClientServer clientServer = null;
+	public ClientServer clientServer = null;
 	private boolean m_bRunThread = true;
 	private boolean isServer;
 	private int numClients;
@@ -17,6 +17,7 @@ public class Network implements Runnable {
 	StreamConnection[] streamConns;
 	
 	public Object connected = new Object();
+	public boolean isConnected = false;
 	
 	public Network () {
 		
@@ -62,6 +63,11 @@ public class Network implements Runnable {
             	
             	System.out.println("finished connecting...");
             	
+            	/*synchronized(connected) {
+            		connected.notifyAll();
+				}*/
+            	isConnected = true;
+            	
         		if (isServer) {
         			streamConns = clientServer.getStreamConnections();
         			sendThread = new SenderThread(streamConns);
@@ -84,6 +90,7 @@ public class Network implements Runnable {
 	
 	public void send(String msg) {
 		String finalMsg = msg.concat("\0");
+		System.out.println("Sending: " + msg);
 		sendThread.sendMsg(finalMsg, new Integer(-1));
 	}
 	
@@ -94,7 +101,7 @@ public class Network implements Runnable {
 		while (msg == null) {
 			if ((msg = clientServer.receiveMessage(recvThread)) != null) {
 				msg = msg.substring(0, msg.length()-1);
-				System.out.println("msg received: " + msg);
+				System.out.println("Received: " + msg);
 			}
 		}
 		

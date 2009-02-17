@@ -77,6 +77,24 @@ public class JoinGame extends Screen implements Runnable {
         thread.start();
         
         /*try {
+			// need to manually wait for client to be connected to server
+			// because client doesn't block until it's connected.
+			synchronized(network.clientServer.connected) {
+				network.clientServer.connected.wait();
+			}
+        } catch (Exception e) {
+			e.printStackTrace();
+		}*/
+        
+        /*while (network.isConnected != true) {
+        	try {
+        		Thread.sleep(150);
+        	} catch ( InterruptedException e ){
+        		e.printStackTrace();
+			}
+        }*/
+        
+        /*try {
 	        synchronized(network.connected) {
 	        	System.out.println("synchronized waiting for netwrk.connected");
 				network.connected.wait();

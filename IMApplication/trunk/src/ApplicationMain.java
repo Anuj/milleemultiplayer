@@ -61,7 +61,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 		chooseGame.setCommandListener(this);
 		joinGame = new JoinGame ("Join a Game", network);		
 		joinGame.setCommandListener(this);
-		levelStartPage = new LevelStartPage("Level 1", network);
+		levelStartPage = new LevelStartPage("Level 1", network, this.characterChoice, isServer);
 		levelStartPage.setCommandListener(this);
 
 		startOrJoinGame = new StartOrJoinGame("Start or join a game?");
@@ -144,7 +144,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 			} else if (numRoundsLeft <= 0) {	// end of current level
 				game.hideNotify();
 				numRoundsLeft = NUM_ROUNDS;
-				levelStartPage = new LevelStartPage("Level 1", network);
+				levelStartPage = new LevelStartPage("Level 1", network, this.characterChoice, isServer);
 				levelStartPage.setCommandListener(this);
 				//network.sendReceive();
 				display.setCurrent(levelStartPage);
@@ -197,9 +197,11 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 		possibleTokenText[3] = "Yellow";
 		
 		
+		Round game = new Round(2, "/tiles.png", numRoundsLeft, numLevelsLeft, false, "Colours", "Raj", "/dancer_small.png",
+								scoreAssignment, possibleTokenPaths, possibleTokenText, 4, isServer, network);
 		
-		Round game = new Round(0, 2, numRoundsLeft, numLevelsLeft, false, "Colours", playerNames, playerImagePaths, 
-								scoreAssignment, "/tiles.png", possibleTokenPaths, possibleTokenText, 4, isServer, network);
+		//Round game = new Round(0, 2, numRoundsLeft, numLevelsLeft, false, "Colours", playerNames, playerImagePaths, 
+		//						scoreAssignment, "/tiles.png", possibleTokenPaths, possibleTokenText, 4, isServer, network);
 		game.setCommandListener(this);
 		return game;
 	}
