@@ -4,6 +4,8 @@ import java.util.Vector;
 
 import javax.microedition.io.StreamConnection;
 
+import millee.game.ApplicationMain;
+
 
 public class Network implements Runnable {
 	
@@ -19,8 +21,10 @@ public class Network implements Runnable {
 	public Object connected = new Object();
 	public boolean isConnected = false;
 	
-	public Network () {
-		
+	private ApplicationMain _app;
+	
+	public Network (ApplicationMain am) {
+		_app = am;
 	}
 	
 	public void initializeNetwork(boolean isServer, int numClients) {
@@ -46,6 +50,8 @@ public class Network implements Runnable {
             	
             	if (isServer) {
         			//this.numClients = numClients;
+            		
+            		// Blocks until it connects to numClients
         			clientServer.InitServer(numClients);
         		} else {
         			System.out.println("about to initClient()");
@@ -92,6 +98,17 @@ public class Network implements Runnable {
 		String finalMsg = msg.concat("\0");
 		System.out.println("Sending: " + msg);
 		sendThread.sendMsg(finalMsg, new Integer(-1));
+	}
+	
+	// Send a 'private' message to one client only
+	public void send(int clientID, String msg) {
+		// TODO: Fill in
+	}
+	
+	// Send a message to ALL CONNECTED CLIENTS
+	public void broadcast(String msg) {
+		// TODO: Fill in
+		this.send(msg);
 	}
 	
 	/** Blocks until a msg is received */

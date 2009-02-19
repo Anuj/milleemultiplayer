@@ -1,6 +1,4 @@
 package millee.imapplication;
-import ApplicationMain;
-import Round;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,6 +8,10 @@ import javax.microedition.midlet.MIDlet;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+
+import millee.game.ApplicationMain;
+import millee.game.Round;
+
 import org.xml.sax.*;
 
 import javax.xml.parsers.*;

@@ -1,4 +1,6 @@
+package millee.game;
 import java.io.IOException;
+import java.util.Vector;
 
 import javax.microedition.lcdui.Choice;
 import javax.microedition.lcdui.ChoiceGroup;
@@ -47,11 +49,13 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 	StartAGame startAGame;
 	Network network;
 	
+	private Vector _players;
+	
 	public ApplicationMain () {
 		theDisplay = display = Display.getDisplay(this);
 		
 
-		network = new Network();
+		network = new Network(this);
 		
 		charForm = new ChooseCharacter("Choose your character");
 		charForm.setCommandListener(this);
@@ -112,8 +116,8 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 		} else if (c == startOrJoinGame.okCommand()){
 			if (startOrJoinGame.getListSelection() == 0) {
 				isServer = true;
-				startAGame.startServer();
 				display.setCurrent(startAGame);
+				_players = startAGame.setupNetworkPlayers("Raj", "/dancer_small.png");
 			} else {
 				isServer = false;
 				display.setCurrent(chooseGame);
@@ -197,7 +201,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 		possibleTokenText[3] = "Yellow";
 		
 		
-		Round game = new Round(2, "/tiles.png", numRoundsLeft, numLevelsLeft, false, "Colours", "Raj", "/dancer_small.png",
+		Round game = new Round(_players, "/tiles.png", numRoundsLeft, numLevelsLeft, false, "Colours",
 								scoreAssignment, possibleTokenPaths, possibleTokenText, 4, isServer, network);
 		
 		//Round game = new Round(0, 2, numRoundsLeft, numLevelsLeft, false, "Colours", playerNames, playerImagePaths, 

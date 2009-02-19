@@ -1,3 +1,4 @@
+package millee.game;
 
 
 import javax.microedition.lcdui.StringItem;

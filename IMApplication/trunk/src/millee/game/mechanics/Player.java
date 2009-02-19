@@ -21,11 +21,12 @@ public class Player {
 	
 	// Assigned color to collect
 	private int _color;
+	private int _id;
 	
-	public Player(String name, Image avatar, boolean localPlayer) {
-		
+	public Player(String name, Image avatar, int id) {
 		random = new Random();
 		
+		this._id = id;
 		this.name = name;
 		this.localPlayer = localPlayer;
 		this.finishedRound = false;
@@ -33,13 +34,12 @@ public class Player {
 		sprite = new Sprite(avatar);
 	}
 	
-	protected int getInitialXPosition() {
-		return random.nextInt(12);
+	/** Avoid using this
+	public void setPosition(int inX, int inY) {
+		this.x = inX;
+		this.y = inY;
 	}
-	
-	protected int getInitialYPosition() {
-		return random.nextInt(11);
-	}
+	*/
 	
 //	public void interpretMove() {
 //		if (!finishedRound) {

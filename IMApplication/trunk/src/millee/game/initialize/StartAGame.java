@@ -1,6 +1,7 @@
 package millee.game.initialize;
 
 import java.io.IOException;
+import java.util.Vector;
 
 import javax.microedition.io.StreamConnection;
 import javax.microedition.lcdui.Choice;
@@ -11,19 +12,23 @@ import javax.microedition.lcdui.Form;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.StringItem;
 
+import millee.game.mechanics.GameGrid;
+import millee.game.mechanics.Player;
 import millee.network.ClientServer;
 import millee.network.Network;
 import millee.network.ReceiverThread;
 import millee.network.SenderThread;
 
 
-public class StartAGame extends Screen implements Runnable {
+public class StartAGame extends Screen {
 	
 	public static ClientServer clientServer;
 	private boolean m_bRunThread = false;
 	private boolean m_bIsServer = true, isServer = true;
 	private Network network;
-	    
+	
+	private static final int NUMCLIENTS = 1;
+	
 	
 	public StartAGame(String title, Network network) {
 		super(title);
@@ -37,10 +42,9 @@ public class StartAGame extends Screen implements Runnable {
         
 	}
 	
-	public void startServer() {
-		
+	public Vector setupNetworkPlayers(String myName, String myImagePath) {
 		//Network network = new Network();
-		network.initializeNetwork(true, 1);
+		network.initializeNetwork(true, NUMCLIENTS);
 		
 		Thread thread = new Thread(network);
         thread.start();
@@ -53,16 +57,40 @@ public class StartAGame extends Screen implements Runnable {
         	e.printStackTrace();
         }*/
         
-        System.out.println("server connected!");
-    	
+        System.out.println("Server on!");       
+        
+        
+        Vector newPlayers = new Vector();
+        Image tmpImage = null; 
+        
+        // Set up our own local player first
+        tmpImage = Utilities.createImage(myImagePath);
+        newPlayers.addElement(new Player(myName, tmpImage, 0));
+		
+		// Poll the network to build up client's player data
+        String playerImagePath, playerName;
+		for (int i = 1; i <= NUMCLIENTS; i++) {
+			playerName = network.receiveNow(); // Blocks until the messages arrive
+			playerImagePath = network.receiveNow();
+			tmpImage = Utilities.createImage(playerImagePath);
+			newPlayers.addElement(new Player(playerName, tmpImage, i));
+			
+			// Now to tell the new player their ID:
+			network.send(i, String.valueOf(i));
+		}
+		
     	this.append("All the clients have connected.");
     	this.append("Choose START to begin the game");
     	this.addCommand(startCommand);
     	
-        
+    	return newPlayers;
 	}
-
+	
 	public void run() {
+		
+		
+		
+		/** DEAD CODE
 		int numClients = 1;
         //while (m_bRunThread) {
             try {
@@ -71,7 +99,7 @@ public class StartAGame extends Screen implements Runnable {
                 /*if (app == null) {
                 	app = new IMApplication(m_bIsServer, 1);
                 	//exitMIDlet();
-                }*/
+                }
             	
             	clientServer = new ClientServer(isServer, numClients);
             	if (isServer) {
@@ -106,6 +134,8 @@ public class StartAGame extends Screen implements Runnable {
             }
             
         //}
+         * 
+         */
 	}
 	
 	private void sendReceive() {
