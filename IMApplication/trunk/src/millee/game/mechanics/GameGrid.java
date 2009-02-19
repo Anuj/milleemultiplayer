@@ -35,6 +35,8 @@ public class GameGrid {
 	// Utility variables
 	private Random random;
 	
+	private int _nGoodies = 0;
+	
 	// Builds the game world and prepares to draw it
 	public GameGrid(int width, int height, Image backgroundImage, int tileDimensions) {
 		_width = width;
@@ -78,6 +80,7 @@ public class GameGrid {
 		
 		_cells[cellY][cellX].setGoodie(g);
 		_layers.insert(g.sprite, 0);
+		_nGoodies++;
 	}
 	
 	// Moves one player character in terms of cells
@@ -94,12 +97,27 @@ public class GameGrid {
 		// Now check for 'collisions'
 		if (c.hasGoodie() && p.assignedColor() == c.getGoodie().getType()) {
 			c.unsetGoodie();
+			_nGoodies--;
 		}
 	}
 	
 	// Tells the entire grid to redraw itself, players and all
 	public void redraw(Graphics g) {
 		_layers.paint(g, 0, 0);
+	}
+	
+	public boolean isWon() {
+		return (_nGoodies == 0);
+		/* Dumb search
+		for (int i = 0; i < _height; i++) {
+			for (int j = 0; j < _width; j++) {
+				if (_cells[i][j].hasGoodie()) {
+					return false;
+				}
+			}
+		}
+		return true;
+		*/
 	}
 
 }
