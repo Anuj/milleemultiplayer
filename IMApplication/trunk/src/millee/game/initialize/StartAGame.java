@@ -28,17 +28,16 @@ public class StartAGame extends Screen {
 	private Network network;
 
 	// TODO: move NUMCLIENTS + setupPlayers code elsewhere
-	public static final int NUMCLIENTS = 2;
+	public static final int NUMCLIENTS = 3;
 	
 	
 	public StartAGame(String title, Network network) {
 		super(title);
 		
-		StringItem str = new StringItem("", "Starting a game...");
-        
 		this.network = network;
 		
-		this.append(str);
+		this.append("Started a game...");
+		this.append("Waiting for players to join");
         this.addCommand(backCommand);
         
 	}

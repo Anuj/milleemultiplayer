@@ -129,11 +129,16 @@ public class ClientServer implements DiscoveryListener {
 	    	sendThread.start();*/
 
 		} else {
+			recvThreads = new ReceiverThread[1];
 			System.out.println("for the client");
 			//streamConns = clientServer.getStreamConnections();
 			//sendThread = new SenderThread(streamConns);
+			System.out.println(streamConnections);
+			System.out.println(streamConnections[0]);
+			System.out.println(senderThread);
 			ReceiverThread recv = new ReceiverThread(streamConnections[0], senderThread, isServer, 0);
 			//recvThread = new ReceiverThread(streamConns[0], sendThread, isServer);
+			System.out.println(recv);
 			recv.start();
 			recvThreads[0] = recv;
 			System.out.println("after starting the receiver Thread");

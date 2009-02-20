@@ -72,6 +72,7 @@ public class Network implements Runnable {
             	
             	isConnected = true;
             	
+            	System.out.println("_app: " + _app);
             	_app.fullyConnected();
             	
             	/*

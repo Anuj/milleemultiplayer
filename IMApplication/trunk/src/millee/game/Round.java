@@ -125,33 +125,6 @@ public class Round extends GameCanvas implements Runnable {
 		
 	}
 	
-	/*public Round (int localPlayer, int numPlayers, int round, int level, boolean lastRoundInLevel, String levelName, String[] playerNames, String[] playerImagePaths,
-					int[] scoreAssignment, String backgroundPath, String[] possibleTokenPaths, String[] possibleTokenText,
-					int totalNumTokensToDisplay, boolean isServer, Network network){
-		super( true );
-		
-		this.localPlayer = localPlayer;
-		this.numPlayers = numPlayers;
-		this.round = round;
-		this.level = level;
-		this.lastRoundInLevel = lastRoundInLevel;
-		this.levelName = levelName;
-		this.playerNames = playerNames;
-		this.playerImagePaths = playerImagePaths;
-		this.scoreAssignment = scoreAssignment;
-		this.backgroundPath = backgroundPath;
-		this.possibleTokenPaths = possibleTokenPaths;
-		this.possibleTokenText = possibleTokenText;
-		this.totalNumTokensToDisplay = totalNumTokensToDisplay;
-		this.isServer = isServer;
-		
-		this.network = network;
-		
-		//playerSprites = new Sprite[numPlayers];
-		tokenSprites = new Sprite[totalNumTokensToDisplay];
-		players = new Player[numPlayers];
-	}*/
-	
 	public Command getOkCommand() {
 		return this.okCmd;
 	}
@@ -309,6 +282,7 @@ public class Round extends GameCanvas implements Runnable {
 			//verifyGameState();
 			if (_grid.isWon()) {
 				stopGame = true;
+				System.out.println("Game has ended");
 				//break;
 			}
 			if (!stopGame) {

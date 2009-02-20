@@ -107,7 +107,7 @@ public class JoinGame extends Screen implements Runnable {
 
     	//this.append("All the clients have connected.");
     	//this.append("Choose START to begin the game");
-    	this.addCommand(startCommand);
+    	//this.addCommand(startCommand);
     	
         
         //m_bRunThread = true;

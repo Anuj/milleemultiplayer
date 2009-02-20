@@ -18,8 +18,9 @@ public class LevelStartPage extends Screen {
 	
 	Network network;
 	int characterChoice;
+	private ApplicationMain _app;
 
-	public LevelStartPage(String title, Network network, int characterChoice, boolean isServer, String myName, String myImagePath) {
+	public LevelStartPage(String title, Network network, int characterChoice, boolean isServer, String myName, String myImagePath, ApplicationMain app) {
 		super(title);
 		// TODO Auto-generated constructor stub
 		
@@ -30,106 +31,11 @@ public class LevelStartPage extends Screen {
 		this.network = network;
 		//network.sendReceive();
 		
+		this._app = app;
 		
 		this.append(str);
 		this.append(str2);
+		this.addCommand(startCommand);
 		this.addCommand(exitCommand);
-		
-		System.out.println("in levelstartpage");
-		
-		if (isServer) {
-			this.append("All clients are connected.  Press START to begin the game");
-			this.addCommand(startCommand);
-			System.out.println("after adding command");
-		} else {
-			this.addCommand(startCommand);
-			this.append("All clients are connected.  Waiting for server to start the game");
-			//sendPlayerInfo(myName, myImagePath);
-		}
 	}
-	
-	public Vector setupPlayers(String myName, String myImagePath) {
-		 System.out.println("Server on!");       
-	        
-	        
-	        Vector newPlayers = new Vector();
-	        Image tmpImage = null; 
-	        StringBuffer initialBroadcast = new StringBuffer("");
-	        
-	        // Set up our own local player first
-	        tmpImage = Utilities.createImage(myImagePath);
-	        newPlayers.addElement(new Player(myName, tmpImage, 0, -1));
-			
-	        initialBroadcast.append(0);
-			initialBroadcast.append(",");
-			initialBroadcast.append(myName);
-			initialBroadcast.append(",");
-			initialBroadcast.append(myImagePath);
-			initialBroadcast.append(";");
-			
-			// Poll the network to build up client's player data
-	        String playerImagePath, playerName;
-	        Message msg;
-	       
-			for (int i = 1; i <= StartAGame.NUMCLIENTS; i++) {
-				//System.out.println("beginning of for loop at iteration: " + i);
-				initialBroadcast.append(i);
-				initialBroadcast.append(",");
-				msg = network.receiveNow(); // Blocks until the messages arrive
-				playerName = msg.msg();
-				initialBroadcast.append(playerName);
-				initialBroadcast.append(",");
-				//System.out.println("playerName = " + playerName);
-				msg = network.receiveNow();
-				playerImagePath = msg.msg();
-				initialBroadcast.append(playerImagePath);
-				initialBroadcast.append(";");
-				//System.out.println("playerImagePath = " + playerImagePath);
-				
-				tmpImage = Utilities.createImage(playerImagePath);
-				newPlayers.addElement(new Player(playerName, tmpImage, i, msg.recipient()));
-				
-				// Now to tell the new player their ID:
-				network.send(msg.recipient(), String.valueOf(i));
-			}
-			
-			network.broadcast(initialBroadcast.toString());
-			
-			
-			
-			
-	    	//this.append("All the clients have connected.");
-	    	//this.append("Choose START to begin the game");
-	    	//this.addCommand(startCommand);
-	    	
-	    	return newPlayers;
-	}
-	
-	/** Only used by clients.  They only have 1 connection, at index 0 */
-	public int sendPlayerInfo(String myName, String myImagePath) {
-		network.broadcast(myName);
-		network.broadcast(myImagePath);
-		
-		return Integer.parseInt(network.receiveNow().msg());
-		// need to save this to the player at some point and pass into Round
-	}
-	
-	public Vector createPlayersByClients() {
-		Vector players = new Vector();
-		Message initialMessage = network.receiveNow();
-		String[] sPlayers = Utilities.split(initialMessage.msg(), ";", 0);
-		String[] playerInfo = null;
-		Player tmpPlayer = null;
-		
-		for (int i = 0; i<sPlayers.length; i++) {
-			playerInfo = Utilities.split(sPlayers[i], ",", 3);
-			tmpPlayer = new Player(playerInfo[1], Utilities.createImage(playerInfo[2]), Integer.parseInt(playerInfo[0]), 0);
-			players.addElement(tmpPlayer);
-		}
-		
-		return players;
-		
-		
-	}
-
 }

@@ -20,6 +20,7 @@ import millee.game.initialize.StartAGame;
 import millee.game.initialize.StartOrJoinGame;
 import millee.game.initialize.StartScreen;
 import millee.game.initialize.WinnerScreen;
+import millee.network.Message;
 import millee.network.Network;
 /**
  * @author Priyanka
@@ -50,6 +51,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 	StartOrJoinGame startOrJoinGame;
 	StartAGame startAGame;
 	Network network;
+	InitialLevelPage initialLevelPage;
 	
 	private Vector _players;
 	
@@ -99,6 +101,8 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 	
 	public void commandAction(Command c, Displayable d) {
         
+		System.out.println("start of commandAction method");
+		
 		if (c == startScreen.startCommand()) {
 			
 			// TODO: Reverse these blocks so that the intro screens are shown
@@ -124,7 +128,11 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 				_players = startAGame.setupNetworkPlayers(myName, myImagePath);
 			} else {
 				isServer = false;
-				display.setCurrent(chooseGame);
+				joinGame.setCharacterChoice(characterChoice);
+				joinGame.setGameChoice(gameChoice);
+				joinGame.initClient();
+				display.setCurrent(joinGame);
+				//display.setCurrent(chooseGame);
 			}
 		} /*else if (c == startAGame.startCommand()) {
 
@@ -132,21 +140,23 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 			levelStartPage.setCommandListener(this);
 			display.setCurrent(levelStartPage);
 			
-		}*/ else if (c == chooseGame.okCommand()) {
+		}*/ /*else if (c == chooseGame.okCommand()) {
 			gameChoice = chooseGame.getListSelection();
 			joinGame.setCharacterChoice(characterChoice);
 			joinGame.setGameChoice(gameChoice);
 			joinGame.initClient();
 			display.setCurrent(joinGame);
-		} else if (c == joinGame.startCommand()) {
+		}*/ /*else if (c == joinGame.startCommand()) {
 			//network.sendReceive();
 
-			levelStartPage = new LevelStartPage("Level 1", network, this.characterChoice, false, myName, myImagePath);
+			levelStartPage = new LevelStartPage("Level 1", network, this.characterChoice, false, myName, myImagePath, this);
 			levelStartPage.setCommandListener(this);
 			display.setCurrent(levelStartPage);
 			localPlayerId = levelStartPage.sendPlayerInfo(myName, myImagePath);
 			_players = levelStartPage.createPlayersByClients();
-		} else if (c == levelStartPage.startCommand()) {
+		}*/ 
+		else if (c == initialLevelPage.startCommand()) {
+			network.broadcast("go");
 			System.out.println("before creating new round");
 			game = createNewRound();
 			System.out.println("after creating new round");
@@ -157,7 +167,9 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 			System.out.println("after starting game");
 			
 			display.setCurrent(game);
-		} else if (c == game.okCmd) {
+		}
+		 else if (c == game.getOkCommand()) {
+			System.out.println("start of game.okCmd");
 			numRoundsLeft--;
 			System.out.println("numLevelsLeft: " + numLevelsLeft + ", numRoundsLeft: " + numRoundsLeft);
 			if (numLevelsLeft <= 0 && numRoundsLeft <= 0) {		// end of game
@@ -165,7 +177,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 			} else if (numRoundsLeft <= 0) {	// end of current level
 				game.hideNotify();
 				numRoundsLeft = NUM_ROUNDS;
-				levelStartPage = new LevelStartPage("Level 1", network, this.characterChoice, isServer, myName, myImagePath);
+				levelStartPage = new LevelStartPage("Level 1", network, this.characterChoice, isServer, myName, myImagePath, this);
 				levelStartPage.setCommandListener(this);
 				//network.sendReceive();
 				display.setCurrent(levelStartPage);
@@ -175,10 +187,27 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 				game.start();
 				display.setCurrent(game);
 			}
+		}else if (c == levelStartPage.startCommand()) {
+			System.out.println("before creating new round");
+			game = createNewRound();
+			System.out.println("after creating new round");
+			numLevelsLeft--;
+			//System.out.println("numLevelsLeft: " + numLevelsLeft + ", numRoundsLeft: " + numRoundsLeft);
+			System.out.println("before starting game");
+			game.start();
+			System.out.println("after starting game");
+			
+			display.setCurrent(game);
 		}
 
 		else if (c.getLabel() == "Exit") {
-			System.out.println("exiting");
+			System.out.println("Exit button is currently nonfunctional");
+		}
+		else if (c.getLabel() == "Back") {
+			System.out.println("Back button is currently nonfunctional");
+		}
+		else {
+			System.out.println("Sorry your keypresses didn't match anything here");
 		}
 		
 		//game.start();
@@ -189,17 +218,45 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 		}
 		*/
     }
+
 	
 	public void fullyConnected() {
 		
 		System.out.println("inside fullyConnected()");
 		
-		levelStartPage = new LevelStartPage("Level 1", network, this.characterChoice, isServer, myName, myImagePath);
-		levelStartPage.setCommandListener(this);
-		_players = levelStartPage.setupPlayers(myName, myImagePath);
-		//startAGame = new StartAGame("Starting the game");
+		initialLevelPage = new InitialLevelPage("Level 1", network, this.characterChoice, isServer, myName, myImagePath, this);
+		initialLevelPage.setCommandListener(this);
 		System.out.println("About to display the levelStartPage");
-		display.setCurrent(levelStartPage);
+		display.setCurrent(initialLevelPage);
+		
+		if (isServer) {
+			_players = initialLevelPage.setupPlayers(myName, myImagePath);
+			initialLevelPage.addCommand(initialLevelPage.startCommand());
+		}
+		else {
+			localPlayerId = initialLevelPage.sendPlayerInfo(myName, myImagePath);
+			_players = initialLevelPage.createPlayersByClients();
+			
+			Message msg = network.receiveNow();
+			if (msg.msg().equals("go")) {
+				startGame();
+			}
+			
+		}
+		
+
+	}
+	
+	public void startGame() {
+		game = createNewRound();
+		System.out.println("after creating new round");
+		numLevelsLeft--;
+		//System.out.println("numLevelsLeft: " + numLevelsLeft + ", numRoundsLeft: " + numRoundsLeft);
+		System.out.println("before starting game");
+		game.start();
+		System.out.println("after starting game");
+		
+		display.setCurrent(game);
 	}
 	
 	private Round createNewRound() {

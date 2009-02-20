@@ -12,7 +12,7 @@ import javax.microedition.lcdui.Image;
 
 public class ChooseCharacter extends Screen {
 
-	Image horrorImage, comedyImage, actionImage;
+	Image rajImage, sriImage, nehaImage;
 	
 	public ChooseCharacter(String title) {
 		super(title);
@@ -21,15 +21,15 @@ public class ChooseCharacter extends Screen {
 		//form=new Form("Choice Group Demo");
         choiceGroup=new ChoiceGroup("Choose your character:",Choice.EXCLUSIVE);
         try {
-	        horrorImage = Image.createImage("/flower2.png");
-	        comedyImage = Image.createImage("/mainScreen.png");
-	        actionImage = Image.createImage("/flower2.png");
+	        rajImage = Image.createImage("/flower2.png");
+	        sriImage = Image.createImage("/mainScreen.png");
+	        nehaImage = Image.createImage("/flower2.png");
         } catch (IOException e) {
         	
         }
-        choiceGroup.append("Horror",horrorImage);
-        choiceGroup.append("Comedy",comedyImage);
-        choiceGroup.append("Action",actionImage);
+        choiceGroup.append("Raj",rajImage);
+        choiceGroup.append("Sri",sriImage);
+        choiceGroup.append("Neha",nehaImage);
         this.append(choiceGroup);
         this.addCommand(okCommand);
         this.addCommand(backCommand);
