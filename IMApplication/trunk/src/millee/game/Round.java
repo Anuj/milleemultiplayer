@@ -20,6 +20,7 @@ import millee.game.initialize.Utilities;
 import millee.game.mechanics.GameGrid;
 import millee.game.mechanics.Goodie;
 import millee.game.mechanics.Player;
+import millee.network.Message;
 import millee.network.Network;
 
 /**
@@ -76,7 +77,7 @@ public class Round extends GameCanvas implements Runnable {
 	String backgroundPath;
 	String[] possibleTokenPaths, possibleTokenText;
 	int totalNumTokensToDisplay;
-	int localPlayer;
+	int localPlayerId;
 	boolean isServer;
 	Network network;
 	int nonce;
@@ -98,7 +99,7 @@ public class Round extends GameCanvas implements Runnable {
 	public Round (Vector players, String backgroundPath, int round, int level, boolean lastRoundInLevel, 
 					String levelName, int[] scoreAssignment,
 					String[] possibleTokenPaths, String[] possibleTokenText, int totalNumTokensToDisplay,
-					boolean isServer, Network network) {
+					boolean isServer, Network network, int localPlayerId) {
 		super(true);
 		
 		this.numPlayers = players.size();
@@ -115,6 +116,8 @@ public class Round extends GameCanvas implements Runnable {
 		this.isServer = isServer;
 		this.playerName = playerName;
 		this.playerImagePath = playerImagePath;
+		
+		this.localPlayerId = localPlayerId;
 		
 		this.network = network;
 		
@@ -159,76 +162,91 @@ public class Round extends GameCanvas implements Runnable {
 	
 	// Only the server uses this.
 	private void createGridAndBroadcast() {
-		Image tmpImage = Utilities.createImage(backgroundPath);
-		Player p = null;
-		int i, x, y, goodieType;
-		StringBuffer broadcastString = new StringBuffer("");
 		
-		// Assign player coordinates
-		for (i = 0; i < numPlayers; i++) {
-			x = random.nextInt(12);
-			y = random.nextInt(11);
-			p = (Player) _players.elementAt(i);
-			_grid.insertPlayer(p, x, y);
-			broadcastString.append(i);
-			broadcastString.append(',');
-			broadcastString.append(x);
-			broadcastString.append(',');
-			broadcastString.append(y);
-			broadcastString.append(';');
+		try {
+			Player p = null;
+			int i, x, y, goodieType;
+			StringBuffer broadcastString = new StringBuffer("");
+			
+			// Assign player coordinates
+			for (i = 0; i < numPlayers; i++) {
+				x = random.nextInt(12);
+				y = random.nextInt(11);
+				p = (Player) _players.elementAt(i);
+				_grid.insertPlayer(p, x, y);
+				broadcastString.append(i);
+				broadcastString.append(',');
+				broadcastString.append(x);
+				broadcastString.append(',');
+				broadcastString.append(y);
+				broadcastString.append(';');
+			}
+			
+			broadcastString.append('|');
+			
+			// Add goodies
+			for (i = 0; i < totalNumTokensToDisplay; i++) {
+				// TODO: Don't hard code which goodie, or the number of goodie types
+				goodieType = Goodie.TOMATO;
+				x = random.nextInt(12);
+				y = random.nextInt(11);
+				_grid.insertGoodie(new Goodie(goodieType), x, y);
+				broadcastString.append(goodieType);
+				broadcastString.append(',');
+				broadcastString.append(x);
+				broadcastString.append(',');
+				broadcastString.append(y);
+				broadcastString.append(';');
+			}
+			
+			// Broadcast this information to all clients
+			network.broadcast(broadcastString.toString());
+		} catch (NullPointerException e) {
+			e.printStackTrace();
 		}
-		
-		broadcastString.append('|');
-		
-		// Add goodies
-		for (i = 0; i < totalNumTokensToDisplay; i++) {
-			// TODO: Don't hard code which goodie, or the number of goodie types
-			goodieType = Goodie.TOMATO;
-			x = random.nextInt(12);
-			y = random.nextInt(11);
-			_grid.insertGoodie(new Goodie(goodieType), x, y);
-			broadcastString.append(goodieType);
-			broadcastString.append(',');
-			broadcastString.append(x);
-			broadcastString.append(',');
-			broadcastString.append(y);
-			broadcastString.append(';');
-		}
-		
-		// Broadcast this information to all clients
-		network.broadcast(broadcastString.toString());
 	}
 	
 	// Only the clients use this.
 	private void createGridFromBroadcast() {
-		String input = network.receiveNow();
-		String[] blocks = Utilities.split(input, "|", 2);
 		
-		// Get the player information
-		String[] sPlayers = Utilities.split(blocks[0], ";", 0);
-		String[] playerInfo = null;
-		Player tmpPlayer = null;
-		int x,y;
-		for (int i = 0; i < sPlayers.length-1; i++) {
-			playerInfo = Utilities.split(sPlayers[i], ",", 3);
-			// TODO: Deal with the lack of a name, image
-			tmpPlayer = new Player("PLAYER " + playerInfo[0], Utilities.createImage("/dancer_small.png"), Integer.parseInt(playerInfo[0]));
-			x = Integer.parseInt(playerInfo[1]);
-			y = Integer.parseInt(playerInfo[2]);
-			_grid.insertPlayer(tmpPlayer, x, y);
-		}
-		
-		// Get the goodie information
-		String[] sGoodies = Utilities.split(blocks[1], ";", 0);
-		String[] goodieInfo = null;
-		Goodie tmpGoodie = null;
-		for (int i = 0; i < sGoodies.length-1; i++) {
-			goodieInfo = Utilities.split(sGoodies[i], ",", 3);
-			// TODO: Deal with the lack of a name, image
-			tmpGoodie = new Goodie(Integer.parseInt(goodieInfo[0]));
-			x = Integer.parseInt(goodieInfo[1]);
-			y = Integer.parseInt(goodieInfo[2]);
-			_grid.insertGoodie(tmpGoodie, x, y);
+		try {
+			String input = network.receiveNow().msg();
+			String[] blocks = Utilities.split(input, "|", 2);
+			
+			// Get the player information
+			String[] sPlayers = Utilities.split(blocks[0], ";", 0);
+			String[] playerInfo = null;
+			Player tmpPlayer = null;
+			int x,y;
+			System.out.println("sPlayers = " + sPlayers);
+			for (int i = 0; i < sPlayers.length; i++) {
+				System.out.println("splayers[" + i + "] = " + sPlayers[i]);
+				System.out.println("putting player " + i + " on the board");
+				playerInfo = Utilities.split(sPlayers[i], ",", 3);
+				System.out.println("playerInfo = " + playerInfo);
+				// TODO: Deal with the lack of a name, image
+				tmpPlayer = (Player) _players.elementAt(i);
+				System.out.println("player's name is " + tmpPlayer);
+					//new Player("PLAYER " + playerInfo[0], Utilities.createImage("/dancer_small.png"), Integer.parseInt(playerInfo[0]), 0);
+				x = Integer.parseInt(playerInfo[1]);
+				y = Integer.parseInt(playerInfo[2]);
+				_grid.insertPlayer(tmpPlayer, x, y);
+			}
+			
+			// Get the goodie information
+			String[] sGoodies = Utilities.split(blocks[1], ";", 0);
+			String[] goodieInfo = null;
+			Goodie tmpGoodie = null;
+			for (int i = 0; i < sGoodies.length; i++) {
+				goodieInfo = Utilities.split(sGoodies[i], ",", 3);
+				// TODO: Deal with the lack of a name, image
+				tmpGoodie = new Goodie(Integer.parseInt(goodieInfo[0]));
+				x = Integer.parseInt(goodieInfo[1]);
+				y = Integer.parseInt(goodieInfo[2]);
+				_grid.insertGoodie(tmpGoodie, x, y);
+			}
+		} catch (NullPointerException e) {
+			e.printStackTrace();
 		}
 		
 	}
@@ -326,8 +344,61 @@ public class Round extends GameCanvas implements Runnable {
 	private void checkRemotePlayerInput() {
 		if (stopGame) { return; }
 
+		Message msg = network.receiveLater();
+		char command;
+		int clientId;
+		String[] msgs = null;
+		while (msg != null) {
+			
+			msgs = Utilities.split(msg.msg(), ",", 2);
+			clientId = Integer.parseInt(msgs[0]);
+			
+			if (clientId != localPlayerId) {
+				command = msgs[1].charAt(0);
+				
+				switch (command) {
+					case 'u':
+						_grid.movePlayer(clientId, 0, -1);
+						if (isServer) network.broadcast(msg.msg());
+						//propogateCommand(clientId, command);
+						break;
+					case 'd':
+						_grid.movePlayer(clientId, 0, 1);
+						if (isServer) network.broadcast(msg.msg());
+						//propogateCommand(clientId, command);
+						break;
+					case 'r':
+						_grid.movePlayer(clientId, 1, 0);
+						if (isServer) network.broadcast(msg.msg());
+						//propogateCommand(clientId, command);
+						break;
+					case 'l':
+						_grid.movePlayer(clientId, -1, 0);
+						if (isServer) network.broadcast(msg.msg());
+						//propogateCommand(clientId, command);
+						break;
+					case 'n':
+						break;
+				}
+				
+			}
+			msg = network.receiveLater();
+		}
+	}
+	
+	public void propogateCommand(int clientId, char command) {
+		if (isServer) {
+			for (int i = 1; i < this.numPlayers; i++) {
+				if (i != clientId)
+					network.send(i, "" + clientId + "," + command);
+			}
+		}
+	}
+	
+	/*
+		
 		for (int i = 0; i<numPlayers; i++) {
-			if (i != localPlayer) {
+			if (i != localPlayerId) {
 				char command = getCommand(); // Is this supposed to be a hook into network stuff later?
 				while (command != 'n') {
 					switch (command) {
@@ -351,29 +422,30 @@ public class Round extends GameCanvas implements Runnable {
 			}
 		}
 	}
-
+*/
 	private void checkUserInput() {
 		// Detect key presses and speed up or slow down accordingly
 		int state = getKeyStates();
-
+		//command += this.localPlayerId;
 		if(( state & DOWN_PRESSED ) != 0 ){
-			_grid.movePlayer(localPlayer, 0, 1);
-			command = "d";
+			_grid.movePlayer(localPlayerId, 0, 1);
+			 command += this.localPlayerId + ",d";
 		} else if(( state & UP_PRESSED ) != 0 ){
-			_grid.movePlayer(localPlayer, 0, -1);
-			command = "u";
+			_grid.movePlayer(localPlayerId, 0, -1);
+			command += this.localPlayerId + ",u";
 		} else if ((state & LEFT_PRESSED) != 0) {
-			_grid.movePlayer(localPlayer, -1, 0);
-			command = "l";
+			_grid.movePlayer(localPlayerId, -1, 0);
+			command += this.localPlayerId + ",l";
 		} else if ((state & RIGHT_PRESSED) != 0) {
-			_grid.movePlayer(localPlayer, 1, 0);
-			command = "r";
+			_grid.movePlayer(localPlayerId, 1, 0);
+			command += this.localPlayerId + ",r";
 		}
 	}
 
 	private void updateGameScreen(Graphics g) {
 		
-		if (command != "")
+		
+		if (command != "" && !_grid.isWon())	// to avoid sending extra commands after game is won
 			network.broadcast(command);
 			command = "";
 		
@@ -391,11 +463,5 @@ public class Round extends GameCanvas implements Runnable {
 		}
 		flushGraphics();
 
-	}
-
-	private char getCommand() {
-		String command = network.receiveLater();
-		return (command == null) ? 'n' : command.charAt(0);
-	}
-	
+	}	
 }

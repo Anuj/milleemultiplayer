@@ -104,26 +104,27 @@ public class Network implements Runnable {
 	// Send a 'private' message to one client only
 	public void send(int clientID, String msg) {
 		String finalMsg = msg.concat("\0");
-		System.out.println("Sending to client #" + clientID + ": " + finalMsg);
+		System.out.println("Sending to client #" + clientID + ": " + msg);
 		clientServer.send(finalMsg, clientID);
 	}
 	
 	// Send a message to ALL CONNECTED CLIENTS
 	public void broadcast(String msg) {
 		String finalMsg = msg.concat("\0");
-		System.out.println("Broadcasting: " + finalMsg);
+		System.out.println("Broadcasting: " + msg);
 		clientServer.send(finalMsg);
 	}
 	
 	/** Blocks until a msg is received */
-	public String receiveNow() {
+	public Message receiveNow() {
 		
-		String msg = null;
+		Message msg = null;
 		
 		while (msg == null) {
-			if ((msg = clientServer.receiveMessage(recvThread)) != null) {
-				msg = msg.substring(0, msg.length()-1);
-				System.out.println("Received: " + msg);
+			if ((msg = clientServer.receiveMessage()) != null) {
+				msg.removeNull();
+				//msg = msg.substring(0, msg.length()-1);
+				System.out.println("Received: " + msg.msg());
 			}
 		}
 		
@@ -131,12 +132,12 @@ public class Network implements Runnable {
 	}
 	
 	/** Sends a msg back if it's available, but doesn't block */
-	public String receiveLater() {
-		String msg = null;
-		
-		if ((msg = clientServer.receiveMessage(recvThread)) != null) {
-			System.out.println("Received: " + msg);
-			msg = msg.substring(0, msg.length()-1);
+	public Message receiveLater() {
+		Message msg = null;
+		if ((msg = clientServer.receiveMessage()) != null) {
+			System.out.println("Received: " + msg.msg());
+			//msg = msg.substring(0, msg.length()-1);
+			msg.removeNull();
 		}
 		return msg;
 	}

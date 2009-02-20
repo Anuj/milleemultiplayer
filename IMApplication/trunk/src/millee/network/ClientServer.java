@@ -117,7 +117,7 @@ public class ClientServer implements DiscoveryListener {
     		recvThreads = new ReceiverThread[numClients];
     		ReceiverThread temp;
     		for (int i = 0; i<numClients; i++) {
-    			temp = new ReceiverThread(streamConnections[i], senderThread, isServer);
+    			temp = new ReceiverThread(streamConnections[i], senderThread, isServer, i);
     			temp.start();
     			recvThreads[i] = temp;
     			System.out.println("created recvThread #" + i);
@@ -132,7 +132,7 @@ public class ClientServer implements DiscoveryListener {
 			System.out.println("for the client");
 			//streamConns = clientServer.getStreamConnections();
 			//sendThread = new SenderThread(streamConns);
-			ReceiverThread recv = new ReceiverThread(streamConnections[0], senderThread, isServer);
+			ReceiverThread recv = new ReceiverThread(streamConnections[0], senderThread, isServer, 0);
 			//recvThread = new ReceiverThread(streamConns[0], sendThread, isServer);
 			recv.start();
 			recvThreads[0] = recv;
@@ -217,26 +217,19 @@ public class ClientServer implements DiscoveryListener {
         }
     }
     
-    public String receiveMessage(ReceiverThread recvThread) {
-    	String msg = null;
-    	
-    	System.out.println("ClientServer: receiveMessage");
-	
-    	//System.out.println("beginning of receiveMessage");
-    	//System.out.println("recvThread: " + recvThread);
-    	//System.out.println("recvThread.rcvMsg: " + recvThread.rcvMsg);
-    	//System.out.println("recvThread.rcvMsg.size: " + recvThread.rcvMsg.size());
-    	
-    	synchronized (recvThread.rcvMsg) {
-			if (recvThread.rcvMsg.size() > 0) {
-				System.out.println("messages available to receive");
-				//System.out.println("inside if statement");
-				msg = recvThread.rcvMsg.firstElement().toString();
-				recvThread.rcvMsg.removeElementAt(0);
-				return msg;
+    public Message receiveMessage() {
+    	//String msg = null;
+    	Message message = null;
+    	synchronized (ReceiverThread.receivedMessages) {
+    		
+			if (ReceiverThread.receivedMessages.size() > 0) {
+				message = (Message) ReceiverThread.receivedMessages.firstElement();
+				ReceiverThread.receivedMessages.removeElementAt(0);
+				return message;
 			}
+			
     	}
-		return msg;
+		return message;
     }
     
     public void send (String msg, int client) {
@@ -244,7 +237,6 @@ public class ClientServer implements DiscoveryListener {
     }
     
     public void send (String msg) {
-    	System.out.println("in clientServer.send with msg = " + msg);
     	senderThread.sendMsg(msg, new Integer(0));
     }
     

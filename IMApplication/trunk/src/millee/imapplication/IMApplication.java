@@ -76,13 +76,13 @@ public class IMApplication extends Application {
     		// server, it needs to create as many ReceiverThreads as it has clients.
     		if (isServer) {
     			sendThread = new SenderThread(streamConns);
-				recvThread = new ReceiverThread(streamConns[0], sendThread, isServer);
+				//recvThread = new ReceiverThread(streamConns[0], sendThread, isServer);
 				recvThread.start();
 		    	sendThread.start();
     		}
     		else {
     			sendThread = new SenderThread(streamConns);
-    			recvThread = new ReceiverThread(streamConns[0], sendThread, isServer);
+    			//recvThread = new ReceiverThread(streamConns[0], sendThread, isServer);
     			recvThread.start();
     	    	sendThread.start();
     		}
@@ -109,9 +109,9 @@ public class IMApplication extends Application {
     		while (!exitFlag) {
     			clientServer.writeToDisplay(outputField);
     			
-    			if ((msg = clientServer.receiveMessage(recvThread)) != null) {
+    			/*if ((msg = clientServer.receiveMessage(recvThread)) != null) {
     				inputField.insert("\nReceived: " + msg, inputField.size());
-    			}
+    			}*/
     			clientServer.writeToDisplay(outputField);
     			
     			if (sendingFlag) {

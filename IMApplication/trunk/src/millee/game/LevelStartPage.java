@@ -10,6 +10,7 @@ import millee.game.initialize.Screen;
 import millee.game.initialize.StartAGame;
 import millee.game.initialize.Utilities;
 import millee.game.mechanics.Player;
+import millee.network.Message;
 import millee.network.Network;
 
 
@@ -34,12 +35,16 @@ public class LevelStartPage extends Screen {
 		this.append(str2);
 		this.addCommand(exitCommand);
 		
+		System.out.println("in levelstartpage");
+		
 		if (isServer) {
 			this.append("All clients are connected.  Press START to begin the game");
 			this.addCommand(startCommand);
+			System.out.println("after adding command");
 		} else {
+			this.addCommand(startCommand);
 			this.append("All clients are connected.  Waiting for server to start the game");
-			sendPlayerInfo(myName, myImagePath);
+			//sendPlayerInfo(myName, myImagePath);
 		}
 	}
 	
@@ -49,26 +54,48 @@ public class LevelStartPage extends Screen {
 	        
 	        Vector newPlayers = new Vector();
 	        Image tmpImage = null; 
+	        StringBuffer initialBroadcast = new StringBuffer("");
 	        
 	        // Set up our own local player first
 	        tmpImage = Utilities.createImage(myImagePath);
-	        newPlayers.addElement(new Player(myName, tmpImage, 0));
+	        newPlayers.addElement(new Player(myName, tmpImage, 0, -1));
+			
+	        initialBroadcast.append(0);
+			initialBroadcast.append(",");
+			initialBroadcast.append(myName);
+			initialBroadcast.append(",");
+			initialBroadcast.append(myImagePath);
+			initialBroadcast.append(";");
 			
 			// Poll the network to build up client's player data
 	        String playerImagePath, playerName;
+	        Message msg;
+	       
 			for (int i = 1; i <= StartAGame.NUMCLIENTS; i++) {
-				System.out.println("beginning of for loop at iteration: " + i);
-				playerName = network.receiveNow(); // Blocks until the messages arrive
-				System.out.println("playerName = " + playerName);
-				playerImagePath = network.receiveNow();
-				System.out.println("playerImagePath = " + playerImagePath);
+				//System.out.println("beginning of for loop at iteration: " + i);
+				initialBroadcast.append(i);
+				initialBroadcast.append(",");
+				msg = network.receiveNow(); // Blocks until the messages arrive
+				playerName = msg.msg();
+				initialBroadcast.append(playerName);
+				initialBroadcast.append(",");
+				//System.out.println("playerName = " + playerName);
+				msg = network.receiveNow();
+				playerImagePath = msg.msg();
+				initialBroadcast.append(playerImagePath);
+				initialBroadcast.append(";");
+				//System.out.println("playerImagePath = " + playerImagePath);
 				
 				tmpImage = Utilities.createImage(playerImagePath);
-				newPlayers.addElement(new Player(playerName, tmpImage, i));
+				newPlayers.addElement(new Player(playerName, tmpImage, i, msg.recipient()));
 				
 				// Now to tell the new player their ID:
-				network.send(i, String.valueOf(i));
+				network.send(msg.recipient(), String.valueOf(i));
 			}
+			
+			network.broadcast(initialBroadcast.toString());
+			
+			
 			
 			
 	    	//this.append("All the clients have connected.");
@@ -79,9 +106,30 @@ public class LevelStartPage extends Screen {
 	}
 	
 	/** Only used by clients.  They only have 1 connection, at index 0 */
-	public void sendPlayerInfo(String myName, String myImagePath) {
+	public int sendPlayerInfo(String myName, String myImagePath) {
 		network.broadcast(myName);
 		network.broadcast(myImagePath);
+		
+		return Integer.parseInt(network.receiveNow().msg());
+		// need to save this to the player at some point and pass into Round
+	}
+	
+	public Vector createPlayersByClients() {
+		Vector players = new Vector();
+		Message initialMessage = network.receiveNow();
+		String[] sPlayers = Utilities.split(initialMessage.msg(), ";", 0);
+		String[] playerInfo = null;
+		Player tmpPlayer = null;
+		
+		for (int i = 0; i<sPlayers.length; i++) {
+			playerInfo = Utilities.split(sPlayers[i], ",", 3);
+			tmpPlayer = new Player(playerInfo[1], Utilities.createImage(playerInfo[2]), Integer.parseInt(playerInfo[0]), 0);
+			players.addElement(tmpPlayer);
+		}
+		
+		return players;
+		
+		
 	}
 
 }

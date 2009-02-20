@@ -35,6 +35,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 	
 	int characterChoice, gameChoice;
 	int numLevelsLeft, numRoundsLeft;
+	int localPlayerId;
 	boolean isServer;
 	String myName, myImagePath;
 	
@@ -143,12 +144,18 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 			levelStartPage = new LevelStartPage("Level 1", network, this.characterChoice, false, myName, myImagePath);
 			levelStartPage.setCommandListener(this);
 			display.setCurrent(levelStartPage);
-			levelStartPage.sendPlayerInfo(myName, myImagePath);
+			localPlayerId = levelStartPage.sendPlayerInfo(myName, myImagePath);
+			_players = levelStartPage.createPlayersByClients();
 		} else if (c == levelStartPage.startCommand()) {
+			System.out.println("before creating new round");
 			game = createNewRound();
+			System.out.println("after creating new round");
 			numLevelsLeft--;
 			//System.out.println("numLevelsLeft: " + numLevelsLeft + ", numRoundsLeft: " + numRoundsLeft);
+			System.out.println("before starting game");
 			game.start();
+			System.out.println("after starting game");
+			
 			display.setCurrent(game);
 		} else if (c == game.okCmd) {
 			numRoundsLeft--;
@@ -189,7 +196,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 		
 		levelStartPage = new LevelStartPage("Level 1", network, this.characterChoice, isServer, myName, myImagePath);
 		levelStartPage.setCommandListener(this);
-		levelStartPage.setupPlayers(myName, myImagePath);
+		_players = levelStartPage.setupPlayers(myName, myImagePath);
 		//startAGame = new StartAGame("Starting the game");
 		System.out.println("About to display the levelStartPage");
 		display.setCurrent(levelStartPage);
@@ -224,7 +231,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 		
 		
 		Round game = new Round(_players, "/tiles.png", numRoundsLeft, numLevelsLeft, false, "Colours",
-								scoreAssignment, possibleTokenPaths, possibleTokenText, 4, isServer, network);
+								scoreAssignment, possibleTokenPaths, possibleTokenText, 4, isServer, network, localPlayerId);
 		
 		//Round game = new Round(0, 2, numRoundsLeft, numLevelsLeft, false, "Colours", playerNames, playerImagePaths, 
 		//						scoreAssignment, "/tiles.png", possibleTokenPaths, possibleTokenText, 4, isServer, network);

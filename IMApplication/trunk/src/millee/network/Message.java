@@ -11,15 +11,19 @@ public class Message {
 		_senderHashcode = senderHashcode.intValue();
 	}
 	
-	String msg() {
+	public String msg() {
 		return _msg;
 	}
 	
-	int recipient() {
+	public int recipient() {
 		return _recipient;
 	}
 	
-	int senderHashcode() {
+	public int senderHashcode() {
 		return _senderHashcode;
+	}
+	
+	public void removeNull() {
+		_msg = _msg.substring(0, _msg.length()-1);
 	}
 }

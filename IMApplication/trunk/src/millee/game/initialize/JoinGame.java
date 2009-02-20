@@ -142,7 +142,7 @@ public class JoinGame extends Screen implements Runnable {
         			}
         		}
             	
-                sendReceive();
+                //sendReceive();
             	
             	System.out.println("client connected!");
 
@@ -160,7 +160,7 @@ public class JoinGame extends Screen implements Runnable {
         
 	}
 	
-	private void sendReceive() {
+	/*private void sendReceive() {
 		SenderThread sendThread = null;
 		ReceiverThread recvThread = null;
 		StreamConnection[] streamConns;
@@ -201,5 +201,5 @@ public class JoinGame extends Screen implements Runnable {
 			
 			//sendThread.sendMsg("sending: blah blah", new Integer(-1));
 		}
-	}
+	}*/
 }

@@ -22,16 +22,29 @@ public class Player {
 	// Assigned color to collect
 	private int _color;
 	private int _id;
+	private int physicalID;
 	
-	public Player(String name, Image avatar, int id) {
+	/** virtualID is determined by the server, depending on what order the client
+	 * sends their initial message.  physicalID is the order that the clients join. 
+	 * @param name
+	 * @param avatar
+	 * @param virtualID
+	 * @param physicalID
+	 */
+	public Player(String name, Image avatar, int virtualID, int physicalID) {
 		random = new Random();
 		
-		this._id = id;
+		this._id = virtualID;
 		this.name = name;
 		this.localPlayer = localPlayer;
 		this.finishedRound = false;
+		this.physicalID = physicalID;
 		
 		sprite = new Sprite(avatar);
+	}
+	
+	public int physicalID () {
+		return physicalID;
 	}
 	
 	/** Avoid using this

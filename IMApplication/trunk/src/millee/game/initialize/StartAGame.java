@@ -144,7 +144,7 @@ public class StartAGame extends Screen {
          */
 	}
 	
-	private void sendReceive() {
+	/*private void sendReceive() {
 		SenderThread sendThread = null;
 		ReceiverThread recvThread = null;
 		StreamConnection[] streamConns;
@@ -198,6 +198,6 @@ public class StartAGame extends Screen {
 			}
 		}
 		//}
-	}
+	}*/
 	
 }

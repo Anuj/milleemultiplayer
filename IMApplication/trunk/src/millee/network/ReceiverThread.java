@@ -12,6 +12,7 @@ import javax.microedition.io.StreamConnection;
  */
 public class ReceiverThread extends Thread {
 	
+	static Vector receivedMessages = new Vector();
 	private DataInputStream input = null;
     private SenderThread senderThread = null;
     private int currIndex = 0;
@@ -19,8 +20,9 @@ public class ReceiverThread extends Thread {
     public Vector rcvMsg;
     private boolean isServer = false;
     private int hashcode = -1;
+    private int clientID;
 
-	public ReceiverThread (StreamConnection m_StrmConn, SenderThread senderThread, boolean isServer) {
+	public ReceiverThread (StreamConnection m_StrmConn, SenderThread senderThread, boolean isServer, int clientID) {
 		
 		try {
 			this.isServer = isServer;
@@ -28,6 +30,7 @@ public class ReceiverThread extends Thread {
 			hashcode = m_StrmConn.hashCode();
 	        this.senderThread = senderThread;
 	        rcvMsg = new Vector();
+	        this.clientID = clientID;
 	        
 	        
 		} catch (Exception e) {
@@ -54,14 +57,12 @@ public class ReceiverThread extends Thread {
 				char charData = (char) input.read();
 			        str.append(charData);
 					currIndex++;
-					//System.out.println("just received: " + charData);
 
 					if (charData == '\0') {
-						synchronized (rcvMsg) {
+						synchronized (ReceiverThread.receivedMessages) {
 							rcvMsg.addElement(str);
-							System.out.println("Just added to rcvMsg: " + rcvMsg.elementAt(0));
+							receivedMessages.addElement(new Message(str.toString(), clientID, new Integer(0)));
 						}
-						System.out.println("received: " + str);
 		        		/*if (isServer) {
 		        			senderThread.sendMsg(str.toString(), new Integer(hashcode));
 		        		}*/
