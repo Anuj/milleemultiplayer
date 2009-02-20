@@ -36,6 +36,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 	int characterChoice, gameChoice;
 	int numLevelsLeft, numRoundsLeft;
 	boolean isServer;
+	String myName, myImagePath;
 	
 	Round game;
 	Display display;
@@ -65,8 +66,6 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 		chooseGame.setCommandListener(this);
 		joinGame = new JoinGame ("Join a Game", network);		
 		joinGame.setCommandListener(this);
-		levelStartPage = new LevelStartPage("Level 1", network, this.characterChoice, isServer);
-		levelStartPage.setCommandListener(this);
 
 		startOrJoinGame = new StartOrJoinGame("Start or join a game?");
 		startOrJoinGame.setCommandListener(this);
@@ -112,20 +111,27 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 			display.setCurrent(charForm);
 		} else if (c == charForm.okCommand()) {
 			characterChoice = charForm.getListSelection();
+			myImagePath = "/dancer_small.png";
+			if (characterChoice == 0) myName = "Raj";
+			else if (characterChoice == 1) myName = "Sri";
+			else if (characterChoice == 2) myName = "Neha";
 			display.setCurrent(startOrJoinGame);
 		} else if (c == startOrJoinGame.okCommand()){
 			if (startOrJoinGame.getListSelection() == 0) {
 				isServer = true;
 				display.setCurrent(startAGame);
-				_players = startAGame.setupNetworkPlayers("Raj", "/dancer_small.png");
+				_players = startAGame.setupNetworkPlayers(myName, myImagePath);
 			} else {
 				isServer = false;
 				display.setCurrent(chooseGame);
 			}
-		} else if (c == startAGame.startCommand()) {
+		} /*else if (c == startAGame.startCommand()) {
+
+			levelStartPage = new LevelStartPage("Level 1", network, this.characterChoice, true);
+			levelStartPage.setCommandListener(this);
 			display.setCurrent(levelStartPage);
 			
-		} else if (c == chooseGame.okCommand()) {
+		}*/ else if (c == chooseGame.okCommand()) {
 			gameChoice = chooseGame.getListSelection();
 			joinGame.setCharacterChoice(characterChoice);
 			joinGame.setGameChoice(gameChoice);
@@ -133,7 +139,11 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 			display.setCurrent(joinGame);
 		} else if (c == joinGame.startCommand()) {
 			//network.sendReceive();
+
+			levelStartPage = new LevelStartPage("Level 1", network, this.characterChoice, false, myName, myImagePath);
+			levelStartPage.setCommandListener(this);
 			display.setCurrent(levelStartPage);
+			levelStartPage.sendPlayerInfo(myName, myImagePath);
 		} else if (c == levelStartPage.startCommand()) {
 			game = createNewRound();
 			numLevelsLeft--;
@@ -148,7 +158,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 			} else if (numRoundsLeft <= 0) {	// end of current level
 				game.hideNotify();
 				numRoundsLeft = NUM_ROUNDS;
-				levelStartPage = new LevelStartPage("Level 1", network, this.characterChoice, isServer);
+				levelStartPage = new LevelStartPage("Level 1", network, this.characterChoice, isServer, myName, myImagePath);
 				levelStartPage.setCommandListener(this);
 				//network.sendReceive();
 				display.setCurrent(levelStartPage);
@@ -172,6 +182,18 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 		}
 		*/
     }
+	
+	public void fullyConnected() {
+		
+		System.out.println("inside fullyConnected()");
+		
+		levelStartPage = new LevelStartPage("Level 1", network, this.characterChoice, isServer, myName, myImagePath);
+		levelStartPage.setCommandListener(this);
+		levelStartPage.setupPlayers(myName, myImagePath);
+		//startAGame = new StartAGame("Starting the game");
+		System.out.println("About to display the levelStartPage");
+		display.setCurrent(levelStartPage);
+	}
 	
 	private Round createNewRound() {
 		String[] playerNames = new String[3], playerImagePaths = new String[3];

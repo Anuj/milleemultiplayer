@@ -103,10 +103,10 @@ public class JoinGame extends Screen implements Runnable {
         	System.err.println(e);
         }*/
         
-        System.out.println("client connected!");
+        //System.out.println("client connected!");
 
-    	this.append("All the clients have connected.");
-    	this.append("Choose START to begin the game");
+    	//this.append("All the clients have connected.");
+    	//this.append("Choose START to begin the game");
     	this.addCommand(startCommand);
     	
         

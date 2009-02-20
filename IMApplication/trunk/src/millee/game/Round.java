@@ -374,7 +374,7 @@ public class Round extends GameCanvas implements Runnable {
 	private void updateGameScreen(Graphics g) {
 		
 		if (command != "")
-			network.send(command);
+			network.broadcast(command);
 			command = "";
 		
 		if (stopGame) {

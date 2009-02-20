@@ -29,6 +29,7 @@ public class ReceiverThread extends Thread {
 	        this.senderThread = senderThread;
 	        rcvMsg = new Vector();
 	        
+	        
 		} catch (Exception e) {
             e.printStackTrace();
 		}
@@ -43,20 +44,27 @@ public class ReceiverThread extends Thread {
 	}
 	
 	public void run() {
+		
+		
 		try {
 			str = new StringBuffer();
 			while(true) {
 				
+				
 				char charData = (char) input.read();
 			        str.append(charData);
 					currIndex++;
+					//System.out.println("just received: " + charData);
 
-			        //if (currIndex >= 1) {
 					if (charData == '\0') {
-		        		rcvMsg.addElement(str);
-		        		if (isServer) {
+						synchronized (rcvMsg) {
+							rcvMsg.addElement(str);
+							System.out.println("Just added to rcvMsg: " + rcvMsg.elementAt(0));
+						}
+						System.out.println("received: " + str);
+		        		/*if (isServer) {
 		        			senderThread.sendMsg(str.toString(), new Integer(hashcode));
-		        		}
+		        		}*/
 				    	str = new StringBuffer();
 				    	currIndex = 0;
 			        }

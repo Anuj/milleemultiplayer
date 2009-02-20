@@ -28,31 +28,39 @@ public class SenderThread extends Thread {
 		msgHashcodeQueue = new Vector();
 		
 		try {
-			System.out.println("before outputStreams");
+			
 			outputStreams = new DataOutputStream[streamConns.length];
-			System.out.println("after outputStreams");
 			outputStreamsHashcodes = new int[streamConns.length];
-			System.out.println("after outputStreamsHashcodes");
 			for (int i = 0; i<streamConns.length; i++) {
-				System.out.println("start of for loop: " + i);
-				System.out.println("streamConns: " + streamConns);
-				System.out.println("streamConns[i]: " + streamConns[i]);
 				outputStreams[i] = streamConns[i].openDataOutputStream();
-				System.out.println("middle of for loop");
 				outputStreamsHashcodes[i] = streamConns[i].hashCode();
-				System.out.println("end of for loop");
 			}
-			System.out.println("after for loop");
 	        
 		} catch (Exception e) {
             e.printStackTrace();
         }
 	}
 	
+    /** Broadcasts msg to all clients */
 	public void sendMsg (String msg, Integer senderHashcode) {
 		synchronized (msgQueue) {
-			msgQueue.addElement(msg);
-			msgHashcodeQueue.addElement(senderHashcode);
+			for (int j = 0; j<outputStreams.length; j++) {
+				msgQueue.addElement(new Message(msg, j, senderHashcode));
+				msgQueue.notify();
+			}
+			
+			//msgQueue.addElement(msg);
+			//msgHashcodeQueue.addElement(senderHashcode);
+			//msgQueue.notify();
+		}
+	}
+	
+	/** Sends msg only to the client given */
+	public void sendMsg(String msg, int client, Integer senderHashcode) {
+		synchronized (msgQueue) {
+			
+			msgQueue.addElement(new Message(msg, client, senderHashcode));
+			//msgHashcodeQueue.addElement(senderHashcode);
 			msgQueue.notify();
 		}
 	}
@@ -66,11 +74,23 @@ public class SenderThread extends Thread {
 				synchronized (msgQueue) {
 					if (msgQueue.size() > 0 && i < msgQueue.size()) {
 						
-						byte[] data = ((String) msgQueue.elementAt(i)).getBytes();
+						Message msg = ((Message) msgQueue.elementAt(i));
+						
+						byte[] data = msg.msg().getBytes();
+						
+						
 						//data[data.length] = 0;	// need to end a string terminator
-						int hashcode = ((Integer) msgHashcodeQueue.elementAt(i)).intValue();
-						//if (outputStreams != null) {
-						for (int j = 0; j<outputStreams.length; j++) {
+						//int hashcode = ((Integer) msgHashcodeQueue.elementAt(i)).intValue();
+						int hashcode = msg.hashCode();
+						
+						
+						// TODO: deal with sending a client's data back to the client
+						
+						outputStreams[msg.recipient()].write(data);
+						outputStreams[msg.recipient()].flush();
+						
+						
+						/*for (int j = 0; j<outputStreams.length; j++) {
 							if (hashcode != outputStreamsHashcodes[j]) {
 								System.out.println("hashcode: " + hashcode);
 								System.out.println("outputStreamsHashcodes: " + outputStreamsHashcodes[j]);
@@ -78,14 +98,14 @@ public class SenderThread extends Thread {
 								outputStreams[j].write(data);
 								outputStreams[j].flush();
 							}
-						}
+						}*/
 						//} else {
 						/*	outputStream.write(data);
 							outputStream.flush();
 						}*/
 				    	
 						msgQueue.removeElementAt(i);
-						msgHashcodeQueue.removeElementAt(i);
+						//msgHashcodeQueue.removeElementAt(i);
 						
 						i++;
 						if (i >= msgQueue.size())

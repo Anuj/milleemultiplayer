@@ -29,13 +29,15 @@ import javax.microedition.lcdui.TextField;
  */
 public class ClientServer implements DiscoveryListener {
 	
-    UUID[] RFCOMM_UUID = {new UUID(0x0003)};
+    UUID[] RFCOMM_UUID = {new UUID(0x0003), new UUID(0x0004)};
     private DiscoveryAgent m_DscrAgent = null;
     public Object connected = new Object();
         
     boolean isServer;
     int numClients;
     StreamConnection[] streamConnections;
+    SenderThread senderThread = null;
+    ReceiverThread[] recvThreads = null;
     
     private LocalDevice m_LclDevice = null;
     private StreamConnectionNotifier m_StrmNotf = null;
@@ -82,22 +84,62 @@ public class ClientServer implements DiscoveryListener {
         	
         	
         	for (int i = 0; i < numConnections; i++) {
-        		m_strUrl = "btspp://localhost:" + RFCOMM_UUID[0] + ";name=rfcommtest;authorize=true";
+        		m_strUrl = "btspp://localhost:" + RFCOMM_UUID[i] + ";name=rfcommtest;authorize=true";
         		m_LclDevice = LocalDevice.getLocalDevice();
                 m_LclDevice.setDiscoverable(DiscoveryAgent.GIAC);
-                System.out.println("waiting to connect to clients...");
+                System.out.println("waiting to connect to client #" + i);
                 m_StrmNotf = (StreamConnectionNotifier) Connector.open(m_strUrl);
-                System.out.println("finished connecting");
                 StreamConnection m_StrmConn = m_StrmNotf.acceptAndOpen();                
-                System.out.println("looook here: " + m_StrmConn);
+                System.out.println("Just connected to client #" + i);
                 streamConnections[i] = m_StrmConn;
+                m_StrmNotf.close();
         	}
+        	
+            System.out.println("finished connecting");
+
         	
         } catch (BluetoothStateException e) {
             e.printStackTrace();
         } catch (IOException e) {
         	e.printStackTrace();
         }
+    }
+    
+    /** Both client and server have only one senderThread.  Server has multiple
+     * receiverThreads and the client has only 1 receiverThread
+     */
+    public void createIOThreads() {
+    	System.out.println("Creating IOThreads");
+    	senderThread = new SenderThread(streamConnections);
+    	senderThread.start();
+    	if (isServer) {
+    		System.out.println("for the server");
+    		recvThreads = new ReceiverThread[numClients];
+    		ReceiverThread temp;
+    		for (int i = 0; i<numClients; i++) {
+    			temp = new ReceiverThread(streamConnections[i], senderThread, isServer);
+    			temp.start();
+    			recvThreads[i] = temp;
+    			System.out.println("created recvThread #" + i);
+    		}
+			//streamConns = clientServer.getStreamConnections();
+			/*sendThread = new SenderThread(streamConns);
+			recvThread = new ReceiverThread(streamConns[0], sendThread, isServer);
+			recvThread.start();
+	    	sendThread.start();*/
+
+		} else {
+			System.out.println("for the client");
+			//streamConns = clientServer.getStreamConnections();
+			//sendThread = new SenderThread(streamConns);
+			ReceiverThread recv = new ReceiverThread(streamConnections[0], senderThread, isServer);
+			//recvThread = new ReceiverThread(streamConns[0], sendThread, isServer);
+			recv.start();
+			recvThreads[0] = recv;
+			System.out.println("after starting the receiver Thread");
+	    	//sendThread.start();
+		}
+    	System.out.println("end of createIOThreads");
     }
     
     // Starts the inquiry process for a client.
@@ -128,6 +170,7 @@ public class ClientServer implements DiscoveryListener {
             	//this.printToScreen("Application", "Connecting...");
             	System.out.println("Client Connecting...");
             	StreamConnection m_StrmConn = (StreamConnection) Connector.open(m_strUrl);
+            	System.out.println("m_StrmConn = " + m_StrmConn);
             	streamConnections = new StreamConnection[1];
             	
             	streamConnections[0] = m_StrmConn;
@@ -146,44 +189,66 @@ public class ClientServer implements DiscoveryListener {
     
     public void servicesDiscovered(int transID, ServiceRecord[] records) {
     	
+    	System.out.println("records.length: " + records.length);
+    	
         for (int i = 0; i < records.length; i++) {
             m_strUrl = records[i].getConnectionURL(ServiceRecord.AUTHENTICATE_ENCRYPT, false);
+            System.out.println("m_strUrl: " + m_strUrl);
  
             if (m_strUrl.startsWith("btspp")) {
                 m_bServerFound = true;
                 m_bInitClient = true;
                 break;
             }
- 
         }
     }
  
     public void deviceDiscovered(RemoteDevice btDevice, DeviceClass cod) {
         try {
+        	System.out.println("btDevice name: " + btDevice.getFriendlyName(true));
+        	System.out.println("btDevice addr: " + btDevice.getBluetoothAddress());
             UUID uuidSet[] = new UUID[1];
             uuidSet[0] = RFCOMM_UUID[0];
             int searchID = m_DscrAgent.searchServices(null, uuidSet, btDevice, this);
+            System.out.println("after searchServices with searchID = " + searchID);
         } catch (Exception e) {
+        	System.out.println("Exception in deviceDiscovered");
             e.printStackTrace();
         }
     }
     
     public String receiveMessage(ReceiverThread recvThread) {
     	String msg = null;
+    	
+    	System.out.println("ClientServer: receiveMessage");
 	
     	//System.out.println("beginning of receiveMessage");
     	//System.out.println("recvThread: " + recvThread);
     	//System.out.println("recvThread.rcvMsg: " + recvThread.rcvMsg);
     	//System.out.println("recvThread.rcvMsg.size: " + recvThread.rcvMsg.size());
     	
-		if (recvThread.rcvMsg.size() > 0) {
-			//System.out.println("inside if statement");
-			msg = recvThread.rcvMsg.firstElement().toString();
-			recvThread.rcvMsg.removeElementAt(0);
-			return msg;
-		}
+    	synchronized (recvThread.rcvMsg) {
+			if (recvThread.rcvMsg.size() > 0) {
+				System.out.println("messages available to receive");
+				//System.out.println("inside if statement");
+				msg = recvThread.rcvMsg.firstElement().toString();
+				recvThread.rcvMsg.removeElementAt(0);
+				return msg;
+			}
+    	}
 		return msg;
     }
+    
+    public void send (String msg, int client) {
+    	senderThread.sendMsg(msg, client, new Integer(0));
+    }
+    
+    public void send (String msg) {
+    	System.out.println("in clientServer.send with msg = " + msg);
+    	senderThread.sendMsg(msg, new Integer(0));
+    }
+    
+    
 
 	/*public void run() {
 		// TODO Auto-generated method stub

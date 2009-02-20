@@ -26,8 +26,9 @@ public class StartAGame extends Screen {
 	private boolean m_bRunThread = false;
 	private boolean m_bIsServer = true, isServer = true;
 	private Network network;
-	
-	private static final int NUMCLIENTS = 1;
+
+	// TODO: move NUMCLIENTS + setupPlayers code elsewhere
+	public static final int NUMCLIENTS = 2;
 	
 	
 	public StartAGame(String title, Network network) {
@@ -48,6 +49,7 @@ public class StartAGame extends Screen {
 		
 		Thread thread = new Thread(network);
         thread.start();
+
         
         /*try {
 	        synchronized(network.connected) {
@@ -57,6 +59,7 @@ public class StartAGame extends Screen {
         	e.printStackTrace();
         }*/
         
+        /** Comment out until Nplayer intialization works
         System.out.println("Server on!");       
         
         
@@ -79,11 +82,14 @@ public class StartAGame extends Screen {
 			network.send(i, String.valueOf(i));
 		}
 		
+		
     	this.append("All the clients have connected.");
     	this.append("Choose START to begin the game");
     	this.addCommand(startCommand);
     	
     	return newPlayers;
+    	*/
+        return null;
 	}
 	
 	public void run() {

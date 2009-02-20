@@ -30,7 +30,6 @@ public class Network implements Runnable {
 	public void initializeNetwork(boolean isServer, int numClients) {
 		this.isServer = isServer;
 		this.numClients = numClients;
-		System.out.println("initialized network class");
 		sendBuffer = new Vector();
 		receiverBuffer = new Vector();
 
@@ -40,7 +39,6 @@ public class Network implements Runnable {
 	public void run() {
         //while (m_bRunThread) {
             try {
-            	System.out.println("inside Network.  trying to connect client");
             	// Just by creating a new Application object, you run the application
             	// either as a client or server depending on the m_bIsServer variable.
                 /*if (app == null) {
@@ -49,12 +47,10 @@ public class Network implements Runnable {
                 }*/
             	
             	if (isServer) {
-        			//this.numClients = numClients;
             		
             		// Blocks until it connects to numClients
         			clientServer.InitServer(numClients);
         		} else {
-        			System.out.println("about to initClient()");
         			clientServer.InitClient();
         			try {
         				// need to manually wait for client to be connected to server
@@ -67,13 +63,18 @@ public class Network implements Runnable {
         			}
         		}
             	
-            	System.out.println("finished connecting...");
             	
             	/*synchronized(connected) {
             		connected.notifyAll();
 				}*/
+
+            	clientServer.createIOThreads();
+            	
             	isConnected = true;
             	
+            	_app.fullyConnected();
+            	
+            	/*
         		if (isServer) {
         			streamConns = clientServer.getStreamConnections();
         			sendThread = new SenderThread(streamConns);
@@ -87,32 +88,36 @@ public class Network implements Runnable {
         			recvThread = new ReceiverThread(streamConns[0], sendThread, isServer);
         			recvThread.start();
         	    	sendThread.start();
-        		}
+        		}*/
                 
             } catch (Exception ex) {
                 System.out.println(ex.getMessage());
             }
 	}
 	
-	public void send(String msg) {
+	/*public void send(String msg) {
 		String finalMsg = msg.concat("\0");
-		System.out.println("Sending: " + msg);
+		System.out.println("Sending: " + finalMsg);
 		sendThread.sendMsg(finalMsg, new Integer(-1));
-	}
+	}*/
 	
 	// Send a 'private' message to one client only
 	public void send(int clientID, String msg) {
-		// TODO: Fill in
+		String finalMsg = msg.concat("\0");
+		System.out.println("Sending to client #" + clientID + ": " + finalMsg);
+		clientServer.send(finalMsg, clientID);
 	}
 	
 	// Send a message to ALL CONNECTED CLIENTS
 	public void broadcast(String msg) {
-		// TODO: Fill in
-		this.send(msg);
+		String finalMsg = msg.concat("\0");
+		System.out.println("Broadcasting: " + finalMsg);
+		clientServer.send(finalMsg);
 	}
 	
 	/** Blocks until a msg is received */
 	public String receiveNow() {
+		
 		String msg = null;
 		
 		while (msg == null) {
@@ -130,7 +135,7 @@ public class Network implements Runnable {
 		String msg = null;
 		
 		if ((msg = clientServer.receiveMessage(recvThread)) != null) {
-			System.out.println("msg received: " + msg);
+			System.out.println("Received: " + msg);
 			msg = msg.substring(0, msg.length()-1);
 		}
 		return msg;
