@@ -210,7 +210,11 @@ public class Round extends GameCanvas implements Runnable {
 	private void createGridFromBroadcast() {
 		
 		try {
-			String input = network.receiveNow().msg();
+			String input = null;
+			while ((input = network.receiveNow().msg()).indexOf("|") < 0) {
+				continue;
+			}
+			
 			String[] blocks = Utilities.split(input, "|", 2);
 			
 			// Get the player information
@@ -305,9 +309,12 @@ public class Round extends GameCanvas implements Runnable {
 			//verifyGameState();
 			if (_grid.isWon()) {
 				stopGame = true;
+				//break;
 			}
-			checkUserInput();
-			checkRemotePlayerInput();
+			if (!stopGame) {
+				checkUserInput();
+				checkRemotePlayerInput();
+			}
 			updateGameScreen(getGraphics());
 			
 			// Now wait...
@@ -445,7 +452,7 @@ public class Round extends GameCanvas implements Runnable {
 	private void updateGameScreen(Graphics g) {
 		
 		
-		if (command != "" && !_grid.isWon())	// to avoid sending extra commands after game is won
+		if (command != "")
 			network.broadcast(command);
 			command = "";
 		

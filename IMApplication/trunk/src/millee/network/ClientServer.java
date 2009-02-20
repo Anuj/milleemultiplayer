@@ -84,7 +84,7 @@ public class ClientServer implements DiscoveryListener {
         	
         	
         	for (int i = 0; i < numConnections; i++) {
-        		m_strUrl = "btspp://localhost:" + RFCOMM_UUID[i] + ";name=rfcommtest;authorize=true";
+        		m_strUrl = "btspp://localhost:" + RFCOMM_UUID[i] + ";name=rfcommtest;authorize=false";
         		m_LclDevice = LocalDevice.getLocalDevice();
                 m_LclDevice.setDiscoverable(DiscoveryAgent.GIAC);
                 System.out.println("waiting to connect to client #" + i);
