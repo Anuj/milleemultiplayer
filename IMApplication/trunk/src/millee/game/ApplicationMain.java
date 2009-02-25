@@ -125,7 +125,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 			if (startOrJoinGame.getListSelection() == 0) {
 				isServer = true;
 				display.setCurrent(startAGame);
-				_players = startAGame.setupNetworkPlayers(myName, myImagePath);
+				startAGame.setupNetworkPlayers(myName, myImagePath);
 			} else {
 				isServer = false;
 				joinGame.setCharacterChoice(characterChoice);

@@ -28,7 +28,7 @@ public class StartAGame extends Screen {
 	private Network network;
 
 	// TODO: move NUMCLIENTS + setupPlayers code elsewhere
-	public static final int NUMCLIENTS = 3;
+	public static final int NUMCLIENTS = 2;
 	
 	
 	public StartAGame(String title, Network network) {
@@ -42,7 +42,7 @@ public class StartAGame extends Screen {
         
 	}
 	
-	public Vector setupNetworkPlayers(String myName, String myImagePath) {
+	public void setupNetworkPlayers(String myName, String myImagePath) {
 		//Network network = new Network();
 		network.initializeNetwork(true, NUMCLIENTS);
 		
@@ -88,7 +88,6 @@ public class StartAGame extends Screen {
     	
     	return newPlayers;
     	*/
-        return null;
 	}
 	
 	public void run() {
