@@ -1,4 +1,6 @@
 package millee.game;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Random;
 import java.util.Vector;
 
@@ -7,6 +9,9 @@ import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.game.GameCanvas;
 import javax.microedition.lcdui.game.Sprite;
+import javax.microedition.media.Manager;
+import javax.microedition.media.MediaException;
+import javax.microedition.media.protocol.DataSource;
 
 import millee.game.initialize.Utilities;
 import millee.game.mechanics.GameGrid;

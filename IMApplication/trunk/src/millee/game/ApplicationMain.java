@@ -1,5 +1,6 @@
 package millee.game;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Vector;
 
 import javax.microedition.lcdui.Choice;
@@ -11,6 +12,9 @@ import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Form;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.List;
+import javax.microedition.media.Manager;
+import javax.microedition.media.MediaException;
+import javax.microedition.media.Player;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 
@@ -33,6 +37,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 	
 	private static final int NUM_ROUNDS = 2;
 	private static final int NUM_LEVELS = 2;
+	private static final String GAME_LOOP_SOUND = "/game_loop.wav";
 	
 	public static Display theDisplay;
 	
@@ -148,6 +153,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 				joinGame.initClient();
 				display.setCurrent(joinGame);
 			}
+			// startMusic(); -- ...no
 		} /*else if (c == startOrJoinGame.okCommand()){
 			if (startOrJoinGame.getListSelection() == 0) {
 				isServer = true;
@@ -356,4 +362,27 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 		
 		return _startOrJoinGameList;		
 	}
+	
+	/**
+	 * Start some infinite looping music...
+	 *
+	private void startMusic() {
+        // Play some music!
+		try {
+			InputStream is = getClass().getResourceAsStream(GAME_LOOP_SOUND); 
+		    Player p = Manager.createPlayer(is, "audio/X-wav"); 
+		    p.setLoopCount(-1);
+		    
+		    p.prefetch(); // prefetch
+		    p.realize(); // realize
+		    p.start(); // and start
+		    
+		    // Free resources
+		    is.close();
+		    is = null;
+		}
+		catch (IOException ioe) { }
+		catch (MediaException me) { } 
+	}
+	*/
 }
