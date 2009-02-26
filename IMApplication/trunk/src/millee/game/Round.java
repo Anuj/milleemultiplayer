@@ -40,7 +40,7 @@ public class Round extends GameCanvas implements Runnable {
 	// Data structures of the game
 	private GameGrid _grid;
 	private Vector _players;
-	private static int[] scores;
+	private static int[] scores = null;
 	
 	// Status indicators
 	private boolean stopGame = false;
@@ -108,7 +108,15 @@ public class Round extends GameCanvas implements Runnable {
 		
 		tokenSprites = new Sprite[totalNumTokensToDisplay];
 
+		
 		exitCmd = new Command("Exit", Command.EXIT, 0);
+		
+		if (scores == null) {
+			scores = new int[_nPlayers];
+			for (int i = 0; i<_nPlayers; i++) {
+				scores[i] = 0;
+			}
+		}
 	}
 	
 	/**
@@ -333,6 +341,10 @@ public class Round extends GameCanvas implements Runnable {
 		}
 	}
 	
+	public static void incrementScore(int clientID) {
+		scores[clientID] += 10;
+	}
+	
 	/**
 	 * Sends individual commands out onto the network
 	 * @param clientId
@@ -373,14 +385,23 @@ public class Round extends GameCanvas implements Runnable {
 	 * Draw things to the screen
 	 */
 	private void updateGameScreen() {
+		//System.out.println("Your score: " + scores[this.localPlayerID]);
 		if (stopGame) {
 			// End game drawing
 			okCmd = new Command("OK", Command.OK, 1);
 			this.addCommand(okCmd);
 			graphics.drawString("Round Complete!", getWidth()/2, getHeight()/2, Graphics.TOP | Graphics.LEFT);
+			for (int i = 0; i<scores.length; i++) {
+				System.out.println("Player " + i + ": " + scores[i]);
+			}
 		} else {
 			// Tell the grid to redraw itself
 			_grid.redraw(graphics);
+			
+			// TODO: Figure out how to display the score in the bottom left or top right corner.
+			graphics.setColor(1, 1, 1);
+			graphics.drawString("Your score: " + scores[this.localPlayerID], 0, 3*getHeight()/4, Graphics.TOP | Graphics.LEFT);
+			
 		}
 		
 		// Draw graphics to the screen

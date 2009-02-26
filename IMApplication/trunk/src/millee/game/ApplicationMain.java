@@ -153,19 +153,12 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 			// startMusic(); -- ...no
 		} else if (c == initialLevelPage.getStartCommand()) {
 			network.broadcast("go");
-			System.out.println("before creating new round");
 			game = createNewRound();
-			System.out.println("after creating new round");
 			numLevelsLeft--;
-			System.out.println("before starting game");
 			game.start();
-			System.out.println("after starting game");
 			display.setCurrent(game);
 		} else if (c == game.getOkCommand()) {
-			System.out.println("start of game.okCmd");
 			numRoundsLeft--;
-			
-			System.out.println("numLevelsLeft: " + numLevelsLeft + ", numRoundsLeft: " + numRoundsLeft);
 			if (numLevelsLeft <= 0 && numRoundsLeft <= 0) {		// end of game
 				display.setCurrent(winnerScreen);
 			} else if (numRoundsLeft <= 0) {	// end of current level
@@ -179,9 +172,8 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 				game = createNewRound();
 				game.start();
 				display.setCurrent(game);
-			}
-			
-		}else if (c == levelStartPage.getStartCommand()) {
+			}	
+		} else if (c == levelStartPage.getStartCommand()) {
 			game = createNewRound();
 			numLevelsLeft--;
 			game.start();
