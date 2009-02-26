@@ -13,6 +13,10 @@ import javax.microedition.lcdui.Image;
 public class StartScreen extends Screen {
 	private Image startImage;
 	
+	// Nokia parameters
+	private static final int SCREEN_WIDTH = 120;
+	private static final int SCREEN_HEIGHT = 115;
+	
 	public StartScreen (String title) {
 		super(title);
 		
@@ -20,8 +24,7 @@ public class StartScreen extends Screen {
 	        startImage = Image.createImage("/mainScreen.png");
         } catch (IOException e) {}
         
-        //this.append(Utilities.resizeImage(startImage, getWidth(), getHeight()));
-        this.append("Dimensions: " + getWidth() + getHeight());
+        this.append(Utilities.resizeImage(startImage, getWidth(), getHeight())); //SCREEN_WIDTH, SCREEN_HEIGHT));
         this.addCommand(startCommand);
 	}
 	

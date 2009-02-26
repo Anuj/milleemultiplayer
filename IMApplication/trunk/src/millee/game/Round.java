@@ -30,6 +30,7 @@ public class Round extends GameCanvas implements Runnable {
 	private Image _backgroundImage;
 	private Sprite[] tokenSprites;
 	private Command exitCmd, okCmd;
+	private int _cellWidth, _cellHeight;
 	
 	// Data structures of the game
 	private GameGrid _grid;
@@ -82,6 +83,8 @@ public class Round extends GameCanvas implements Runnable {
 		this._players = players;
 		
 		this._backgroundImage = Utilities.createImage(backgroundPath);
+		_cellWidth = this.getWidth()/TILE_DIMENSIONS;
+		_cellHeight = this.getHeight()/TILE_DIMENSIONS;
 		
 		this._roundID = round;
 		this._levelID = level;
@@ -127,8 +130,8 @@ public class Round extends GameCanvas implements Runnable {
 			
 			// Assign player coordinates
 			for (i = 0; i < _nPlayers; i++) {
-				x = random.nextInt(12);
-				y = random.nextInt(11);
+				x = random.nextInt(_cellWidth);
+				y = random.nextInt(_cellHeight);
 				p = (Player) _players.elementAt(i);
 				_grid.insertPlayer(p, x, y);
 				broadcastString.append(i);
@@ -145,8 +148,8 @@ public class Round extends GameCanvas implements Runnable {
 			for (i = 0; i < totalNumTokensToDisplay; i++) {
 				// TODO: Don't hard code which goodie, or the number of goodie types
 				goodieType = Goodie.TOMATO;
-				x = random.nextInt(12);
-				y = random.nextInt(11);
+				x = random.nextInt(_cellWidth);
+				y = random.nextInt(_cellHeight);
 				_grid.insertGoodie(new Goodie(goodieType), x, y);
 				broadcastString.append(goodieType);
 				broadcastString.append(',');
@@ -224,8 +227,8 @@ public class Round extends GameCanvas implements Runnable {
 		graphics.fillRect(0,0,getWidth(),getHeight());
 		
 		// Populate it and tell others, or populate it from the information received
-		_grid = new GameGrid(	this.getWidth()/TILE_DIMENSIONS, 
-								this.getHeight()/TILE_DIMENSIONS, 
+		_grid = new GameGrid(	_cellWidth, 
+								_cellHeight, 
 								_backgroundImage, 
 								TILE_DIMENSIONS);
 		
