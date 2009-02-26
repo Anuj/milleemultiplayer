@@ -15,18 +15,17 @@ public class StartScreen extends Screen {
 	
 	public StartScreen (String title) {
 		super(title);
-		// TODO Auto-generated constructor stub
 		
         try {
 	        startImage = Image.createImage("/mainScreen.png");
-        } catch (IOException e) {
-        	
-        }
-        this.append(startImage);
+        } catch (IOException e) {}
+        
+        //this.append(Utilities.resizeImage(startImage, getWidth(), getHeight()));
+        this.append("Dimensions: " + getWidth() + getHeight());
         this.addCommand(startCommand);
 	}
 	
-	public Command startCommand() {
+	public Command getStartCommand() {
 		return startCommand;
 	}
 }

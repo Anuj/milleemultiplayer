@@ -1,20 +1,12 @@
 package millee.game;
-import java.io.IOException;
 import java.util.Random;
 import java.util.Vector;
 
-import javax.microedition.io.StreamConnection;
-import javax.microedition.lcdui.Alert;
 import javax.microedition.lcdui.Command;
-import javax.microedition.lcdui.Displayable;
-import javax.microedition.lcdui.Form;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
-import javax.microedition.lcdui.TextField;
 import javax.microedition.lcdui.game.GameCanvas;
-import javax.microedition.lcdui.game.LayerManager;
 import javax.microedition.lcdui.game.Sprite;
-import javax.microedition.lcdui.game.TiledLayer;
 
 import millee.game.initialize.Utilities;
 import millee.game.mechanics.GameGrid;
@@ -24,117 +16,109 @@ import millee.network.Message;
 import millee.network.Network;
 
 /**
- * 
- */
-
-/**
  * @author Priyanka
  *
  */
 public class Round extends GameCanvas implements Runnable {
 	
-	private GameGrid _grid;
-	
-	private static final int SLEEP_INCREMENT = 10;
-	private static final int SLEEP_INITIAL = 150;
-	private static final int SLEEP_MAX = 300;
-	
-	private static final String TILE_IMAGE = "/tiles.png";
-	private static final int TILE_WIDTH = 12;
-	private static final int TILE_HEIGHT = 11;
-	private static final int TILE_DIMENSIONS = 15;
-	
-	private static final String FLOWER_IMAGE = "/stain.png";
-	private static final String TOMATO_IMAGE = "/tomato.png";
-
-	private Graphics        graphics;
-	private Random          random;
-	private int             sleepTime = SLEEP_INITIAL;
+	// Class elements
 	private volatile Thread thread;
+	private Random random;
 	
-	private static char _possibleCommands[] = {'U', 'D', 'R', 'L'};
+	// Stuff for drawing
+	private Graphics graphics;
+	private Image _backgroundImage;
+	private Sprite[] tokenSprites;
+	private Command exitCmd, okCmd;
 	
+	// Data structures of the game
+	private GameGrid _grid;
+	private Vector _players;
+	private static int[] scores;
+	
+	// Status indicators
 	private boolean stopGame = false;
 	private String command = "";
 	
-	// Drawing stuff
-	private LayerManager layers;
-	private TiledLayer tiledLayer;
-	private Sprite flower, tomato;
+	private int _nPlayers, _roundID, _levelID;
+	private boolean _bLastRound;
+	private String _levelName;
+	private int[] _scoreAssignments;
+	private String[] possibleTokenPaths, possibleTokenText;
+	private int totalNumTokensToDisplay;
+	private int localPlayerID;
+	private boolean isServer;
+	private Network _network;
 	
-	private int flowerX;
-	private int flowerY;
+	// Constants
+	private static final int SLEEP_TIME = 300;
+	private static final int TILE_DIMENSIONS = 15;
+
 	
-	Command exitCmd, okCmd;
-	
-	/* New Variables */
-	int numPlayers;
-	int round, level;
-	boolean lastRoundInLevel;
-	String levelName;
-	String[] playerNames, playerImagePaths;
-	int[] scoreAssignment;
-	String backgroundPath;
-	String[] possibleTokenPaths, possibleTokenText;
-	int totalNumTokensToDisplay;
-	int localPlayerId;
-	boolean isServer;
-	Network network;
-	int nonce;
-	
-	private Vector _players;
-	
-	String playerName, playerImagePath;
-	
-	/* Static Variables */
-	int[] scores;
-	
-	/* Instance Variables */
-	//Sprite[] playerSprites;
-	Sprite[] tokenSprites;
-	Image backgroundImage;
-	
-	int localPlayerX, localPlayerY;
-	
+	/**
+	 * Constructor for Round	
+	 * @param players
+	 * @param backgroundPath
+	 * @param round
+	 * @param level
+	 * @param lastRoundInLevel
+	 * @param levelName
+	 * @param scoreAssignments
+	 * @param possibleTokenPaths
+	 * @param possibleTokenText
+	 * @param totalNumTokensToDisplay
+	 * @param isServer
+	 * @param network
+	 * @param localPlayerId
+	 */
 	public Round (Vector players, String backgroundPath, int round, int level, boolean lastRoundInLevel, 
-					String levelName, int[] scoreAssignment,
+					String levelName, int[] scoreAssignments,
 					String[] possibleTokenPaths, String[] possibleTokenText, int totalNumTokensToDisplay,
 					boolean isServer, Network network, int localPlayerId) {
+		
 		super(true);
 		
-		this.numPlayers = players.size();
+		this._nPlayers = players.size();
 		this._players = players;
-		this.round = round;
-		this.level = level;
-		this.lastRoundInLevel = lastRoundInLevel;
-		this.levelName = levelName;
-		this.scoreAssignment = scoreAssignment;
-		this.backgroundPath = backgroundPath;
+		
+		this._backgroundImage = Utilities.createImage(backgroundPath);
+		
+		this._roundID = round;
+		this._levelID = level;
+		this._bLastRound = lastRoundInLevel;
+		this._levelName = levelName;
+		this._scoreAssignments = scoreAssignments;
+		
 		this.possibleTokenPaths = possibleTokenPaths;
 		this.possibleTokenText = possibleTokenText;
 		this.totalNumTokensToDisplay = totalNumTokensToDisplay;
+		
 		this.isServer = isServer;
-		this.playerName = playerName;
-		this.playerImagePath = playerImagePath;
+		this._network = network;
 		
-		this.localPlayerId = localPlayerId;
-		
-		this.network = network;
+		this.localPlayerID = localPlayerId;
 		
 		tokenSprites = new Sprite[totalNumTokensToDisplay];
-		
 	}
 	
+	/**
+	 * Getter for the OK command
+	 * @return Command OkCommand
+	 */
 	public Command getOkCommand() {
 		return this.okCmd;
 	}
 	
+	/**
+	 * Getter for the Exit command
+	 * @return Command ExitCommand
+	 */
 	public Command getExitCommand() {
 		return this.exitCmd;
 	}
 	
 	// Only the server uses this.
-	private void createGridAndBroadcast() {
+	private void buildGridAndBroadcast() {
 		
 		try {
 			Player p = null;
@@ -142,7 +126,7 @@ public class Round extends GameCanvas implements Runnable {
 			StringBuffer broadcastString = new StringBuffer("");
 			
 			// Assign player coordinates
-			for (i = 0; i < numPlayers; i++) {
+			for (i = 0; i < _nPlayers; i++) {
 				x = random.nextInt(12);
 				y = random.nextInt(11);
 				p = (Player) _players.elementAt(i);
@@ -173,18 +157,18 @@ public class Round extends GameCanvas implements Runnable {
 			}
 			
 			// Broadcast this information to all clients
-			network.broadcast(broadcastString.toString());
+			_network.broadcast(broadcastString.toString());
 		} catch (NullPointerException e) {
 			e.printStackTrace();
 		}
 	}
 	
 	// Only the clients use this.
-	private void createGridFromBroadcast() {
+	private void buildGridFromBroadcast() {
 		
 		try {
 			String input = null;
-			while ((input = network.receiveNow().msg()).indexOf("|") < 0) {
+			while ((input = _network.receiveNow().msg()).indexOf("|") < 0) {
 				continue;
 			}
 			
@@ -195,16 +179,16 @@ public class Round extends GameCanvas implements Runnable {
 			String[] playerInfo = null;
 			Player tmpPlayer = null;
 			int x,y;
-			System.out.println("sPlayers = " + sPlayers);
+			//System.out.println("sPlayers = " + sPlayers);
 			for (int i = 0; i < sPlayers.length; i++) {
-				System.out.println("splayers[" + i + "] = " + sPlayers[i]);
-				System.out.println("putting player " + i + " on the board");
+				//System.out.println("splayers[" + i + "] = " + sPlayers[i]);
+				//System.out.println("putting player " + i + " on the board");
 				playerInfo = Utilities.split(sPlayers[i], ",", 3);
-				System.out.println("playerInfo = " + playerInfo);
+				//System.out.println("playerInfo = " + playerInfo);
 				// TODO: Deal with the lack of a name, image
 				tmpPlayer = (Player) _players.elementAt(i);
-				System.out.println("player's name is " + tmpPlayer);
-					//new Player("PLAYER " + playerInfo[0], Utilities.createImage("/dancer_small.png"), Integer.parseInt(playerInfo[0]), 0);
+				//System.out.println("player's name is " + tmpPlayer);
+				//new Player("PLAYER " + playerInfo[0], Utilities.createImage("/dancer_small.png"), Integer.parseInt(playerInfo[0]), 0);
 				x = Integer.parseInt(playerInfo[1]);
 				y = Integer.parseInt(playerInfo[2]);
 				_grid.insertPlayer(tmpPlayer, x, y);
@@ -228,36 +212,27 @@ public class Round extends GameCanvas implements Runnable {
 		
 	}
 	
-	public void initialize() {
-		// TODO: Eliminate hard-coding of grid dimensions
-		_grid = new GameGrid(12, 11, Utilities.createImage(backgroundPath), 15);
-
-		if (isServer) {
-			createGridAndBroadcast();
-		}
-		else {
-			createGridFromBroadcast();
-		}
-	}
-	
+	/**
+	 * How to tell the Round to begin.
+	 */
 	public void start() {
-		
 		random = new Random();
 
+		// Blank out the screen
 		graphics = getGraphics();
-		graphics.setColor( 0,  0, 0 );
-		graphics.fillRect( 0, 0, getWidth(), getHeight() );
+		graphics.setColor(0,0,0);
+		graphics.fillRect(0,0,getWidth(),getHeight());
 		
-		// Set up the layer manager and the first tiled layer
-		//layers = new LayerManager();
+		// Populate it and tell others, or populate it from the information received
+		_grid = new GameGrid(	this.getWidth()/TILE_DIMENSIONS, 
+								this.getHeight()/TILE_DIMENSIONS, 
+								_backgroundImage, 
+								TILE_DIMENSIONS);
 		
+		if (isServer) {	buildGridAndBroadcast(); }
+		else { buildGridFromBroadcast(); }
 		
-		
-		// Loading and using images to build grid
-		
-		// initialize all players and tokens on the board
-		initialize();
-		
+		// Kick off the thread
 		showNotify();
 	}
 	
@@ -272,60 +247,43 @@ public class Round extends GameCanvas implements Runnable {
 		thread = null;
 	}
 
-	// The game loop.
+	/**
+	 * The main game loop. Runs continuously as long as this canvas is active.
+	 */
 	public void run(){
-		//int w = getWidth();
-		//int h = getHeight() - 1;
-
 		while( thread == Thread.currentThread() && !stopGame) {
 			
-			//verifyGameState();
+			// Check if the grid is empty
 			if (_grid.isWon()) {
 				stopGame = true;
 				System.out.println("Game has ended");
-				//break;
 			}
+			
+			// If the game isn't over, look for inputs
 			if (!stopGame) {
 				checkUserInput();
 				checkRemotePlayerInput();
 			}
-			updateGameScreen(getGraphics());
+			
+			// If there is a command pending, broadcast it to all other players
+			if (!command.equals("")) {
+				_network.broadcast(command);
+				command = "";
+			}
+			
+			// Draw stuff to screen
+			updateGameScreen();
 			
 			// Now wait...
 			try {
-				Thread.sleep( sleepTime );
+				Thread.sleep(SLEEP_TIME);
 			}
-			catch( InterruptedException e ){
-			}
+			catch( InterruptedException e ){}
 		}
-		
-		//TODO: See if we actually won this
-		//Alert a = new Alert("END OF ROUND", "Congratulations!", null,null);
-		//a.setTimeout(Alert.FOREVER);
-//		
-//		exitCmd = new Command("Exit", Command.EXIT, 0);
-//		okCmd = new Command("OK", Command.OK, 1);
-//		this.addCommand(exitCmd);
-//		this.addCommand(okCmd);
-//		graphics.drawString("COLLISION!!", getWidth()/2, getHeight()/2, graphics.TOP | graphics.LEFT);
-//		System.out.println("stopping the round");
-		
-		
-		//mDisplay.setCurrent(a, mMainForm);
-		//this.setTitle("End of this Runnable");
-		//this.notifyAll();
-	}
-	
-	private void verifyGameState() {
-		  if (_grid.isWon()) {
-			  stopGame = true;
-		  }
 	}
 	
 	private void checkRemotePlayerInput() {
-		if (stopGame) { return; }
-
-		Message msg = network.receiveLater();
+		Message msg = _network.receiveLater();
 		char command;
 		int clientId;
 		String[] msgs = null;
@@ -334,40 +292,41 @@ public class Round extends GameCanvas implements Runnable {
 			msgs = Utilities.split(msg.msg(), ",", 2);
 			clientId = Integer.parseInt(msgs[0]);
 			
-			if (clientId != localPlayerId) {
+			if (clientId != localPlayerID) {
 				command = msgs[1].charAt(0);
 				
 				switch (command) {
 					case 'u':
 						_grid.movePlayer(clientId, 0, -1);
-						if (isServer) network.broadcast(msg.msg());
-						//propogateCommand(clientId, command);
+						if (isServer) _network.broadcast(msg.msg());
 						break;
 					case 'd':
 						_grid.movePlayer(clientId, 0, 1);
-						if (isServer) network.broadcast(msg.msg());
-						//propogateCommand(clientId, command);
+						if (isServer) _network.broadcast(msg.msg());
 						break;
 					case 'r':
 						_grid.movePlayer(clientId, 1, 0);
-						if (isServer) network.broadcast(msg.msg());
-						//propogateCommand(clientId, command);
+						if (isServer) _network.broadcast(msg.msg());
 						break;
 					case 'l':
 						_grid.movePlayer(clientId, -1, 0);
-						if (isServer) network.broadcast(msg.msg());
-						//propogateCommand(clientId, command);
+						if (isServer) _network.broadcast(msg.msg());
 						break;
 					case 'n':
 						break;
 				}
 				
 			}
-			msg = network.receiveLater();
+			msg = _network.receiveLater();
 		}
 	}
 	
-	public void propogateCommand(int clientId, char command) {
+	/**
+	 * Sends individual commands out onto the network
+	 * @param clientId
+	 * @param command
+	 *
+	public void propagateCommand(int clientId, char command) {
 		if (isServer) {
 			for (int i = 1; i < this.numPlayers; i++) {
 				if (i != clientId)
@@ -375,74 +334,46 @@ public class Round extends GameCanvas implements Runnable {
 			}
 		}
 	}
+	*/
 	
-	/*
-		
-		for (int i = 0; i<numPlayers; i++) {
-			if (i != localPlayerId) {
-				char command = getCommand(); // Is this supposed to be a hook into network stuff later?
-				while (command != 'n') {
-					switch (command) {
-						case 'u':
-							_grid.movePlayer(i, 0, -1);
-							break;
-						case 'd':
-							_grid.movePlayer(i, 0, 1);
-							break;
-						case 'r':
-							_grid.movePlayer(i, 1, 0);
-							break;
-						case 'l':
-							_grid.movePlayer(i, -1, 0);
-							break;
-						case 'n':
-							break;
-					}
-					command = getCommand();
-				}
-			}
-		}
-	}
-*/
+	/**
+	 * Detects key presses and moves player on grid
+	 */
 	private void checkUserInput() {
-		// Detect key presses and speed up or slow down accordingly
+		// Detect key presses
 		int state = getKeyStates();
-		//command += this.localPlayerId;
 		if(( state & DOWN_PRESSED ) != 0 ){
-			_grid.movePlayer(localPlayerId, 0, 1);
-			 command += this.localPlayerId + ",d";
+			_grid.movePlayer(localPlayerID, 0, 1);
+			 command += this.localPlayerID + ",d";
 		} else if(( state & UP_PRESSED ) != 0 ){
-			_grid.movePlayer(localPlayerId, 0, -1);
-			command += this.localPlayerId + ",u";
+			_grid.movePlayer(localPlayerID, 0, -1);
+			command += this.localPlayerID + ",u";
 		} else if ((state & LEFT_PRESSED) != 0) {
-			_grid.movePlayer(localPlayerId, -1, 0);
-			command += this.localPlayerId + ",l";
+			_grid.movePlayer(localPlayerID, -1, 0);
+			command += this.localPlayerID + ",l";
 		} else if ((state & RIGHT_PRESSED) != 0) {
-			_grid.movePlayer(localPlayerId, 1, 0);
-			command += this.localPlayerId + ",r";
+			_grid.movePlayer(localPlayerID, 1, 0);
+			command += this.localPlayerID + ",r";
 		}
 	}
 
-	private void updateGameScreen(Graphics g) {
-		
-		
-		if (command != "")
-			network.broadcast(command);
-			command = "";
-		
+	/**
+	 * Draw things to the screen
+	 */
+	private void updateGameScreen() {
 		if (stopGame) {
-			
+			// End game drawing
 			exitCmd = new Command("Exit", Command.EXIT, 0);
 			okCmd = new Command("OK", Command.OK, 1);
 			this.addCommand(exitCmd);
 			this.addCommand(okCmd);
-			g.drawString("COLLISION!!", getWidth()/2, getHeight()/2, g.TOP | g.LEFT);
-		
+			graphics.drawString("Round Complete!", getWidth()/2, getHeight()/2, Graphics.TOP | Graphics.LEFT);
 		} else {
-			// Redraw with the LayerManager
+			// Tell the grid to redraw itself
 			_grid.redraw(graphics);
 		}
+		
+		// Draw graphics to the screen
 		flushGraphics();
-
 	}	
 }

@@ -22,7 +22,6 @@ public class InitialLevelPage extends Screen {
 
 	public InitialLevelPage(String title, Network network, int characterChoice, boolean isServer, String myName, String myImagePath, ApplicationMain app) {
 		super(title);
-		// TODO Auto-generated constructor stub
 		
 		StringItem str = new StringItem("Colour Colour", "Level 1: Colours");
 		StringItem str2 = new StringItem(null, "Ready! Set! Go!");
@@ -139,5 +138,5 @@ public class InitialLevelPage extends Screen {
 		
 		
 	}
-
+	
 }

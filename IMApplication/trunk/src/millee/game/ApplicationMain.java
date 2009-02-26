@@ -103,7 +103,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
         
 		System.out.println("start of commandAction method");
 		
-		if (c == startScreen.startCommand()) {
+		if (c == startScreen.getStartCommand()) {
 			
 			// TODO: Reverse these blocks so that the intro screens are shown
 			/*game = createNewRound();
@@ -155,7 +155,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 			localPlayerId = levelStartPage.sendPlayerInfo(myName, myImagePath);
 			_players = levelStartPage.createPlayersByClients();
 		}*/ 
-		else if (c == initialLevelPage.startCommand()) {
+		else if (c == initialLevelPage.getStartCommand()) {
 			network.broadcast("go");
 			System.out.println("before creating new round");
 			game = createNewRound();
@@ -187,7 +187,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 				game.start();
 				display.setCurrent(game);
 			}
-		}else if (c == levelStartPage.startCommand()) {
+		}else if (c == levelStartPage.getStartCommand()) {
 			System.out.println("before creating new round");
 			game = createNewRound();
 			System.out.println("after creating new round");
@@ -231,7 +231,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 		
 		if (isServer) {
 			_players = initialLevelPage.setupPlayers(myName, myImagePath);
-			initialLevelPage.addCommand(initialLevelPage.startCommand());
+			initialLevelPage.addCommand(initialLevelPage.getStartCommand());
 		}
 		else {
 			localPlayerId = initialLevelPage.sendPlayerInfo(myName, myImagePath);

@@ -27,7 +27,7 @@ public class Screen extends Form {
 		return backCommand;
 	}
 	
-	public Command startCommand () {
+	public Command getStartCommand () {
 		return startCommand;
 	}
 	
