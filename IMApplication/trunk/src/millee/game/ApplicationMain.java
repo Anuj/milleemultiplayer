@@ -10,6 +10,7 @@ import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Form;
 import javax.microedition.lcdui.Image;
+import javax.microedition.lcdui.List;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 
@@ -19,6 +20,7 @@ import millee.game.initialize.JoinGame;
 import millee.game.initialize.StartAGame;
 import millee.game.initialize.StartOrJoinGame;
 import millee.game.initialize.StartScreen;
+import millee.game.initialize.Utilities;
 import millee.game.initialize.WinnerScreen;
 import millee.network.Message;
 import millee.network.Network;
@@ -54,6 +56,9 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 	InitialLevelPage initialLevelPage;
 	
 	private Vector _players;
+	
+	private List _charList = null, _startOrJoinGameList = null;
+	private Command listSelection = null;
 	
 	public ApplicationMain () {
 		theDisplay = display = Display.getDisplay(this);
@@ -101,7 +106,9 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 	
 	public void commandAction(Command c, Displayable d) {
         
-		System.out.println("start of commandAction method");
+		System.out.println("start of commandAction method with command label: " + c.getLabel());
+		System.out.println("command type: " + c.getCommandType());
+		System.out.println("displayable: " + d);
 		
 		if (c == startScreen.getStartCommand()) {
 			
@@ -113,15 +120,35 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 			display.setCurrent(game);*/
 			
 			
-			display.setCurrent(charForm);
-		} else if (c == charForm.okCommand()) {
+			display.setCurrent(getCharacterChoiceList());
+			
+		} /*else if (c == charForm.okCommand()) {
 			characterChoice = charForm.getListSelection();
 			myImagePath = "/dancer_small.png";
 			if (characterChoice == 0) myName = "Raj";
 			else if (characterChoice == 1) myName = "Sri";
 			else if (characterChoice == 2) myName = "Neha";
 			display.setCurrent(startOrJoinGame);
-		} else if (c == startOrJoinGame.okCommand()){
+		}*/ else if (c == List.SELECT_COMMAND && d == _charList) {
+			characterChoice = _charList.getSelectedIndex();
+			myImagePath = "/dancer_small.png";
+			if (characterChoice == 0) myName = "Raj";
+			else if (characterChoice == 1) myName = "Sri";
+			else if (characterChoice == 2) myName = "Neha";
+			display.setCurrent(getStartOrJoinGameList());
+		} else if (c == List.SELECT_COMMAND && d == _startOrJoinGameList) {
+			if (_startOrJoinGameList.getSelectedIndex() == 0) {
+				isServer = true;
+				display.setCurrent(startAGame);
+				startAGame.setupNetworkPlayers(myName, myImagePath);
+			} else {
+				isServer = false;
+				joinGame.setCharacterChoice(characterChoice);
+				joinGame.setGameChoice(gameChoice);
+				joinGame.initClient();
+				display.setCurrent(joinGame);
+			}
+		} /*else if (c == startOrJoinGame.okCommand()){
 			if (startOrJoinGame.getListSelection() == 0) {
 				isServer = true;
 				display.setCurrent(startAGame);
@@ -134,7 +161,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 				display.setCurrent(joinGame);
 				//display.setCurrent(chooseGame);
 			}
-		} /*else if (c == startAGame.startCommand()) {
+		}*/ /*else if (c == startAGame.startCommand()) {
 
 			levelStartPage = new LevelStartPage("Level 1", network, this.characterChoice, true);
 			levelStartPage.setCommandListener(this);
@@ -295,5 +322,38 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 		game.setCommandListener(this);
 		return game;
 	}
+	
+	private List getCharacterChoiceList() {
+		_charList = null;
+		
+		Image rajImage = Utilities.createImage("/flower2.png");
+        Image sriImage = Utilities.createImage("/mainScreen.png");
+        Image nehaImage = Utilities.createImage("/flower2.png");
+		
+		_charList = new List("Characters", List.IMPLICIT);
+		_charList.append("Raj", rajImage);
+		_charList.append("Sri", sriImage);
+		_charList.append("Neha", nehaImage);
+		
+		// TODO: Add Exit command here 
+		_charList.setCommandListener(this);
+		
+		return _charList;
+			
+	}
+	
+	private List getStartOrJoinGameList() {
+		listSelection = new Command("Select",Command.OK,0);
 
+		_startOrJoinGameList = new List("Start or Join game?", List.IMPLICIT);
+		
+		_startOrJoinGameList.append("Start a Game", null);
+		_startOrJoinGameList.append("Join a Game", null);
+		
+		// TODO: Add Exit command here 
+		_startOrJoinGameList.setCommandListener(this);
+		//_startOrJoinGameList.addCommand();
+		
+		return _startOrJoinGameList;		
+	}
 }
