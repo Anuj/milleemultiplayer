@@ -6,7 +6,7 @@ import javax.microedition.lcdui.Form;
 
 public class Screen extends Form {
 	
-	protected Command okCommand, backCommand, exitCommand, startCommand;
+	protected Command okCommand, backCommand, exitCommand, startCommand, cancelCommand;
 	protected ChoiceGroup choiceGroup;
 	
 	public Screen(String title) {
@@ -15,6 +15,7 @@ public class Screen extends Form {
 		backCommand=new Command("Back",Command.BACK,0);
 		exitCommand =new Command("Exit",Command.EXIT,0);
 		startCommand=new Command("Start",Command.SCREEN,1);
+		cancelCommand=new Command("Cancel", Command.CANCEL, 0);
         
 		// TODO Auto-generated constructor stub
 	}

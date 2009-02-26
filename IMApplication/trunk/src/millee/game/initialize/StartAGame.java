@@ -38,7 +38,9 @@ public class StartAGame extends Screen {
 		
 		this.append("Started a game...");
 		this.append("Waiting for players to join");
-        this.addCommand(backCommand);
+        //this.addCommand(backCommand);
+		this.addCommand(cancelCommand);
+        
         
 	}
 	

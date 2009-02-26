@@ -64,10 +64,14 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 	
 	private List _charList = null, _startOrJoinGameList = null;
 	private Command listSelection = null;
+	private Command _exitCommand = null, _backCommand = null;
+	
+	private Displayable _previousDisplayable = null;
 	
 	public ApplicationMain () {
 		theDisplay = display = Display.getDisplay(this);
-		
+		_exitCommand = new Command ("Exit", Command.EXIT, 0);
+		_backCommand = new Command ("Back", Command.BACK, 1);
 
 		network = new Network(this);
 		
@@ -90,7 +94,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 		winnerScreen.setCommandListener(this);
 		
 	}
-	protected void destroyApp(boolean arg0) throws MIDletStateChangeException {
+	protected void destroyApp(boolean arg0) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -109,39 +113,32 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 		display.setCurrent(startScreen);
 	}
 	
+	void quit() {
+		destroyApp(true);
+		notifyDestroyed();
+	}
+	
 	public void commandAction(Command c, Displayable d) {
-        
-		System.out.println("start of commandAction method with command label: " + c.getLabel());
-		System.out.println("command type: " + c.getCommandType());
-		System.out.println("displayable: " + d);
-		
-		if (c == startScreen.getStartCommand()) {
-			
-			// TODO: Reverse these blocks so that the intro screens are shown
-			/*game = createNewRound();
-			numLevelsLeft--;
-			//System.out.println("numLevelsLeft: " + numLevelsLeft + ", numRoundsLeft: " + numRoundsLeft);
-			game.start();
-			display.setCurrent(game);*/
-			
-			
+        		
+		if (c.getCommandType() == Command.EXIT) {
+			quit();
+		} else if (c.getCommandType() == Command.BACK) {
+			display.setCurrent(_previousDisplayable);
+		} else if (c == startScreen.getStartCommand()) {
+			_previousDisplayable = startScreen;
 			display.setCurrent(getCharacterChoiceList());
-			
-		} /*else if (c == charForm.okCommand()) {
-			characterChoice = charForm.getListSelection();
-			myImagePath = "/dancer_small.png";
-			if (characterChoice == 0) myName = "Raj";
-			else if (characterChoice == 1) myName = "Sri";
-			else if (characterChoice == 2) myName = "Neha";
-			display.setCurrent(startOrJoinGame);
-		}*/ else if (c == List.SELECT_COMMAND && d == _charList) {
+		} else if (c.getCommandType() == Command.CANCEL) {
+			display.setCurrent(getStartOrJoinGameList());
+		} else if (c == List.SELECT_COMMAND && d == _charList) {
 			characterChoice = _charList.getSelectedIndex();
 			myImagePath = "/dancer_small.png";
 			if (characterChoice == 0) myName = "Raj";
 			else if (characterChoice == 1) myName = "Sri";
 			else if (characterChoice == 2) myName = "Neha";
+			_previousDisplayable = getCharacterChoiceList();
 			display.setCurrent(getStartOrJoinGameList());
 		} else if (c == List.SELECT_COMMAND && d == _startOrJoinGameList) {
+			_previousDisplayable = getStartOrJoinGameList();
 			if (_startOrJoinGameList.getSelectedIndex() == 0) {
 				isServer = true;
 				display.setCurrent(startAGame);
@@ -154,56 +151,20 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 				display.setCurrent(joinGame);
 			}
 			// startMusic(); -- ...no
-		} /*else if (c == startOrJoinGame.okCommand()){
-			if (startOrJoinGame.getListSelection() == 0) {
-				isServer = true;
-				display.setCurrent(startAGame);
-				startAGame.setupNetworkPlayers(myName, myImagePath);
-			} else {
-				isServer = false;
-				joinGame.setCharacterChoice(characterChoice);
-				joinGame.setGameChoice(gameChoice);
-				joinGame.initClient();
-				display.setCurrent(joinGame);
-				//display.setCurrent(chooseGame);
-			}
-		}*/ /*else if (c == startAGame.startCommand()) {
-
-			levelStartPage = new LevelStartPage("Level 1", network, this.characterChoice, true);
-			levelStartPage.setCommandListener(this);
-			display.setCurrent(levelStartPage);
-			
-		}*/ /*else if (c == chooseGame.okCommand()) {
-			gameChoice = chooseGame.getListSelection();
-			joinGame.setCharacterChoice(characterChoice);
-			joinGame.setGameChoice(gameChoice);
-			joinGame.initClient();
-			display.setCurrent(joinGame);
-		}*/ /*else if (c == joinGame.startCommand()) {
-			//network.sendReceive();
-
-			levelStartPage = new LevelStartPage("Level 1", network, this.characterChoice, false, myName, myImagePath, this);
-			levelStartPage.setCommandListener(this);
-			display.setCurrent(levelStartPage);
-			localPlayerId = levelStartPage.sendPlayerInfo(myName, myImagePath);
-			_players = levelStartPage.createPlayersByClients();
-		}*/ 
-		else if (c == initialLevelPage.getStartCommand()) {
+		} else if (c == initialLevelPage.getStartCommand()) {
 			network.broadcast("go");
 			System.out.println("before creating new round");
 			game = createNewRound();
 			System.out.println("after creating new round");
 			numLevelsLeft--;
-			//System.out.println("numLevelsLeft: " + numLevelsLeft + ", numRoundsLeft: " + numRoundsLeft);
 			System.out.println("before starting game");
 			game.start();
 			System.out.println("after starting game");
-			
 			display.setCurrent(game);
-		}
-		 else if (c == game.getOkCommand()) {
+		} else if (c == game.getOkCommand()) {
 			System.out.println("start of game.okCmd");
 			numRoundsLeft--;
+			
 			System.out.println("numLevelsLeft: " + numLevelsLeft + ", numRoundsLeft: " + numRoundsLeft);
 			if (numLevelsLeft <= 0 && numRoundsLeft <= 0) {		// end of game
 				display.setCurrent(winnerScreen);
@@ -212,7 +173,6 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 				numRoundsLeft = NUM_ROUNDS;
 				levelStartPage = new LevelStartPage("Level 1", network, this.characterChoice, isServer, myName, myImagePath, this);
 				levelStartPage.setCommandListener(this);
-				//network.sendReceive();
 				display.setCurrent(levelStartPage);
 			} else if (numRoundsLeft > 0) {	// end of current round, move on to next round
 				game.hideNotify();
@@ -220,31 +180,17 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 				game.start();
 				display.setCurrent(game);
 			}
-		}else if (c == levelStartPage.getStartCommand()) {
-			System.out.println("before creating new round");
-			game = createNewRound();
-			System.out.println("after creating new round");
-			numLevelsLeft--;
-			//System.out.println("numLevelsLeft: " + numLevelsLeft + ", numRoundsLeft: " + numRoundsLeft);
-			System.out.println("before starting game");
-			game.start();
-			System.out.println("after starting game");
 			
+		}else if (c == levelStartPage.getStartCommand()) {
+			game = createNewRound();
+			numLevelsLeft--;
+			game.start();
 			display.setCurrent(game);
 		}
-
-		else if (c.getLabel() == "Exit") {
-			System.out.println("Exit button is currently nonfunctional");
-		}
-		else if (c.getLabel() == "Back") {
-			System.out.println("Back button is currently nonfunctional");
-		}
 		else {
-			System.out.println("Sorry your keypresses didn't match anything here");
+			System.out.println("Shouldn't come here: Sorry your keypresses didn't match anything here");
 		}
 		
-		//game.start();
-		//display.setCurrent(game);
 		/** TODO: Fix this incomplete statement
 		while (Thread.currentThread() == game) {
 			wait();
@@ -282,13 +228,8 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 	
 	public void startGame() {
 		game = createNewRound();
-		System.out.println("after creating new round");
 		numLevelsLeft--;
-		//System.out.println("numLevelsLeft: " + numLevelsLeft + ", numRoundsLeft: " + numRoundsLeft);
-		System.out.println("before starting game");
 		game.start();
-		System.out.println("after starting game");
-		
 		display.setCurrent(game);
 	}
 	
@@ -322,43 +263,46 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 		
 		Round game = new Round(_players, "/tiles.png", numRoundsLeft, numLevelsLeft, false, "Colours",
 								scoreAssignment, possibleTokenPaths, possibleTokenText, 4, isServer, network, localPlayerId);
-		
-		//Round game = new Round(0, 2, numRoundsLeft, numLevelsLeft, false, "Colours", playerNames, playerImagePaths, 
-		//						scoreAssignment, "/tiles.png", possibleTokenPaths, possibleTokenText, 4, isServer, network);
 		game.setCommandListener(this);
 		return game;
 	}
 	
 	private List getCharacterChoiceList() {
-		_charList = null;
 		
-		Image rajImage = Utilities.createImage("/flower2.png");
-        Image sriImage = Utilities.createImage("/mainScreen.png");
-        Image nehaImage = Utilities.createImage("/flower2.png");
+		if (_charList == null) {
 		
-		_charList = new List("Characters", List.IMPLICIT);
-		_charList.append("Raj", rajImage);
-		_charList.append("Sri", sriImage);
-		_charList.append("Neha", nehaImage);
-		
-		// TODO: Add Exit command here 
-		_charList.setCommandListener(this);
-		
-		return _charList;
+			Image rajImage = Utilities.createImage("/flower2.png");
+	        Image sriImage = Utilities.createImage("/mainScreen.png");
+	        Image nehaImage = Utilities.createImage("/flower2.png");
 			
+			_charList = new List("Characters", List.IMPLICIT);
+			_charList.append("Raj", rajImage);
+			_charList.append("Sri", sriImage);
+			_charList.append("Neha", nehaImage);
+			
+			_charList.addCommand(_backCommand);
+			_charList.addCommand(_exitCommand);
+			_charList.setCommandListener(this);
+		} 
+		
+		return _charList;	
 	}
 	
 	private List getStartOrJoinGameList() {
-		listSelection = new Command("Select",Command.OK,0);
-
-		_startOrJoinGameList = new List("Start or Join game?", List.IMPLICIT);
 		
-		_startOrJoinGameList.append("Start a Game", null);
-		_startOrJoinGameList.append("Join a Game", null);
-		
-		// TODO: Add Exit command here 
-		_startOrJoinGameList.setCommandListener(this);
-		//_startOrJoinGameList.addCommand();
+		if (_startOrJoinGameList == null) {
+			listSelection = new Command("Select",Command.OK,0);
+	
+			_startOrJoinGameList = new List("Start or Join game?", List.IMPLICIT);
+			
+			_startOrJoinGameList.append("Start a Game", null);
+			_startOrJoinGameList.append("Join a Game", null);
+			
+			
+			_startOrJoinGameList.setCommandListener(this);
+			_startOrJoinGameList.addCommand(_exitCommand);
+			_startOrJoinGameList.addCommand(_backCommand);
+		}
 		
 		return _startOrJoinGameList;		
 	}

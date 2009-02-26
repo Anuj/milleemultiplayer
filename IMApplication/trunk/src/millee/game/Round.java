@@ -107,6 +107,8 @@ public class Round extends GameCanvas implements Runnable {
 		this.localPlayerID = localPlayerId;
 		
 		tokenSprites = new Sprite[totalNumTokensToDisplay];
+
+		exitCmd = new Command("Exit", Command.EXIT, 0);
 	}
 	
 	/**
@@ -224,6 +226,8 @@ public class Round extends GameCanvas implements Runnable {
 	 * How to tell the Round to begin.
 	 */
 	public void start() {
+
+		this.addCommand(exitCmd);
 		random = new Random();
 
 		// Blank out the screen
@@ -371,9 +375,7 @@ public class Round extends GameCanvas implements Runnable {
 	private void updateGameScreen() {
 		if (stopGame) {
 			// End game drawing
-			exitCmd = new Command("Exit", Command.EXIT, 0);
 			okCmd = new Command("OK", Command.OK, 1);
-			this.addCommand(exitCmd);
 			this.addCommand(okCmd);
 			graphics.drawString("Round Complete!", getWidth()/2, getHeight()/2, Graphics.TOP | Graphics.LEFT);
 		} else {
