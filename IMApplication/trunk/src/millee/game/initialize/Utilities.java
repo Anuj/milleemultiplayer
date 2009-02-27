@@ -8,7 +8,7 @@ import javax.microedition.lcdui.Image;
 
 public class Utilities {
 	
-	private static final String DEFAULT_IMAGE = "/dancer_small.png";
+	private static final String DEFAULT_IMAGE = "/dancer_0.png";
 
 	public static Image createImage(String path) {
 		try {
@@ -16,9 +16,12 @@ public class Utilities {
 		}
         catch (IOException e) {
         	System.err.println("IOException: " + e);
-        	// TODO: Create and return a default image
-        	//return Image.createImage(DEFAULT_IMAGE);
-        	return null;
+        	try {
+				return Image.createImage(DEFAULT_IMAGE);
+			} catch (IOException e1) {
+				e1.printStackTrace();
+				return null;
+			}
         }
 	}
 	

@@ -131,7 +131,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 			display.setCurrent(getStartOrJoinGameList());
 		} else if (c == List.SELECT_COMMAND && d == _charList) {
 			characterChoice = _charList.getSelectedIndex();
-			myImagePath = "/dancer_small.png";
+			myImagePath = "/dancer_0.png";
 			if (characterChoice == 0) myName = "Raj";
 			else if (characterChoice == 1) myName = "Sri";
 			else if (characterChoice == 2) myName = "Neha";
@@ -234,9 +234,9 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 		playerNames[1] = "Sri";
 		playerNames[2] = "Neha";
 		
-		playerImagePaths[0] = "/dancer_small.png";
-		playerImagePaths[1] = "/dancer_small.png";
-		playerImagePaths[2] = "/dancer_small.png";
+		playerImagePaths[0] = "/dancer_0.png";
+		playerImagePaths[1] = "/dancer_1.png";
+		playerImagePaths[2] = "/dancer_2.png";
 		
 		scoreAssignment[0] = 5;
 		scoreAssignment[1] = 10;

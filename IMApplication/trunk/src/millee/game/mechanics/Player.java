@@ -1,8 +1,11 @@
 package millee.game.mechanics;
+import java.util.Hashtable;
 import java.util.Random;
 
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.game.Sprite;
+
+import millee.game.initialize.Utilities;
 
 
 public class Player {
@@ -25,10 +28,12 @@ public class Player {
 	private int physicalID;
 	
 	// Player sprite color variations
-	public static final int BLACK = 0;
-	public static final int RED = 1;
-	public static final int BLUE = 2;
-	public static final int GREEN = 3;
+	public static final int BLACK = 1;
+	public static final int RED = 2;
+	public static final int BLUE = 3;
+	public static final int GREEN = 4;
+	
+	private static Hashtable avatarUsageCounts = new Hashtable();
 	
 	/** virtualID is determined by the server, depending on what order the client
 	 * sends their initial message.  physicalID is the order that the clients join. 
@@ -37,17 +42,28 @@ public class Player {
 	 * @param virtualID
 	 * @param physicalID
 	 */
-	public Player(String name, Image avatar, int variation, int virtualID, int physicalID) {
+	public Player(String name, String imgPath, int virtualID, int physicalID) {
 		random = new Random();
 		
 		this._id = virtualID;
 		this.name = name;
-		this.localPlayer = localPlayer;
 		this.finishedRound = false;
 		this.physicalID = physicalID;
 		
-		if (variation != BLACK) {
-			sprite = new Sprite(applyVariation(avatar,variation));
+		Image avatar = Utilities.createImage(imgPath);
+		
+		// Keep track of avatar usage counts
+		int nUsage = 1; // Default
+		if (avatarUsageCounts.containsKey(imgPath)) {
+			// Get and increment value
+			nUsage = ((Integer) avatarUsageCounts.get(imgPath)).intValue();
+			nUsage++;
+		}
+		avatarUsageCounts.put(imgPath, new Integer(nUsage));
+
+		// Alter color if necessary
+		if (nUsage > 1) {
+			sprite = new Sprite(applyVariation(avatar,nUsage));
 		}
 		else {
 			sprite = new Sprite(avatar);
@@ -87,7 +103,6 @@ public class Player {
 		}
 		
 		return Image.createRGBImage(rgbData, img.getWidth(), img.getHeight(), true);
-		
 	}
 
 	public int physicalID () {

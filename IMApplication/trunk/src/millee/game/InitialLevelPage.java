@@ -1,6 +1,7 @@
 package millee.game;
 
 
+import java.util.Hashtable;
 import java.util.Vector;
 
 import javax.microedition.lcdui.Image;
@@ -39,12 +40,12 @@ public class InitialLevelPage extends Screen {
 		System.out.println("in levelstartpage");
 		
 		if (isServer) {
-			this.append("All clients are connected.  Press START to begin the game");
+			this.append("All clients are now connected.  Press START to begin the game!");
 			//this.addCommand(startCommand);
 			System.out.println("after adding command");
 		} else {
 			//this.addCommand(startCommand);
-			this.append("You are connected.  Waiting for server to start the game");
+			this.append("You are connected.  Waiting for server to start the game...");
 			
 			//sendPlayerInfo(myName, myImagePath);
 		}
@@ -52,64 +53,60 @@ public class InitialLevelPage extends Screen {
 	
 	public Vector setupPlayers(String myName, String myImagePath) {
 		 System.out.println("Server on!");       
+		 
+		 // Keep track of avatar usage
+		 Hashtable avatarChoices = new Hashtable();
+	     int nTmp;
 	        
-	        
-	        Vector newPlayers = new Vector();
-	        Image tmpImage = null; 
-	        StringBuffer initialBroadcast = new StringBuffer("");
-	        
-	        // Set up our own local player first
-	        tmpImage = Utilities.createImage(myImagePath);
-	        newPlayers.addElement(new Player(myName, tmpImage, Player.BLUE, 0, -1));
-			
-	        initialBroadcast.append(0);
-			initialBroadcast.append(",");
-			initialBroadcast.append(myName);
-			initialBroadcast.append(",");
-			initialBroadcast.append(myImagePath);
-			initialBroadcast.append(";");
-			
-			// Poll the network to build up client's player data
-	        String playerImagePath, playerName;
-	        Message msg;
-	        String[] msgs = null;
-	        
-			for (int i = 1; i <= StartAGame.NUMCLIENTS; i++) {
-				//System.out.println("beginning of for loop at iteration: " + i);
-				initialBroadcast.append(i);
-				initialBroadcast.append(",");
-				msg = network.receiveNow(); // Blocks until the messages arrive
-				msgs = Utilities.split(msg.msg(), ",", 2);
+	     Vector newPlayers = new Vector();
+	     Image tmpImage = null; 
+	     StringBuffer initialBroadcast = new StringBuffer("");
+	     
+	     // Set up our own local player first
+	     newPlayers.addElement(new Player(myName, myImagePath, 0, -1));
+	     avatarChoices.put(myImagePath, new Integer(1));
+	     
+	     initialBroadcast.append(0);
+	     initialBroadcast.append(",");
+	     initialBroadcast.append(myName);
+	     initialBroadcast.append(",");
+	     initialBroadcast.append(myImagePath);
+	     initialBroadcast.append(";");
+	     
+	     // Poll the network to build up client's player data
+	     String playerImagePath, playerName;
+	     Message msg;
+	     String[] msgs = null;
+	     
+	     
+	     for (int i = 1; i <= StartAGame.NUMCLIENTS; i++) {
+	    	 //System.out.println("beginning of for loop at iteration: " + i);
+	    	 initialBroadcast.append(i);
+	    	 initialBroadcast.append(",");
+	    	 msg = network.receiveNow(); // Blocks until the messages arrive
+	    	 msgs = Utilities.split(msg.msg(), ",", 2);
+	    	 
+	    	 
+	    	 playerName = msgs[0];
+	    	 initialBroadcast.append(playerName);
+	    	 initialBroadcast.append(",");
+	    	 //System.out.println("playerName = " + playerName);
+	    	 
+	    	 playerImagePath = msgs[1];
+	    	 
+	    	 initialBroadcast.append(playerImagePath);
+	    	 initialBroadcast.append(";");
+	    	 //System.out.println("playerImagePath = " + playerImagePath);
+	    	 
+	    	 newPlayers.addElement(new Player(playerName, playerImagePath, i, msg.recipient()));
 				
-				
-				playerName = msgs[0];
-				initialBroadcast.append(playerName);
-				initialBroadcast.append(",");
-				//System.out.println("playerName = " + playerName);
-				
-				playerImagePath = msgs[1];
-				
-				initialBroadcast.append(playerImagePath);
-				initialBroadcast.append(";");
-				//System.out.println("playerImagePath = " + playerImagePath);
-				
-				tmpImage = Utilities.createImage(playerImagePath);
-				newPlayers.addElement(new Player(playerName, tmpImage, Player.RED, i, msg.recipient()));
-				
-				// Now to tell the new player their ID:
-				network.send(msg.recipient(), String.valueOf(i));
-			}
+	    	 // Now to tell the new player their ID:
+	    	 network.send(msg.recipient(), String.valueOf(i));
+	     }
 			
-			network.broadcast(initialBroadcast.toString());
+	     network.broadcast(initialBroadcast.toString());
 			
-			
-			
-			
-	    	//this.append("All the clients have connected.");
-	    	//this.append("Choose START to begin the game");
-	    	//this.addCommand(startCommand);
-	    	
-	    	return newPlayers;
+	     return newPlayers;
 	}
 	
 	/** Only used by clients.  They only have 1 connection, at index 0 */
@@ -130,7 +127,7 @@ public class InitialLevelPage extends Screen {
 		
 		for (int i = 0; i<sPlayers.length; i++) {
 			playerInfo = Utilities.split(sPlayers[i], ",", 3);
-			tmpPlayer = new Player(playerInfo[1], Utilities.createImage(playerInfo[2]), Player.BLACK, Integer.parseInt(playerInfo[0]), 0);
+			tmpPlayer = new Player(playerInfo[1], playerInfo[2], Integer.parseInt(playerInfo[0]), 0);
 			players.addElement(tmpPlayer);
 		}
 		
