@@ -131,10 +131,21 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 			display.setCurrent(getStartOrJoinGameList());
 		} else if (c == List.SELECT_COMMAND && d == _charList) {
 			characterChoice = _charList.getSelectedIndex();
-			myImagePath = "/dancer_0.png";
-			if (characterChoice == 0) myName = "Raj";
-			else if (characterChoice == 1) myName = "Sri";
-			else if (characterChoice == 2) myName = "Neha";
+			
+			// TODO: Not hardcode this, find better player pictures
+			if (characterChoice == 0) {
+				myName = "Raj";
+				myImagePath = "/dancer_0.png";
+			}
+			else if (characterChoice == 1) {
+				myName = "Sri";
+				myImagePath = "/dancer_1.png";
+			}
+			else if (characterChoice == 2) {
+				myName = "Neha";
+				myImagePath = "/dancer_2.png";
+			}
+			
 			_previousDisplayable = getCharacterChoiceList();
 			display.setCurrent(getStartOrJoinGameList());
 		} else if (c == List.SELECT_COMMAND && d == _startOrJoinGameList) {
@@ -226,17 +237,8 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 	}
 	
 	private Round createNewRound() {
-		String[] playerNames = new String[3], playerImagePaths = new String[3];
 		int[] scoreAssignment = new int[3];
 		String[] possibleTokenPaths = new String[4], possibleTokenText = new String[4];
-		
-		playerNames[0] = "Raj";
-		playerNames[1] = "Sri";
-		playerNames[2] = "Neha";
-		
-		playerImagePaths[0] = "/dancer_0.png";
-		playerImagePaths[1] = "/dancer_1.png";
-		playerImagePaths[2] = "/dancer_2.png";
 		
 		scoreAssignment[0] = 5;
 		scoreAssignment[1] = 10;
@@ -263,9 +265,9 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 		
 		if (_charList == null) {
 		
-			Image rajImage = Utilities.createImage("/flower2.png");
-	        Image sriImage = Utilities.createImage("/mainScreen.png");
-	        Image nehaImage = Utilities.createImage("/flower2.png");
+			Image rajImage = Utilities.createImage("/dancer_0.png");
+	        Image sriImage = Utilities.createImage("/dancer_1.png");
+	        Image nehaImage = Utilities.createImage("/dancer_2.png");
 			
 			_charList = new List("Characters", List.IMPLICIT);
 			_charList.append("Raj", rajImage);

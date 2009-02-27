@@ -20,7 +20,6 @@ import millee.network.SenderThread;
 
 public class JoinGame extends Screen implements Runnable {
 
-	private Image horrorImage, comedyImage, actionImage;
 	private int characterChoice, gameChoice;
 	StringItem msg;
 	Gauge gauge;
@@ -36,16 +35,6 @@ public class JoinGame extends Screen implements Runnable {
 		super(title);
 		
 		cancelCommand = new Command("Cancel", Command.CANCEL, 0);
-		
-		msg = new StringItem(null, "You have joined game #" + gameChoice);
-        try {
-	        horrorImage = Image.createImage("/flower2.png");
-	        comedyImage = Image.createImage("/mainScreen.png");
-	        actionImage = Image.createImage("/flower2.png");
-        } catch (IOException e) {
-        	
-        }
-        
         gauge = new Gauge("Connecting to game #" + gameChoice + "...",
         					false,
         					Gauge.INDEFINITE,
@@ -54,9 +43,12 @@ public class JoinGame extends Screen implements Runnable {
         
         this.network = network;
         
-        this.append(msg);
-        this.append(horrorImage);
         this.append(gauge);
+        
+        // TODO: Only show success message on next page?
+		msg = new StringItem(null, "You have joined game #" + gameChoice);
+        this.append(msg);
+        
         this.addCommand(cancelCommand);
 	}
 	

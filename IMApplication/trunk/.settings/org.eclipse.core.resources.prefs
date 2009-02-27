@@ -1,11 +1,10 @@
-#Wed Feb 25 18:56:18 PST 2009
+#Fri Feb 27 02:44:39 PST 2009
 eclipse.preferences.version=1
 encoding//.processed/src/millee/game/ApplicationMain.java=UTF-8
 encoding//.processed/src/millee/game/GameplayCanvas.java=UTF-8
 encoding//.processed/src/millee/game/InitialLevelPage.java=UTF-8
 encoding//.processed/src/millee/game/LevelStartPage.java=UTF-8
 encoding//.processed/src/millee/game/Round.java=UTF-8
-encoding//.processed/src/millee/game/SampleCanvas.java=UTF-8
 encoding//.processed/src/millee/game/initialize/ChooseCharacter.java=UTF-8
 encoding//.processed/src/millee/game/initialize/ChooseGame.java=UTF-8
 encoding//.processed/src/millee/game/initialize/JoinGame.java=UTF-8
