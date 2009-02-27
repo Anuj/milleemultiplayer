@@ -88,8 +88,8 @@ public class Round extends GameCanvas implements Runnable {
 		this._players = players;
 		
 		this._backgroundImage = Utilities.createImage(backgroundPath);
-		_cellWidth = this.getWidth()/TILE_DIMENSIONS;
-		_cellHeight = this.getHeight()/TILE_DIMENSIONS;
+		this._cellWidth = this.getWidth()/TILE_DIMENSIONS;
+		this._cellHeight = this.getHeight()/TILE_DIMENSIONS;
 		
 		this._roundID = round;
 		this._levelID = level;

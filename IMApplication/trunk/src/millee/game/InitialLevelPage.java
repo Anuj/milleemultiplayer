@@ -60,7 +60,7 @@ public class InitialLevelPage extends Screen {
 	        
 	        // Set up our own local player first
 	        tmpImage = Utilities.createImage(myImagePath);
-	        newPlayers.addElement(new Player(myName, tmpImage, 0, -1));
+	        newPlayers.addElement(new Player(myName, tmpImage, Player.BLUE, 0, -1));
 			
 	        initialBroadcast.append(0);
 			initialBroadcast.append(",");
@@ -94,7 +94,7 @@ public class InitialLevelPage extends Screen {
 				//System.out.println("playerImagePath = " + playerImagePath);
 				
 				tmpImage = Utilities.createImage(playerImagePath);
-				newPlayers.addElement(new Player(playerName, tmpImage, i, msg.recipient()));
+				newPlayers.addElement(new Player(playerName, tmpImage, Player.RED, i, msg.recipient()));
 				
 				// Now to tell the new player their ID:
 				network.send(msg.recipient(), String.valueOf(i));
@@ -130,7 +130,7 @@ public class InitialLevelPage extends Screen {
 		
 		for (int i = 0; i<sPlayers.length; i++) {
 			playerInfo = Utilities.split(sPlayers[i], ",", 3);
-			tmpPlayer = new Player(playerInfo[1], Utilities.createImage(playerInfo[2]), Integer.parseInt(playerInfo[0]), 0);
+			tmpPlayer = new Player(playerInfo[1], Utilities.createImage(playerInfo[2]), Player.BLACK, Integer.parseInt(playerInfo[0]), 0);
 			players.addElement(tmpPlayer);
 		}
 		

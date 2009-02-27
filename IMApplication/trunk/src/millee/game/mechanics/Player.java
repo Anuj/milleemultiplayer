@@ -24,6 +24,12 @@ public class Player {
 	private int _id;
 	private int physicalID;
 	
+	// Player sprite color variations
+	public static final int BLACK = 0;
+	public static final int RED = 1;
+	public static final int BLUE = 2;
+	public static final int GREEN = 3;
+	
 	/** virtualID is determined by the server, depending on what order the client
 	 * sends their initial message.  physicalID is the order that the clients join. 
 	 * @param name
@@ -31,7 +37,7 @@ public class Player {
 	 * @param virtualID
 	 * @param physicalID
 	 */
-	public Player(String name, Image avatar, int virtualID, int physicalID) {
+	public Player(String name, Image avatar, int variation, int virtualID, int physicalID) {
 		random = new Random();
 		
 		this._id = virtualID;
@@ -40,9 +46,50 @@ public class Player {
 		this.finishedRound = false;
 		this.physicalID = physicalID;
 		
-		sprite = new Sprite(avatar);
+		if (variation != BLACK) {
+			sprite = new Sprite(applyVariation(avatar,variation));
+		}
+		else {
+			sprite = new Sprite(avatar);
+		}
 	}
 	
+	private Image applyVariation(Image img, int var) {
+		// Pull out ARGB data
+		int[] rgbData = new int[img.getWidth()*img.getHeight()];
+		img.getRGB(rgbData, 0, 0, 0, 0, img.getWidth(), img.getHeight());
+		
+		// Affect the ARGB data according to the variation type
+		switch (var) {
+		
+		// TODO: Verify color change works; otherwise, just use preset images
+		
+		case BLUE:
+			for (int i = 0; i < rgbData.length; i++) {
+				//rgbData[i] = (30 + (rgbData[i] & 0xFF)) | (rgbData[i] & 0xFFFFFF00);
+				rgbData[i] = rgbData[i] & 0xFF;
+			}
+			break;
+			
+		case GREEN:
+			for (int i = 0; i < rgbData.length; i++) {
+				//rgbData[i] = (30 + (rgbData[i] & 0xFF)) | (rgbData[i] & 0xFFFFFF00);
+				rgbData[i] = rgbData[i] & 0xFF00;
+			}
+			break;
+			
+		case RED:
+			for (int i = 0; i < rgbData.length; i++) {
+				//rgbData[i] = (30 + (rgbData[i] & 0xFF)) | (rgbData[i] & 0xFFFFFF00);
+				rgbData[i] = rgbData[i] & 0xFF0000;
+			}
+			break;
+		}
+		
+		return Image.createRGBImage(rgbData, img.getWidth(), img.getHeight(), true);
+		
+	}
+
 	public int physicalID () {
 		return physicalID;
 	}
