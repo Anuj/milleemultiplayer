@@ -6,7 +6,6 @@ import java.util.Vector;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.game.LayerManager;
-import javax.microedition.lcdui.game.Sprite;
 import javax.microedition.lcdui.game.TiledLayer;
 
 import millee.game.Round;

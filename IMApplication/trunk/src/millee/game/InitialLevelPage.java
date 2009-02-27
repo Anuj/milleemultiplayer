@@ -1,10 +1,8 @@
 package millee.game;
 
 
-import java.util.Hashtable;
 import java.util.Vector;
 
-import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.StringItem;
 
 import millee.game.initialize.Screen;
@@ -19,7 +17,6 @@ public class InitialLevelPage extends Screen {
 	
 	Network network;
 	int characterChoice;
-	private ApplicationMain _app;
 
 	public InitialLevelPage(String title, Network network, int characterChoice, boolean isServer, String myName, String myImagePath, ApplicationMain app) {
 		super(title);
@@ -30,8 +27,6 @@ public class InitialLevelPage extends Screen {
 		this.characterChoice = characterChoice;
 		this.network = network;
 		//network.sendReceive();
-		
-		this._app = app;
 		
 		this.append(str);
 		this.append(str2);
@@ -54,17 +49,11 @@ public class InitialLevelPage extends Screen {
 	public Vector setupPlayers(String myName, String myImagePath) {
 		 System.out.println("Server on!");       
 		 
-		 // Keep track of avatar usage
-		 Hashtable avatarChoices = new Hashtable();
-	     int nTmp;
-	        
 	     Vector newPlayers = new Vector();
-	     Image tmpImage = null; 
 	     StringBuffer initialBroadcast = new StringBuffer("");
 	     
 	     // Set up our own local player first
 	     newPlayers.addElement(new Player(myName, myImagePath, 0, -1));
-	     avatarChoices.put(myImagePath, new Integer(1));
 	     
 	     initialBroadcast.append(0);
 	     initialBroadcast.append(",");

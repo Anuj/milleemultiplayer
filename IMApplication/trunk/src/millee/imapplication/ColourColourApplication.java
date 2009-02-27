@@ -1,6 +1,5 @@
 package millee.imapplication;
 import javax.microedition.lcdui.Command;
-import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
 
 

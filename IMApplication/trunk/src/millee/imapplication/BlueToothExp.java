@@ -1,28 +1,22 @@
 package millee.imapplication;
 
 import java.io.IOException;
-import java.io.InputStream;
 
-import javax.microedition.lcdui.*;
+import javax.microedition.io.Connector;
+import javax.microedition.io.file.FileConnection;
+import javax.microedition.lcdui.Choice;
+import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.CommandListener;
+import javax.microedition.lcdui.Display;
+import javax.microedition.lcdui.Displayable;
+import javax.microedition.lcdui.Image;
+import javax.microedition.lcdui.List;
+import javax.microedition.lcdui.TextBox;
+import javax.microedition.lcdui.game.LayerManager;
 import javax.microedition.midlet.MIDlet;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 
 import millee.game.ApplicationMain;
 import millee.game.Round;
-
-import org.xml.sax.*;
-
-import javax.xml.parsers.*;
-import javax.microedition.io.*;
-import javax.microedition.io.file.*;
-import javax.microedition.lcdui.*;
-import javax.microedition.lcdui.game.LayerManager;
-import javax.microedition.lcdui.game.Sprite;
-
-import org.xml.sax.InputSource;
-import javax.microedition.io.file.*;
 
 /** BlueToothExp is where the Application gets initialized and run
  * 

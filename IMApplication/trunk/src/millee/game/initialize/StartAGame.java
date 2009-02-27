@@ -1,23 +1,7 @@
 package millee.game.initialize;
 
-import java.io.IOException;
-import java.util.Vector;
-
-import javax.microedition.io.StreamConnection;
-import javax.microedition.lcdui.Choice;
-import javax.microedition.lcdui.ChoiceGroup;
-import javax.microedition.lcdui.Command;
-import javax.microedition.lcdui.Display;
-import javax.microedition.lcdui.Form;
-import javax.microedition.lcdui.Image;
-import javax.microedition.lcdui.StringItem;
-
-import millee.game.mechanics.GameGrid;
-import millee.game.mechanics.Player;
 import millee.network.ClientServer;
 import millee.network.Network;
-import millee.network.ReceiverThread;
-import millee.network.SenderThread;
 
 
 public class StartAGame extends Screen {

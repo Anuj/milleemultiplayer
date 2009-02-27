@@ -4,9 +4,6 @@ import java.io.IOException;
 
 import javax.microedition.lcdui.Choice;
 import javax.microedition.lcdui.ChoiceGroup;
-import javax.microedition.lcdui.Command;
-import javax.microedition.lcdui.Display;
-import javax.microedition.lcdui.Form;
 import javax.microedition.lcdui.Image;
 
 

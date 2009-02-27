@@ -1,21 +1,11 @@
 package millee.game.initialize;
 
-import java.io.IOException;
-
-import javax.microedition.io.StreamConnection;
-import javax.microedition.lcdui.Choice;
-import javax.microedition.lcdui.ChoiceGroup;
 import javax.microedition.lcdui.Command;
-import javax.microedition.lcdui.Display;
-import javax.microedition.lcdui.Form;
 import javax.microedition.lcdui.Gauge;
-import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.StringItem;
 
 import millee.network.ClientServer;
 import millee.network.Network;
-import millee.network.ReceiverThread;
-import millee.network.SenderThread;
 
 
 public class JoinGame extends Screen implements Runnable {
@@ -52,8 +42,8 @@ public class JoinGame extends Screen implements Runnable {
         this.addCommand(cancelCommand);
 	}
 	
-	public void setCharacterChoice(int characterChoice) {
-		this.characterChoice = characterChoice;
+	public void setCharacterChoice(int inChoice) {
+		this.characterChoice = inChoice;
 	}
 	
 	public void setGameChoice (int gameChoice) {

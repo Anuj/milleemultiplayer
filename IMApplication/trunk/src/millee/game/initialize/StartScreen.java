@@ -3,11 +3,7 @@ package millee.game.initialize;
 import java.io.IOException;
 import java.io.InputStream;
 
-import javax.microedition.lcdui.Choice;
-import javax.microedition.lcdui.ChoiceGroup;
 import javax.microedition.lcdui.Command;
-import javax.microedition.lcdui.Display;
-import javax.microedition.lcdui.Form;
 import javax.microedition.lcdui.Image;
 import javax.microedition.media.Manager;
 import javax.microedition.media.MediaException;

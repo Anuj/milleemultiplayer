@@ -2,8 +2,6 @@ package millee.game.mechanics;
 
 import java.util.Vector;
 
-import javax.microedition.lcdui.List;
-
 public class GameCell {
 	
 	private Vector _occupants;

@@ -1,6 +1,4 @@
 package millee.network;
-import millee.imapplication.BlueToothExp;
-
 import java.io.IOException;
 
 import javax.bluetooth.BluetoothStateException;
@@ -14,11 +12,11 @@ import javax.bluetooth.UUID;
 import javax.microedition.io.Connector;
 import javax.microedition.io.StreamConnection;
 import javax.microedition.io.StreamConnectionNotifier;
-import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Form;
-import javax.microedition.lcdui.StringItem;
 import javax.microedition.lcdui.TextBox;
 import javax.microedition.lcdui.TextField;
+
+import millee.imapplication.BlueToothExp;
 
 
 /** ClientServer class is the entity that represents a client or server.  It holds

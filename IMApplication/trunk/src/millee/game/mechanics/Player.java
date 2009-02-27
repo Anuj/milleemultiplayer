@@ -11,7 +11,6 @@ import millee.game.initialize.Utilities;
 public class Player {
 	private String name;
 	
-	private Random random;
 	private boolean localPlayer;
 	private boolean finishedRound;
 	
@@ -43,7 +42,6 @@ public class Player {
 	 * @param physicalID
 	 */
 	public Player(String name, String imgPath, int virtualID, int physicalID) {
-		random = new Random();
 		
 		this._id = virtualID;
 		this.name = name;
