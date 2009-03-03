@@ -181,12 +181,16 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 				game.hideNotify();
 				game = createNewRound();
 				game.start();
+				if (isServer) network.broadcast("go");
+				if (!isServer && (network.receiveNow().equals("go")));
 				display.setCurrent(game);
 			}	
 		} else if (c == levelStartPage.getStartCommand()) {
 			game = createNewRound();
 			numLevelsLeft--;
 			game.start();
+			if (isServer) network.broadcast("go");
+			if (!isServer && (network.receiveNow().equals("go")));
 			display.setCurrent(game);
 		}
 		else {
