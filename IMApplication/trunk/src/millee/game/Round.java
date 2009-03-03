@@ -387,24 +387,45 @@ public class Round extends GameCanvas implements Runnable {
 			// End game drawing
 			okCmd = new Command("OK", Command.OK, 1);
 			this.addCommand(okCmd);
-			alert("Round Complete!");
+			setStatusMessage("Round Complete!");
 
+			String scoreReport = "";
 			for (int i = 0; i<scores.length; i++) {
-				System.out.println("Player " + i + ": " + scores[i]);
+				scoreReport += "Player " + i + ": " + scores[i] + "\n";
 			}
+			displayNotification("Current Scores", scoreReport);
 		} else {
 			// Tell the grid to redraw itself
 			_grid.redraw(graphics);
-			alert("Your score: " + scores[this.localPlayerID]);
+			setStatusMessage("Your score: " + scores[this.localPlayerID]);
 		}
 		
 		// Draw graphics to the screen
 		flushGraphics();
 	}
 	
-	private void alert(String msg) {
+	private void setStatusMessage(String msg) {
 		graphics.setColor(255,255,255);
 		graphics.setFont(Font.getFont(Font.FACE_SYSTEM, Font.STYLE_BOLD, Font.SIZE_MEDIUM));
 		graphics.drawString(msg, 3, getHeight(), Graphics.BOTTOM | Graphics.LEFT);
+	}
+	
+	private void displayNotification(String title, String msg) {
+		// TODO: Get this box in the middle of the screen
+		//graphics.setColor(0,0,0);
+		//graphics.fillRect(getWidth()/4,getHeight()/4,getWidth()/2,getHeight()/2);
+		
+		graphics.setColor(255,255,255);
+		graphics.setFont(Font.getFont(Font.FACE_SYSTEM, Font.STYLE_BOLD, Font.SIZE_MEDIUM));
+		graphics.drawString(title, 0, 0, Graphics.TOP | Graphics.LEFT);
+		
+		graphics.setFont(Font.getFont(Font.FACE_SYSTEM, Font.STYLE_PLAIN, Font.SIZE_MEDIUM));
+		int fontHeight = graphics.getFont().getHeight();
+
+		// Draw string per line
+		String[] lines = Utilities.split(msg, "\n", 0);
+		for (int i = 0; i < lines.length; i++) {
+			graphics.drawString(lines[i], 0, (i+1)*fontHeight, Graphics.TOP | Graphics.LEFT);
+		}
 	}
 }
