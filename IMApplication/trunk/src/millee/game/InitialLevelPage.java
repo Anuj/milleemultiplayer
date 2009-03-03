@@ -117,6 +117,7 @@ public class InitialLevelPage extends Screen {
 		for (int i = 0; i<sPlayers.length; i++) {
 			playerInfo = Utilities.split(sPlayers[i], ",", 3);
 			tmpPlayer = new Player(playerInfo[1], playerInfo[2], Integer.parseInt(playerInfo[0]), 0);
+			// TODO: Assign the player a color to collect here?
 			players.addElement(tmpPlayer);
 		}
 		
