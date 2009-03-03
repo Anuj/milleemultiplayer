@@ -1,9 +1,16 @@
 package millee.game;
 
 
+import java.util.Vector;
+
+import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.StringItem;
 
 import millee.game.initialize.Screen;
+import millee.game.initialize.StartAGame;
+import millee.game.initialize.Utilities;
+import millee.game.mechanics.Player;
+import millee.network.Message;
 import millee.network.Network;
 
 
@@ -11,6 +18,7 @@ public class LevelStartPage extends Screen {
 	
 	Network network;
 	int characterChoice;
+	private ApplicationMain _app;
 
 	public LevelStartPage(String title, Network network, int characterChoice, boolean isServer, String myName, String myImagePath, ApplicationMain app) {
 		super(title);
@@ -22,6 +30,8 @@ public class LevelStartPage extends Screen {
 		this.characterChoice = characterChoice;
 		this.network = network;
 		//network.sendReceive();
+		
+		this._app = app;
 		
 		this.append(str);
 		this.append(str2);
