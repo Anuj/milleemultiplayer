@@ -118,5 +118,15 @@ public class GameGrid {
 		return true;
 		*/
 	}
+	
+	/**
+	 * Detects presence of goodie at a certain location...
+	 * @param x
+	 * @param y
+	 * @return boolean
+	 */
+	public boolean hasGoodieAt(int x, int y) {
+		return _cells[y][x].hasGoodie();
+	}
 
 }

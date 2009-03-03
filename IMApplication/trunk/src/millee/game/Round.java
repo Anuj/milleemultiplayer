@@ -156,12 +156,18 @@ public class Round extends GameCanvas implements Runnable {
 			
 			broadcastString.append('|');
 			
+			// More randomization...
+			x = random.nextInt(_cellWidth);
+			y = random.nextInt(_cellHeight);
+			
 			// Add goodies
 			for (i = 0; i < totalNumTokensToDisplay; i++) {
 				// TODO: Don't hard code which goodie, or the number of goodie types
 				goodieType = random.nextInt(_nPlayers)+1;
-				x = random.nextInt(_cellWidth);
-				y = random.nextInt(_cellHeight);
+				while (_grid.hasGoodieAt(x, y)) {
+					x = random.nextInt(_cellWidth);
+					y = random.nextInt(_cellHeight);
+				}
 				_grid.insertGoodie(new Goodie(goodieType), x, y);
 				broadcastString.append(goodieType);
 				broadcastString.append(',');
