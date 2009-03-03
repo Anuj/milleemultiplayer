@@ -148,12 +148,19 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 				startAGame.setupNetworkPlayers(myName, myImagePath);
 			} else {
 				isServer = false;
-				joinGame.setCharacterChoice(characterChoice);
-				joinGame.setGameChoice(gameChoice);
 				joinGame.initClient();
-				display.setCurrent(joinGame);
+				updateDevicesDiscovered(new Vector());
+				//display.setCurrent(joinGame);
 			}
 			// startMusic(); -- ...no
+		} else if (c == chooseGame.joinCommand()) {
+			System.out.println("detected join command");
+			gameChoice = chooseGame.getListSelection();
+			joinGame.setCharacterChoice(characterChoice);
+			joinGame.setGameChoice(gameChoice);
+			joinGame.joinTheGame();
+			display.setCurrent(joinGame);
+			
 		} else if (c == initialLevelPage.getStartCommand()) {
 			network.broadcast("go");
 			game = createNewRound();
@@ -193,6 +200,12 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 		*/
     }
 
+	public void updateDevicesDiscovered(Vector devicesDiscoveredNames) {
+		System.out.println("in updateDevicesDiscovered");
+		chooseGame = new ChooseGame ("Choose a Game", devicesDiscoveredNames);
+		chooseGame.setCommandListener(this);
+		display.setCurrent(chooseGame);
+	}
 	
 	public void fullyConnected() {
 		
