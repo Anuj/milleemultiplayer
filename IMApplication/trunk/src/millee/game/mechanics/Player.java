@@ -23,7 +23,6 @@ public class Player {
 	
 	// Assigned color to collect
 	private int _color;
-	private int _id;
 	private int physicalID;
 	
 	// Player sprite color variations
@@ -43,7 +42,6 @@ public class Player {
 	 */
 	public Player(String name, String imgPath, int virtualID, int physicalID) {
 		
-		this._id = virtualID;
 		this.name = name;
 		this.finishedRound = false;
 		this.physicalID = physicalID;
@@ -73,6 +71,8 @@ public class Player {
 		int[] rgbData = new int[img.getWidth()*img.getHeight()];
 		img.getRGB(rgbData, 0, 0, 0, 0, img.getWidth(), img.getHeight());
 		
+		System.out.println("Altering color of player to variation: " + var);
+		
 		// Affect the ARGB data according to the variation type
 		switch (var) {
 		
@@ -100,6 +100,7 @@ public class Player {
 			break;
 		}
 		
+		System.out.println("Done altering color.");
 		return Image.createRGBImage(rgbData, img.getWidth(), img.getHeight(), true);
 	}
 

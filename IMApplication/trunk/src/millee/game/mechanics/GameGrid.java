@@ -66,9 +66,6 @@ public class GameGrid {
 		p.y = cellY;
 		p.sprite.setPosition(_tileDimensions*cellX, _tileDimensions*cellY);
 		
-		// TODO: Have this player's color set some other way
-		p.setColor(Goodie.TOMATO);
-		
 		_players.addElement(p);
 		_layers.insert(p.sprite, 0);
 	}

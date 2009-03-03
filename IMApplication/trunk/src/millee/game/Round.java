@@ -157,7 +157,7 @@ public class Round extends GameCanvas implements Runnable {
 			// Add goodies
 			for (i = 0; i < totalNumTokensToDisplay; i++) {
 				// TODO: Don't hard code which goodie, or the number of goodie types
-				goodieType = Goodie.TOMATO;
+				goodieType = random.nextInt(_nPlayers)+1;
 				x = random.nextInt(_cellWidth);
 				y = random.nextInt(_cellHeight);
 				_grid.insertGoodie(new Goodie(goodieType), x, y);
