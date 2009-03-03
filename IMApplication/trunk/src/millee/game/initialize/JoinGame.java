@@ -1,49 +1,72 @@
 package millee.game.initialize;
 
+import java.io.IOException;
+
+import javax.microedition.io.StreamConnection;
+import javax.microedition.lcdui.Choice;
+import javax.microedition.lcdui.ChoiceGroup;
 import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.Display;
+import javax.microedition.lcdui.Form;
 import javax.microedition.lcdui.Gauge;
+import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.StringItem;
 
 import millee.network.ClientServer;
 import millee.network.Network;
+import millee.network.ReceiverThread;
+import millee.network.SenderThread;
 
 
-public class JoinGame extends Screen implements Runnable {
+public class JoinGame extends Screen{
 
+	private Image horrorImage, comedyImage, actionImage;
 	private int characterChoice, gameChoice;
 	StringItem msg;
 	Gauge gauge;
 	private Command cancelCommand;
 	private Network network;
 	
-	public static ClientServer clientServer;
 	private boolean m_bRunThread = false;
 	private boolean m_bIsServer = false, isServer = false;
 	 
 	
 	public JoinGame(String title, Network network) {
 		super(title);
+        this.network = network;
+	}
+	
+	public void joinTheGame() {
+		
+		Thread thread = new Thread(new Runnable() {public void run() {network.clientServer.joinGame(gameChoice); }} );
+		thread.start();
+		
 		
 		cancelCommand = new Command("Cancel", Command.CANCEL, 0);
+		
+		msg = new StringItem(null, "You have joined " + ((String) network.clientServer.devicesDiscoveredNames.elementAt(gameChoice)) + "'s game.");
+        try {
+	        horrorImage = Image.createImage("/flower2.png");
+	        comedyImage = Image.createImage("/mainScreen.png");
+	        actionImage = Image.createImage("/flower2.png");
+        } catch (IOException e) {
+        	
+        }
+        
         gauge = new Gauge("Connecting to game #" + gameChoice + "...",
         					false,
         					Gauge.INDEFINITE,
         					Gauge.CONTINUOUS_RUNNING);
         
         
-        this.network = network;
-        
-        this.append(gauge);
-        
-        // TODO: Only show success message on next page?
-		msg = new StringItem(null, "You have joined game #" + gameChoice);
         this.append(msg);
-        
+        this.append(horrorImage);
+        this.append(gauge);
         this.addCommand(cancelCommand);
 	}
 	
-	public void setCharacterChoice(int inChoice) {
-		this.characterChoice = inChoice;
+	public void setCharacterChoice(int characterChoice) {
+		this.characterChoice = characterChoice;
 	}
 	
 	public void setGameChoice (int gameChoice) {
@@ -96,16 +119,17 @@ public class JoinGame extends Screen implements Runnable {
 		
 	}
 	
+	/*
 	public void run() {
 		int numClients = 1;
         while (m_bRunThread) {
             try {
             	// Just by creating a new Application object, you run the application
             	// either as a client or server depending on the m_bIsServer variable.
-                /*if (app == null) {
+                if (app == null) {
                 	app = new IMApplication(m_bIsServer, 1);
                 	//exitMIDlet();
-                }*/
+                }
             	
             	clientServer = new ClientServer(isServer, 0);
             	if (isServer) {
@@ -140,7 +164,7 @@ public class JoinGame extends Screen implements Runnable {
  
         }
         
-	}
+	}*/
 	
 	/*private void sendReceive() {
 		SenderThread sendThread = null;

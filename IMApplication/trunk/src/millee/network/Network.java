@@ -21,6 +21,10 @@ public class Network implements Runnable {
 	public Object connected = new Object();
 	public boolean isConnected = false;
 	
+	//Constants
+	private static final int SLEEP_TIME = 300;
+
+	
 	private ApplicationMain _app;
 	
 	public Network (ApplicationMain am) {
@@ -51,8 +55,22 @@ public class Network implements Runnable {
             		// Blocks until it connects to numClients
         			clientServer.InitServer(numClients);
         		} else {
+        			int numDevicesDiscovered = 0;
+        			int temp = 0;
         			clientServer.InitClient();
         			try {
+        				
+        				while (true) {
+        					if ((temp = clientServer.numDevicesDiscovered) > numDevicesDiscovered) {
+        						System.out.println("discovered a new device");
+        						numDevicesDiscovered = temp;
+        						_app.updateDevicesDiscovered(clientServer.devicesDiscoveredNames);
+        						Thread.sleep(SLEEP_TIME);
+        						if (((String) clientServer.devicesDiscoveredNames.elementAt(temp-1)).equals("finished")) {
+        							break;
+        						}
+        					}
+        				}
         				// need to manually wait for client to be connected to server
         				// because client doesn't block until it's connected.
         				synchronized(clientServer.connected) {
