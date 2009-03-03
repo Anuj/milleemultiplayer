@@ -265,7 +265,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 		
 		
 		Round game = new Round(_players, "/tiles.png", numRoundsLeft, numLevelsLeft, false, "Colours",
-								scoreAssignment, possibleTokenPaths, possibleTokenText, 4, isServer, network, localPlayerId);
+								4, isServer, network, localPlayerId);
 		game.setCommandListener(this);
 		return game;
 	}

@@ -1,16 +1,9 @@
 package millee.game;
 
 
-import java.util.Vector;
-
-import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.StringItem;
 
 import millee.game.initialize.Screen;
-import millee.game.initialize.StartAGame;
-import millee.game.initialize.Utilities;
-import millee.game.mechanics.Player;
-import millee.network.Message;
 import millee.network.Network;
 
 

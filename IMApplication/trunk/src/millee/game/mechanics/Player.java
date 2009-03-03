@@ -1,6 +1,5 @@
 package millee.game.mechanics;
 import java.util.Hashtable;
-import java.util.Random;
 
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.game.Sprite;
@@ -9,7 +8,7 @@ import millee.game.initialize.Utilities;
 
 
 public class Player {
-	private String name;
+	private String _name;
 	
 	private boolean localPlayer;
 	private boolean finishedRound;
@@ -21,9 +20,12 @@ public class Player {
 	// Sprite must have its own coordinates
 	protected Sprite sprite;
 	
-	// Assigned color to collect
+	// Assigned color to collect -- TODO: Are these related?
 	private int _color;
-	private int physicalID;
+	private int _id;
+	
+	// Player keeps track of his own score
+	private int _score = 0;
 	
 	// Player sprite color variations
 	public static final int BLACK = 1;
@@ -42,9 +44,9 @@ public class Player {
 	 */
 	public Player(String name, String imgPath, int virtualID, int physicalID) {
 		
-		this.name = name;
+		this._name = name;
 		this.finishedRound = false;
-		this.physicalID = physicalID;
+		this._id = virtualID;
 		
 		Image avatar = Utilities.createImage(imgPath);
 		
@@ -110,8 +112,8 @@ public class Player {
 		return Image.createRGBImage(rgbData, img.getWidth(), img.getHeight(), true);
 	}
 
-	public int physicalID () {
-		return physicalID;
+	public int getID() {
+		return _id;
 	}
 	
 	/** Avoid using this
@@ -178,5 +180,22 @@ public class Player {
 	
 	public int assignedColor() {
 		return _color;
+	}
+	
+	// Update the player's score in game-like ways
+	public void incrementScore() {
+		_score += 10;
+	}
+	
+	public void decrementScore() {
+		_score -= 10;
+	}
+	
+	public int getScore() {
+		return _score;
+	}
+	
+	public String getName() {
+		return _name;
 	}
 }

@@ -3,7 +3,6 @@ import java.io.IOException;
 import java.util.Random;
 
 import javax.microedition.lcdui.Command;
-import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.game.GameCanvas;
