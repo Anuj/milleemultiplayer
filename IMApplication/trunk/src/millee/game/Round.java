@@ -2,7 +2,9 @@ package millee.game;
 import java.util.Random;
 import java.util.Vector;
 
+import javax.microedition.lcdui.Alert;
 import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.game.GameCanvas;
@@ -229,15 +231,11 @@ public class Round extends GameCanvas implements Runnable {
 	 * How to tell the Round to begin.
 	 */
 	public void start() {
-
 		this.addCommand(exitCmd);
-		random = new Random();
 
-		// Blank out the screen
+		random = new Random();
 		graphics = getGraphics();
-		graphics.setColor(0,0,0);
-		graphics.fillRect(0,0,getWidth(),getHeight());
-		
+
 		// Populate it and tell others, or populate it from the information received
 		_grid = new GameGrid(	_cellWidth, 
 								_cellHeight, 
@@ -380,26 +378,33 @@ public class Round extends GameCanvas implements Runnable {
 	 * Draw things to the screen
 	 */
 	private void updateGameScreen() {
+		// Blank out the screen
+		graphics.setColor(0,0,0);
+		graphics.fillRect(0,0,getWidth(),getHeight());
+		
 		//System.out.println("Your score: " + scores[this.localPlayerID]);
 		if (stopGame) {
 			// End game drawing
 			okCmd = new Command("OK", Command.OK, 1);
 			this.addCommand(okCmd);
-			graphics.drawString("Round Complete!", getWidth()/2, getHeight()/2, Graphics.TOP | Graphics.LEFT);
+			alert("Round Complete!");
+
 			for (int i = 0; i<scores.length; i++) {
 				System.out.println("Player " + i + ": " + scores[i]);
 			}
 		} else {
 			// Tell the grid to redraw itself
 			_grid.redraw(graphics);
-			
-			// TODO: Figure out how to display the score in the bottom left or top right corner.
-			graphics.setColor(1, 1, 1);
-			graphics.drawString("Your score: " + scores[this.localPlayerID], 0, 3*getHeight()/4, Graphics.TOP | Graphics.LEFT);
-			
+			alert("Your score: " + scores[this.localPlayerID]);
 		}
 		
 		// Draw graphics to the screen
 		flushGraphics();
-	}	
+	}
+	
+	private void alert(String msg) {
+		graphics.setColor(255,255,255);
+		graphics.setFont(Font.getFont(Font.FACE_SYSTEM, Font.STYLE_BOLD, Font.SIZE_MEDIUM));
+		graphics.drawString(msg, 3, getHeight(), Graphics.BOTTOM | Graphics.LEFT);
+	}
 }

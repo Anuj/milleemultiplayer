@@ -92,8 +92,8 @@ public class GameGrid {
 		p.sprite.setPosition(_tileDimensions*p.x, _tileDimensions*p.y);
 		
 		GameCell c = _cells[p.y][p.x];
-		// Now check for 'collisions'
-		if (c.hasGoodie() && p.assignedColor() == c.getGoodie().getType()) {
+		// Now check for 'collisions' -- TODO: Ignoring assigned color for now...
+		if (c.hasGoodie()) { // && p.assignedColor() == c.getGoodie().getType()) {
 			Round.incrementScore(id);
 			c.unsetGoodie();
 			_nGoodies--;
