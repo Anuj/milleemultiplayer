@@ -8,8 +8,6 @@ import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.game.LayerManager;
 import javax.microedition.lcdui.game.TiledLayer;
 
-import millee.game.Round;
-
 /**
  * A two-dimensional grid of Cells
  * @author Simon
@@ -94,7 +92,7 @@ public class GameGrid {
 		GameCell c = _cells[p.y][p.x];
 		// Now check for 'collisions' -- TODO: Ignoring assigned color for now...
 		if (c.hasGoodie()) { // && p.assignedColor() == c.getGoodie().getType()) {
-			Round.incrementScore(id);
+			p.incrementScore();
 			c.unsetGoodie();
 			_nGoodies--;
 		}

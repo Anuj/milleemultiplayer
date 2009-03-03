@@ -2,13 +2,11 @@ package millee.game;
 import java.util.Random;
 import java.util.Vector;
 
-import javax.microedition.lcdui.Alert;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.game.GameCanvas;
-import javax.microedition.lcdui.game.Sprite;
 
 import millee.game.initialize.Utilities;
 import millee.game.mechanics.GameGrid;
@@ -30,14 +28,12 @@ public class Round extends GameCanvas implements Runnable {
 	// Stuff for drawing
 	private Graphics graphics;
 	private Image _backgroundImage;
-	private Sprite[] tokenSprites;
 	private Command exitCmd, okCmd;
 	private int _cellWidth, _cellHeight;
 	
 	// Data structures of the game
 	private GameGrid _grid;
 	private Vector _players;
-	private static int[] scores = null;
 	
 	// Status indicators
 	private boolean stopGame = false;
@@ -46,8 +42,6 @@ public class Round extends GameCanvas implements Runnable {
 	private int _nPlayers, _roundID, _levelID;
 	private boolean _bLastRound;
 	private String _levelName;
-	private int[] _scoreAssignments;
-	private String[] possibleTokenPaths, possibleTokenText;
 	private int totalNumTokensToDisplay;
 	private int localPlayerID;
 	private boolean isServer;
@@ -66,17 +60,13 @@ public class Round extends GameCanvas implements Runnable {
 	 * @param level
 	 * @param lastRoundInLevel
 	 * @param levelName
-	 * @param scoreAssignments
-	 * @param possibleTokenPaths
-	 * @param possibleTokenText
 	 * @param totalNumTokensToDisplay
 	 * @param isServer
 	 * @param network
 	 * @param localPlayerId
 	 */
 	public Round (Vector players, String backgroundPath, int round, int level, boolean lastRoundInLevel, 
-					String levelName, int[] scoreAssignments,
-					String[] possibleTokenPaths, String[] possibleTokenText, int totalNumTokensToDisplay,
+					String levelName, int totalNumTokensToDisplay,
 					boolean isServer, Network network, int localPlayerId) {
 		
 		super(true);
@@ -92,10 +82,7 @@ public class Round extends GameCanvas implements Runnable {
 		this._levelID = level;
 		this._bLastRound = lastRoundInLevel;
 		this._levelName = levelName;
-		this._scoreAssignments = scoreAssignments;
 		
-		this.possibleTokenPaths = possibleTokenPaths;
-		this.possibleTokenText = possibleTokenText;
 		this.totalNumTokensToDisplay = totalNumTokensToDisplay;
 		
 		this.isServer = isServer;
@@ -103,17 +90,7 @@ public class Round extends GameCanvas implements Runnable {
 		
 		this.localPlayerID = localPlayerId;
 		
-		tokenSprites = new Sprite[totalNumTokensToDisplay];
-
-		
 		exitCmd = new Command("Exit", Command.EXIT, 0);
-		
-		if (scores == null) {
-			scores = new int[_nPlayers];
-			for (int i = 0; i<_nPlayers; i++) {
-				scores[i] = 0;
-			}
-		}
 	}
 	
 	/**
@@ -156,12 +133,19 @@ public class Round extends GameCanvas implements Runnable {
 			
 			broadcastString.append('|');
 			
+			// More Randomization
+			x = random.nextInt(_cellWidth);
+			y = random.nextInt(_cellHeight);
+			
 			// Add goodies
 			for (i = 0; i < totalNumTokensToDisplay; i++) {
-				// TODO: Don't hard code which goodie, or the number of goodie types
 				goodieType = random.nextInt(_nPlayers)+1;
-				x = random.nextInt(_cellWidth);
-				y = random.nextInt(_cellHeight);
+
+				// Don't put goodies in cells that already have them
+				while (_grid.hasGoodieAt(x, y)) {
+					x = random.nextInt(_cellWidth);
+					y = random.nextInt(_cellHeight);
+				}
 				_grid.insertGoodie(new Goodie(goodieType), x, y);
 				broadcastString.append(goodieType);
 				broadcastString.append(',');
@@ -334,10 +318,6 @@ public class Round extends GameCanvas implements Runnable {
 		}
 	}
 	
-	public static void incrementScore(int clientID) {
-		scores[clientID] += 10;
-	}
-	
 	/**
 	 * Sends individual commands out onto the network
 	 * @param clientId
@@ -390,14 +370,16 @@ public class Round extends GameCanvas implements Runnable {
 			setStatusMessage("Round Complete!");
 
 			String scoreReport = "";
-			for (int i = 0; i<scores.length; i++) {
-				scoreReport += "Player " + i + ": " + scores[i] + "\n";
+			Player p;
+			for (int i = 0; i<_players.size(); i++) {
+				p = ((Player) _players.elementAt(i));
+				scoreReport += "Player " + p.getID() + ": " + p.getScore() + "\n";
 			}
 			displayNotification("Current Scores", scoreReport);
 		} else {
 			// Tell the grid to redraw itself
 			_grid.redraw(graphics);
-			setStatusMessage("Your score: " + scores[this.localPlayerID]);
+			setStatusMessage("Your score: " + ((Player) _players.elementAt(localPlayerID)).getScore());
 		}
 		
 		// Draw graphics to the screen
