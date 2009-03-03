@@ -69,9 +69,7 @@ public class Player {
 	private Image applyVariation(Image img, int var) {
 		// Pull out ARGB data
 		int[] rgbData = new int[img.getWidth()*img.getHeight()];
-		img.getRGB(rgbData, 0, 0, 0, 0, img.getWidth(), img.getHeight());
-		
-		System.out.println("Altering color of player to variation: " + var);
+		img.getRGB(rgbData, 0, img.getWidth(), 0, 0, img.getWidth(), img.getHeight());
 		
 		// Affect the ARGB data according to the variation type
 		switch (var) {
@@ -81,26 +79,34 @@ public class Player {
 		case BLUE:
 			for (int i = 0; i < rgbData.length; i++) {
 				//rgbData[i] = (30 + (rgbData[i] & 0xFF)) | (rgbData[i] & 0xFFFFFF00);
-				rgbData[i] = rgbData[i] & 0xFF;
+				rgbData[i] = rgbData[i] & 0xFF0000FF;
 			}
 			break;
 			
 		case GREEN:
 			for (int i = 0; i < rgbData.length; i++) {
 				//rgbData[i] = (30 + (rgbData[i] & 0xFF)) | (rgbData[i] & 0xFFFFFF00);
-				rgbData[i] = rgbData[i] & 0xFF00;
+				rgbData[i] = rgbData[i] & 0xFF00FF00;
 			}
 			break;
 			
 		case RED:
 			for (int i = 0; i < rgbData.length; i++) {
 				//rgbData[i] = (30 + (rgbData[i] & 0xFF)) | (rgbData[i] & 0xFFFFFF00);
-				rgbData[i] = rgbData[i] & 0xFF0000;
+				rgbData[i] = rgbData[i] & 0xFFFF0000;
 			}
 			break;
 		}
 		
-		System.out.println("Done altering color.");
+        /** Alternative: Replace only a particular color in the original avatar (like costume changing)
+        for (int j = 0; j < maskedOldColor.length; j++) {
+            if (currentMaskedPixel == maskedOldColor[j]) {
+                raw[i] = (currentPixel & alphaOnlyBitmask) | maskedNewColor[j];
+                break;
+            }
+        }
+		**/
+		
 		return Image.createRGBImage(rgbData, img.getWidth(), img.getHeight(), true);
 	}
 
