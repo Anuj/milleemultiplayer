@@ -95,8 +95,8 @@ public class GameGrid {
 		GameCell cNew = _cells[p.y][p.x];
 		cNew.addPlayer(p);
 		
-		// Now check for 'collisions' -- TODO: Ignoring assigned color for now...
-		if (cNew.hasGoodie()) { // && p.assignedColor() == c.getGoodie().getType()) {
+		// Now check for 'collisions' with goodies
+		if (cNew.hasGoodie() && p.assignedColor() == cNew.getGoodie().getType()) {
 			p.incrementScore();
 			cNew.unsetGoodie();
 			_nGoodies--;
