@@ -50,7 +50,7 @@ public class GameGrid {
 		for (int i = 0; i < _height; i++) {
 			for (int j = 0; j < _width; j++) {
 				// Currently, cell can be one of two tiles (id: 1 or 2)
-				_cells[i][j] =  new GameCell(null, null);
+				_cells[i][j] =  new GameCell();
 				_tiledLayer.setCell(j, i, random.nextInt(2)+1);
 			}
 		}
@@ -65,6 +65,7 @@ public class GameGrid {
 		p.sprite.setPosition(_tileDimensions*cellX, _tileDimensions*cellY);
 		
 		_players.addElement(p);
+		_cells[cellY][cellX].addPlayer(p);
 		_layers.insert(p.sprite, 0);
 	}
 	
@@ -83,17 +84,21 @@ public class GameGrid {
 	public void movePlayer(int id, int dx, int dy) {
 		Player p = (Player) _players.elementAt(id);
 		
+		_cells[p.y][p.x].removePlayer(p);
+		
 		// Wraps around borders
 		p.x = (p.x + _width + dx) % _width;
 		p.y = (p.y + _height + dy) % _height;
 		//System.out.println("P: " + p.x + ", " + p.y);
 		p.sprite.setPosition(_tileDimensions*p.x, _tileDimensions*p.y);
 		
-		GameCell c = _cells[p.y][p.x];
+		GameCell cNew = _cells[p.y][p.x];
+		cNew.addPlayer(p);
+		
 		// Now check for 'collisions' -- TODO: Ignoring assigned color for now...
-		if (c.hasGoodie()) { // && p.assignedColor() == c.getGoodie().getType()) {
+		if (cNew.hasGoodie()) { // && p.assignedColor() == c.getGoodie().getType()) {
 			p.incrementScore();
-			c.unsetGoodie();
+			cNew.unsetGoodie();
 			_nGoodies--;
 		}
 	}
@@ -125,6 +130,10 @@ public class GameGrid {
 	 */
 	public boolean hasGoodieAt(int x, int y) {
 		return _cells[y][x].hasGoodie();
+	}
+	
+	public boolean hasPlayerAt(int x, int y) {
+		return _cells[y][x].hasPlayer();
 	}
 
 }

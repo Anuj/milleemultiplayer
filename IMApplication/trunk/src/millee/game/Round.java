@@ -109,106 +109,106 @@ public class Round extends GameCanvas implements Runnable {
 		return this.exitCmd;
 	}
 	
-	// Only the server uses this.
+	/**
+	 * 
+	 */
 	private void buildGridAndBroadcast() {
+	
+		Player p = null;
+		int i, goodieType;
 		
-		try {
-			Player p = null;
-			int i, x, y, goodieType;
-			StringBuffer broadcastString = new StringBuffer("");
+		// Random coordinates
+		int x = random.nextInt(_cellWidth);
+		int y = random.nextInt(_cellHeight);
+		
+		StringBuffer broadcastString = new StringBuffer("");
+		
+		// Assign player coordinates
+		for (i = 0; i < _nPlayers; i++) {
+			p = (Player) _players.elementAt(i);
 			
-			// Assign player coordinates
-			for (i = 0; i < _nPlayers; i++) {
+			// Don't overlap players
+			while (_grid.hasPlayerAt(x, y)) {
 				x = random.nextInt(_cellWidth);
 				y = random.nextInt(_cellHeight);
-				p = (Player) _players.elementAt(i);
-				_grid.insertPlayer(p, x, y);
-				broadcastString.append(i);
-				broadcastString.append(',');
-				broadcastString.append(x);
-				broadcastString.append(',');
-				broadcastString.append(y);
-				broadcastString.append(';');
 			}
 			
-			broadcastString.append('|');
-			
-			// More Randomization
-			x = random.nextInt(_cellWidth);
-			y = random.nextInt(_cellHeight);
-			
-			// Add goodies
-			for (i = 0; i < totalNumTokensToDisplay; i++) {
-				goodieType = random.nextInt(_nPlayers)+1;
-
-				// Don't put goodies in cells that already have them
-				while (_grid.hasGoodieAt(x, y)) {
-					x = random.nextInt(_cellWidth);
-					y = random.nextInt(_cellHeight);
-				}
-				_grid.insertGoodie(new Goodie(goodieType), x, y);
-				broadcastString.append(goodieType);
-				broadcastString.append(',');
-				broadcastString.append(x);
-				broadcastString.append(',');
-				broadcastString.append(y);
-				broadcastString.append(';');
-			}
-			
-			// Broadcast this information to all clients
-			_network.broadcast(broadcastString.toString());
-		} catch (NullPointerException e) {
-			e.printStackTrace();
+			_grid.insertPlayer(p, x, y);
+			broadcastString.append(i);
+			broadcastString.append(',');
+			broadcastString.append(x);
+			broadcastString.append(',');
+			broadcastString.append(y);
+			broadcastString.append(';');
 		}
+		
+		broadcastString.append('|');
+		
+		// Add goodies
+		for (i = 0; i < totalNumTokensToDisplay; i++) {
+			goodieType = random.nextInt(_nPlayers)+1;
+
+			// Don't put goodies in cells that already have them or where players are
+			while (_grid.hasPlayerAt(x, y) || _grid.hasGoodieAt(x, y)) {
+				x = random.nextInt(_cellWidth);
+				y = random.nextInt(_cellHeight);
+			}
+			
+			_grid.insertGoodie(new Goodie(goodieType), x, y);
+			broadcastString.append(goodieType);
+			broadcastString.append(',');
+			broadcastString.append(x);
+			broadcastString.append(',');
+			broadcastString.append(y);
+			broadcastString.append(';');
+		}
+		
+		// Broadcast this information to all clients
+		_network.broadcast(broadcastString.toString());
 	}
 	
 	// Only the clients use this.
 	private void buildGridFromBroadcast() {
 		
-		try {
-			String input = null;
-			while ((input = _network.receiveNow().msg()).indexOf("|") < 0) {
-				continue;
-			}
-			
-			String[] blocks = Utilities.split(input, "|", 2);
-			
-			// Get the player information
-			String[] sPlayers = Utilities.split(blocks[0], ";", 0);
-			String[] playerInfo = null;
-			Player tmpPlayer = null;
-			int x,y;
-			//System.out.println("sPlayers = " + sPlayers);
-			for (int i = 0; i < sPlayers.length; i++) {
-				//System.out.println("splayers[" + i + "] = " + sPlayers[i]);
-				//System.out.println("putting player " + i + " on the board");
-				playerInfo = Utilities.split(sPlayers[i], ",", 3);
-				//System.out.println("playerInfo = " + playerInfo);
-				// TODO: Deal with the lack of a name, image
-				tmpPlayer = (Player) _players.elementAt(i);
-				//System.out.println("player's name is " + tmpPlayer);
-				//new Player("PLAYER " + playerInfo[0], Utilities.createImage("/dancer_small.png"), Integer.parseInt(playerInfo[0]), 0);
-				x = Integer.parseInt(playerInfo[1]);
-				y = Integer.parseInt(playerInfo[2]);
-				_grid.insertPlayer(tmpPlayer, x, y);
-			}
-			
-			// Get the goodie information
-			String[] sGoodies = Utilities.split(blocks[1], ";", 0);
-			String[] goodieInfo = null;
-			Goodie tmpGoodie = null;
-			for (int i = 0; i < sGoodies.length; i++) {
-				goodieInfo = Utilities.split(sGoodies[i], ",", 3);
-				// TODO: Deal with the lack of a name, image
-				tmpGoodie = new Goodie(Integer.parseInt(goodieInfo[0]));
-				x = Integer.parseInt(goodieInfo[1]);
-				y = Integer.parseInt(goodieInfo[2]);
-				_grid.insertGoodie(tmpGoodie, x, y);
-			}
-		} catch (NullPointerException e) {
-			e.printStackTrace();
+		String input = null;
+		while ((input = _network.receiveNow().msg()).indexOf("|") < 0) {
+			continue;
 		}
 		
+		String[] blocks = Utilities.split(input, "|", 2);
+		
+		// Get the player information
+		String[] sPlayers = Utilities.split(blocks[0], ";", 0);
+		String[] playerInfo = null;
+		Player tmpPlayer = null;
+		int x,y;
+		//System.out.println("sPlayers = " + sPlayers);
+		for (int i = 0; i < sPlayers.length; i++) {
+			//System.out.println("splayers[" + i + "] = " + sPlayers[i]);
+			//System.out.println("putting player " + i + " on the board");
+			playerInfo = Utilities.split(sPlayers[i], ",", 3);
+			//System.out.println("playerInfo = " + playerInfo);
+			// TODO: Deal with the lack of a name, image
+			tmpPlayer = (Player) _players.elementAt(i);
+			//System.out.println("player's name is " + tmpPlayer);
+			//new Player("PLAYER " + playerInfo[0], Utilities.createImage("/dancer_small.png"), Integer.parseInt(playerInfo[0]), 0);
+			x = Integer.parseInt(playerInfo[1]);
+			y = Integer.parseInt(playerInfo[2]);
+			_grid.insertPlayer(tmpPlayer, x, y);
+		}
+		
+		// Get the goodie information
+		String[] sGoodies = Utilities.split(blocks[1], ";", 0);
+		String[] goodieInfo = null;
+		Goodie tmpGoodie = null;
+		for (int i = 0; i < sGoodies.length; i++) {
+			goodieInfo = Utilities.split(sGoodies[i], ",", 3);
+			// TODO: Deal with the lack of a name, image
+			tmpGoodie = new Goodie(Integer.parseInt(goodieInfo[0]));
+			x = Integer.parseInt(goodieInfo[1]);
+			y = Integer.parseInt(goodieInfo[2]);
+			_grid.insertGoodie(tmpGoodie, x, y);
+		}
 	}
 	
 	/**
