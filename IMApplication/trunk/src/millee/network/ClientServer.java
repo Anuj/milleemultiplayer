@@ -1,6 +1,5 @@
 package millee.network;
 import java.io.IOException;
-import java.util.Vector;
 
 import javax.bluetooth.BluetoothStateException;
 import javax.bluetooth.DeviceClass;
@@ -28,16 +27,12 @@ import millee.imapplication.BlueToothExp;
  */
 public class ClientServer implements DiscoveryListener {
 	
-    UUID[] RFCOMM_UUID = {new UUID(0xF542), new UUID(0xF543)};
+    UUID[] RFCOMM_UUID = {new UUID(0x0003), new UUID(0x0004)};
     private DiscoveryAgent m_DscrAgent = null;
     public Object connected = new Object();
         
     boolean isServer;
     int numClients;
-    int numDevicesDiscovered = 0;
-    
-    public Vector devicesDiscoveredNames = null;
-    public Vector devicesDiscoveredUrls = null;
     StreamConnection[] streamConnections;
     SenderThread senderThread = null;
     ReceiverThread[] recvThreads = null;
@@ -87,9 +82,8 @@ public class ClientServer implements DiscoveryListener {
         	
         	
         	for (int i = 0; i < numConnections; i++) {
-        		m_strUrl = "btspp://localhost:" + RFCOMM_UUID[0] + ";name=colourcolour;authorize=false";
+        		m_strUrl = "btspp://localhost:" + RFCOMM_UUID[i] + ";name=rfcommtest;authorize=false";
         		m_LclDevice = LocalDevice.getLocalDevice();
-        		System.out.println("my name is: " + m_LclDevice.getFriendlyName());
                 m_LclDevice.setDiscoverable(DiscoveryAgent.GIAC);
                 System.out.println("waiting to connect to client #" + i);
                 m_StrmNotf = (StreamConnectionNotifier) Connector.open(m_strUrl);
@@ -151,34 +145,8 @@ public class ClientServer implements DiscoveryListener {
     	System.out.println("end of createIOThreads");
     }
     
-    public void joinGame(int gameChoice) {
-            
-            try {
-            	
-            	System.out.println("shoudl be connecting here...");
-            	//this.printToScreen("Application", "Connecting...");
-            	System.out.println("Client Connecting...");
-            	StreamConnection m_StrmConn = (StreamConnection) Connector.open((String) devicesDiscoveredUrls.elementAt(gameChoice));
-            	System.out.println("m_StrmConn = " + m_StrmConn);
-            	streamConnections = new StreamConnection[1];
-            	
-            	streamConnections[0] = m_StrmConn;
-            	System.out.println("Connected");
-            	//this.printToScreen("Application", "Connected.");
-            	
-            	synchronized(connected) {
-            		connected.notifyAll();
-				}
-            	
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-    }
-    
     // Starts the inquiry process for a client.
     public void InitClient() {
-    	devicesDiscoveredNames = new Vector();
-    	devicesDiscoveredUrls = new Vector();
     	System.out.println("initializing the client");
     	SearchAvailDevices();
     }
@@ -198,10 +166,28 @@ public class ClientServer implements DiscoveryListener {
     }
  
     public void serviceSearchCompleted(int transID, int respCode) {
-    	
-    	devicesDiscoveredNames.addElement("finished");
-		numDevicesDiscovered++;
+        if (m_bServerFound) {
+            
+            try {
 
+            	//this.printToScreen("Application", "Connecting...");
+            	System.out.println("Client Connecting...");
+            	StreamConnection m_StrmConn = (StreamConnection) Connector.open(m_strUrl);
+            	System.out.println("m_StrmConn = " + m_StrmConn);
+            	streamConnections = new StreamConnection[1];
+            	
+            	streamConnections[0] = m_StrmConn;
+            	System.out.println("Connected");
+            	//this.printToScreen("Application", "Connected.");
+            	
+            	synchronized(connected) {
+            		connected.notifyAll();
+				}
+            	
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
     }
     
     public void servicesDiscovered(int transID, ServiceRecord[] records) {
@@ -211,36 +197,25 @@ public class ClientServer implements DiscoveryListener {
         for (int i = 0; i < records.length; i++) {
             m_strUrl = records[i].getConnectionURL(ServiceRecord.AUTHENTICATE_ENCRYPT, false);
             System.out.println("m_strUrl: " + m_strUrl);
-            
+ 
             if (m_strUrl.startsWith("btspp")) {
-            	System.out.println("found colour colour game!");
-            	try {
-            		devicesDiscoveredNames.addElement(records[i].getHostDevice().getFriendlyName(true));
-            		devicesDiscoveredUrls.addElement(m_strUrl);
-            		numDevicesDiscovered++;
-            		break;
-            	} catch (IOException e) {
-            		
-            	}
-            	
-            	
-                /*m_bServerFound = true;
+                m_bServerFound = true;
                 m_bInitClient = true;
-                break;*/
+                break;
             }
         }
     }
  
     public void deviceDiscovered(RemoteDevice btDevice, DeviceClass cod) {
         try {
-        
-        	
-        	System.out.println("device discovered");
         	System.out.println("btDevice name: " + btDevice.getFriendlyName(true));
         	System.out.println("btDevice addr: " + btDevice.getBluetoothAddress());
             UUID uuidSet[] = new UUID[1];
             uuidSet[0] = RFCOMM_UUID[0];
             int searchID = m_DscrAgent.searchServices(null, uuidSet, btDevice, this);
+            
+            uuidSet[0] = RFCOMM_UUID[1];
+            searchID = m_DscrAgent.searchServices(null, uuidSet, btDevice, this);
             System.out.println("after searchServices with searchID = " + searchID);
         } catch (Exception e) {
         	System.out.println("Exception in deviceDiscovered");
