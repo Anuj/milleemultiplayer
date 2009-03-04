@@ -4,10 +4,11 @@ import java.util.Vector;
 
 public class GameCell {
 	
-	private Vector _occupants;
-	private Goodie _item;
+	private Vector _occupants = new Vector();
+	private Goodie _item = null;
 
-	public GameCell(Player[] players, Goodie g) {
+	public GameCell() {
+		/*
 		if (players == null) {
 			_occupants = new Vector();
 		}
@@ -18,16 +19,21 @@ public class GameCell {
 			}
 		}
 		
+		
 		_item = g;
-	}
-	
-	// Not sure if we need to keep track of players in each cell
-	public Vector getPlayers() {
-		return _occupants;
+		*/
 	}
 	
 	public void addPlayer(Player p) {
 		_occupants.addElement(p);
+	}
+	
+	public void removePlayer(Player p) {
+		_occupants.removeElement(p);
+	}
+	
+	public boolean hasPlayer() {
+		return !(_occupants.size() == 0);
 	}
 	
 	
