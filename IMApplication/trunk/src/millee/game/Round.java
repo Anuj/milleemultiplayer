@@ -42,7 +42,7 @@ public class Round extends GameCanvas implements Runnable {
 	private int _nPlayers, _roundID, _levelID;
 	private boolean _bLastRound;
 	private String _levelName;
-	private int totalNumTokensToDisplay;
+	private int _numGoodies;
 	private int localPlayerID;
 	private boolean isServer;
 	private Network _network;
@@ -60,13 +60,13 @@ public class Round extends GameCanvas implements Runnable {
 	 * @param level
 	 * @param lastRoundInLevel
 	 * @param levelName
-	 * @param totalNumTokensToDisplay
+	 * @param totalNumGoodies
 	 * @param isServer
 	 * @param network
 	 * @param localPlayerId
 	 */
 	public Round (Vector players, String backgroundPath, int round, int level, boolean lastRoundInLevel, 
-					String levelName, int totalNumTokensToDisplay,
+					String levelName, int totalNumGoodies,
 					boolean isServer, Network network, int localPlayerId) {
 		
 		super(true);
@@ -83,7 +83,7 @@ public class Round extends GameCanvas implements Runnable {
 		this._bLastRound = lastRoundInLevel;
 		this._levelName = levelName;
 		
-		this.totalNumTokensToDisplay = totalNumTokensToDisplay;
+		this._numGoodies = totalNumGoodies;
 		
 		this.isServer = isServer;
 		this._network = network;
@@ -110,9 +110,10 @@ public class Round extends GameCanvas implements Runnable {
 	}
 	
 	/**
-	 * 
+	 * Server-only. Takes the players in this round, configures them and then broadcasts
+	 * the entire setup to the other players.
 	 */
-	private void buildGridAndBroadcast() {
+	private void serverBuildGridAndBroadcast() {
 	
 		Player p = null;
 		int i, goodieType;
@@ -145,7 +146,7 @@ public class Round extends GameCanvas implements Runnable {
 		broadcastString.append('|');
 		
 		// Add goodies
-		for (i = 0; i < totalNumTokensToDisplay; i++) {
+		for (i = 0; i < _numGoodies; i++) {
 			goodieType = random.nextInt(_nPlayers)+1;
 
 			// Don't put goodies in cells that already have them or where players are
@@ -167,7 +168,10 @@ public class Round extends GameCanvas implements Runnable {
 		_network.broadcast(broadcastString.toString());
 	}
 	
-	// Only the clients use this.
+	/**
+	 * Client-only. Takes the broadcast and breaks it down, reconstructing the intitial
+	 * board state.
+	 */
 	private void buildGridFromBroadcast() {
 		
 		String input = null;
@@ -226,7 +230,7 @@ public class Round extends GameCanvas implements Runnable {
 								_backgroundImage, 
 								TILE_DIMENSIONS);
 		
-		if (isServer) {	buildGridAndBroadcast(); }
+		if (isServer) {	serverBuildGridAndBroadcast(); }
 		else { buildGridFromBroadcast(); }
 		
 		// Kick off the thread
@@ -379,7 +383,11 @@ public class Round extends GameCanvas implements Runnable {
 		} else {
 			// Tell the grid to redraw itself
 			_grid.redraw(graphics);
-			setStatusMessage("Your score: " + ((Player) _players.elementAt(localPlayerID)).getScore());
+			
+			// Display messages for local player
+			Player p = (Player) _players.elementAt(localPlayerID);
+			setStatusMessage("" + p.getScore());
+			setRightStatusMessage("Collect the " + colorFromID(p.assignedColor()) + " fruits!");
 		}
 		
 		// Draw graphics to the screen
@@ -390,6 +398,12 @@ public class Round extends GameCanvas implements Runnable {
 		graphics.setColor(255,255,255);
 		graphics.setFont(Font.getFont(Font.FACE_SYSTEM, Font.STYLE_BOLD, Font.SIZE_MEDIUM));
 		graphics.drawString(msg, 3, getHeight(), Graphics.BOTTOM | Graphics.LEFT);
+	}
+	
+	private void setRightStatusMessage(String msg) {
+		graphics.setColor(255,255,255);
+		graphics.setFont(Font.getFont(Font.FACE_SYSTEM, Font.STYLE_BOLD, Font.SIZE_MEDIUM));
+		graphics.drawString(msg, getWidth(), getHeight(), Graphics.BOTTOM | Graphics.RIGHT);
 	}
 	
 	private void displayNotification(String title, String msg) {
@@ -408,6 +422,21 @@ public class Round extends GameCanvas implements Runnable {
 		String[] lines = Utilities.split(msg, "\n", 0);
 		for (int i = 0; i < lines.length; i++) {
 			graphics.drawString(lines[i], 0, (i+1)*fontHeight, Graphics.TOP | Graphics.LEFT);
+		}
+	}
+	
+	/**
+	 * Mapping between ID number and a color string
+	 * @param id
+	 * @return String
+	 */
+	private String colorFromID(int id) {
+		switch (id) {
+			case 1: return "black";
+			case 2: return "red";
+			case 3: return "green";
+			case 4: return "blue";
+			default: return "UNKNOWN_COLOR";
 		}
 	}
 }

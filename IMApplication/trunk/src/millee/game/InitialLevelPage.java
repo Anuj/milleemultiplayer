@@ -53,7 +53,7 @@ public class InitialLevelPage extends Screen {
 	     StringBuffer initialBroadcast = new StringBuffer("");
 	     
 	     // Set up our own local player first
-	     newPlayers.addElement(new Player(myName, myImagePath, 0, -1));
+	     newPlayers.addElement(new Player(myName, myImagePath, 0));
 	     
 	     initialBroadcast.append(0);
 	     initialBroadcast.append(",");
@@ -87,7 +87,7 @@ public class InitialLevelPage extends Screen {
 	    	 initialBroadcast.append(";");
 	    	 //System.out.println("playerImagePath = " + playerImagePath);
 	    	 
-	    	 newPlayers.addElement(new Player(playerName, playerImagePath, i, msg.recipient()));
+	    	 newPlayers.addElement(new Player(playerName, playerImagePath, i));
 				
 	    	 // Now to tell the new player their ID:
 	    	 network.send(msg.recipient(), String.valueOf(i));
@@ -116,7 +116,7 @@ public class InitialLevelPage extends Screen {
 		
 		for (int i = 0; i<sPlayers.length; i++) {
 			playerInfo = Utilities.split(sPlayers[i], ",", 3);
-			tmpPlayer = new Player(playerInfo[1], playerInfo[2], Integer.parseInt(playerInfo[0]), 0);
+			tmpPlayer = new Player(playerInfo[1], playerInfo[2], Integer.parseInt(playerInfo[0]));
 			// TODO: Assign the player a color to collect here?
 			players.addElement(tmpPlayer);
 		}

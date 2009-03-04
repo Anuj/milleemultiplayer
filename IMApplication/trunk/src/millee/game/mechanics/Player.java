@@ -10,9 +10,6 @@ import millee.game.initialize.Utilities;
 public class Player {
 	private String _name;
 	
-	private boolean localPlayer;
-	private boolean finishedRound;
-	
 	// Location in cell coordinates
 	protected int x;
 	protected int y;
@@ -21,7 +18,7 @@ public class Player {
 	protected Sprite sprite;
 	
 	// Assigned color to collect -- TODO: Are these related?
-	private int _color;
+	private int _assignedColor;
 	private int _id;
 	
 	// Player keeps track of his own score
@@ -30,8 +27,8 @@ public class Player {
 	// Player sprite color variations
 	public static final int BLACK = 1;
 	public static final int RED = 2;
-	public static final int BLUE = 3;
-	public static final int GREEN = 4;
+	public static final int GREEN = 3;
+	public static final int BLUE = 4;
 	
 	private static Hashtable avatarUsageCounts = new Hashtable();
 	
@@ -40,13 +37,14 @@ public class Player {
 	 * @param name
 	 * @param avatar
 	 * @param virtualID
-	 * @param physicalID
 	 */
-	public Player(String name, String imgPath, int virtualID, int physicalID) {
+	public Player(String name, String imgPath, int virtualID) { //, int physicalID) {
 		
 		this._name = name;
-		this.finishedRound = false;
 		this._id = virtualID;
+		
+		// The color that this character must collect is its ID+1
+		this._assignedColor = virtualID+1;
 		
 		Image avatar = Utilities.createImage(imgPath);
 		
@@ -169,17 +167,13 @@ public class Player {
 		return sprite;
 	}
 	
-	public void finishedRound() {
-		this.finishedRound = true;
-	}
-	
 	// Get and set this player's assigned color
 	public void setColor(int color) {
-		_color = color;
+		_assignedColor = color;
 	}
 	
 	public int assignedColor() {
-		return _color;
+		return _assignedColor;
 	}
 	
 	// Update the player's score in game-like ways
