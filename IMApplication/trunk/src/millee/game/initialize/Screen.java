@@ -6,8 +6,9 @@ import javax.microedition.lcdui.Form;
 
 public class Screen extends Form {
 	
-	protected Command okCommand, backCommand, exitCommand, startCommand, cancelCommand, joinCommand;
+	protected Command okCommand, backCommand, exitCommand, startCommand, cancelCommand;
 	protected ChoiceGroup choiceGroup;
+	protected int formElementNumber = 0;
 	
 	public Screen(String title) {
 		super(title);
@@ -16,7 +17,6 @@ public class Screen extends Form {
 		exitCommand =new Command("Exit",Command.EXIT,0);
 		startCommand=new Command("Start",Command.SCREEN,1);
 		cancelCommand=new Command("Cancel", Command.CANCEL, 0);
-		joinCommand=new Command("Join",Command.OK,1);
         
 		// TODO Auto-generated constructor stub
 	}
@@ -39,8 +39,24 @@ public class Screen extends Form {
 		return -1;
 	}
 	
-	public Command joinCommand() {
-		return joinCommand;
+	public void addMessage(String msg) {
+		this.append(msg);
 	}
+	
+	/*public int append(String msg) {
+		int ret = super.append(msg);
+		System.out.println("in append: about to add msg = " + msg + " at formElementNumber = " + formElementNumber);
+		formElementNumber+=1;
+		System.out.println("after formLEmentNUmebr inc");
+		return ret;
+		return -1;
+	}*/
+	
+	/*public void replaceLastMessage (String msg) {
+		System.out.println("in replaceLastMessage: about to remove msg at " + (formElementNumber-1));
+		this.delete(formElementNumber-1);
+		System.out.println("adding msg = " + msg);
+		this.append(msg);
+	}*/
 
 }

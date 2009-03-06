@@ -34,7 +34,7 @@ public class IMApplication extends Application {
 		// creates the object that represents this device, whether it acts
 		// like a client or server.  If isServer is true, that numClients 
 		// will be >0, otherwise, it's ignored.
-		clientServer = new ClientServer(isServer, numClients);
+		//clientServer = new ClientServer(isServer, numClients);
 		
 		if (isServer) {
 			this.numClients = numClients;

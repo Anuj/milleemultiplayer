@@ -22,5 +22,9 @@ public class WinnerScreen extends Screen {
 		this.addCommand(exitCommand);
 		
 	}
+	
+	public void addMessage(String msg) {
+		this.append(msg);
+	}
 
 }
