@@ -31,4 +31,8 @@ public class LevelStartPage extends Screen {
 		this.addCommand(startCommand);
 		this.addCommand(exitCommand);
 	}
+	
+	public void addMessage(String msg) {
+		this.append(msg);
+	}
 }

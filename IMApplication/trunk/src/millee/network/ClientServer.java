@@ -16,6 +16,7 @@ import javax.microedition.lcdui.Form;
 import javax.microedition.lcdui.TextBox;
 import javax.microedition.lcdui.TextField;
 
+import millee.game.ApplicationMain;
 import millee.imapplication.BlueToothExp;
 
 
@@ -41,11 +42,14 @@ public class ClientServer implements DiscoveryListener {
     private StreamConnectionNotifier m_StrmNotf = null;
     public boolean m_bIsServer = false,  m_bServerFound = false,  m_bInitServer = false,  m_bInitClient = false;
     private static String m_strUrl;
-        
-    public ClientServer (boolean isServer, int numClients) {
+    
+    ApplicationMain _app = null;
+    
+    public ClientServer (boolean isServer, int numClients, ApplicationMain _app) {
     	System.out.println("initializing clientServer");
     	this.isServer = isServer;
     	this.numClients = numClients;
+    	this._app = _app;
     }
     
     public void writeToDisplay(Form form) {
@@ -81,17 +85,27 @@ public class ClientServer implements DiscoveryListener {
         	streamConnections = new StreamConnection[numConnections];
         	
         	
+            updateServerScreenStatus("Waiting for " + numConnections + " player(s) to join");
+        	
         	for (int i = 0; i < numConnections; i++) {
         		m_strUrl = "btspp://localhost:" + RFCOMM_UUID[i] + ";name=rfcommtest;authorize=false";
         		m_LclDevice = LocalDevice.getLocalDevice();
                 m_LclDevice.setDiscoverable(DiscoveryAgent.GIAC);
                 System.out.println("waiting to connect to client #" + i);
                 m_StrmNotf = (StreamConnectionNotifier) Connector.open(m_strUrl);
-                StreamConnection m_StrmConn = m_StrmNotf.acceptAndOpen();                
+               
+                
+                System.out.println("after updateGameScreen...");
+                
+                StreamConnection m_StrmConn = m_StrmNotf.acceptAndOpen();
+                updateServerScreenStatus((i+1) + " player(s)have joined.  Waiting for " + (numConnections-1-i) + " player(s) to join.");
+ 
                 System.out.println("Just connected to client #" + i);
                 streamConnections[i] = m_StrmConn;
                 m_StrmNotf.close();
         	}
+        	
+        	updateServerScreenStatus("All players have joined.\n.  Push START to begin.");
         	
             System.out.println("finished connecting");
 
@@ -101,6 +115,10 @@ public class ClientServer implements DiscoveryListener {
         } catch (IOException e) {
         	e.printStackTrace();
         }
+    }
+    
+    void updateServerScreenStatus(String msg) {
+    	new Thread(new ScreenUpdater(ApplicationMain.START_A_GAME, "Current status: " + msg)).start();
     }
     
     /** Both client and server have only one senderThread.  Server has multiple
@@ -144,6 +162,14 @@ public class ClientServer implements DiscoveryListener {
 		}
     	System.out.println("end of createIOThreads");
     }
+    
+    /*public void updateGameScreen(int gameScreen, String msg) {
+    	updateGameScreen(ApplicationMain.START_A_GAME, "Waiting to connect to client #1");
+    	Thread thread = new Thread(new Runnable () {public void run() { _app.updateGameScreen(gameScreen, msg); }});
+        thread.start();
+        
+    	
+    }*/
     
     // Starts the inquiry process for a client.
     public void InitClient() {
@@ -256,5 +282,21 @@ public class ClientServer implements DiscoveryListener {
 		//	this.InitClient();
 		//}
 	}*/
+    
+    private class ScreenUpdater implements Runnable {
+    	
+    	int gameScreen;
+    	String msg = null;
+    	
+    	public ScreenUpdater(int gameScreen, String msg) {
+    		this.gameScreen = gameScreen;
+    		this.msg = msg;
+    	}
+		public void run() {
+			_app.replaceMsgOnGameScreen(gameScreen, msg);
+			System.out.println("replaced the msg on the screen.  thread about to die.");
+		}
+    	
+    }
 }
 

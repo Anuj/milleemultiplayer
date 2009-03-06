@@ -45,7 +45,7 @@ public class ChooseGame extends Screen {
         if (!finished) {
         	this.append("...still searching...");
         }
-        this.addCommand(joinCommand);
+        //this.addCommand(joinCommand);
         this.addCommand(backCommand);
 	}
 	

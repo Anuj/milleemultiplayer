@@ -31,13 +31,13 @@ public class Network implements Runnable {
 		_app = am;
 	}
 	
-	public void initializeNetwork(boolean isServer, int numClients) {
+	public void initializeNetwork(boolean isServer, int numClients, ApplicationMain _app) {
 		this.isServer = isServer;
 		this.numClients = numClients;
 		sendBuffer = new Vector();
 		receiverBuffer = new Vector();
 
-    	clientServer = new ClientServer(isServer, numClients);
+    	clientServer = new ClientServer(isServer, numClients, _app);
 	}
 	
 	public void run() {
@@ -60,7 +60,7 @@ public class Network implements Runnable {
         			clientServer.InitClient();
         			try {
         				
-        				while (true) {
+        				/*while (true) {
         					if ((temp = clientServer.numDevicesDiscovered) > numDevicesDiscovered) {
         						System.out.println("discovered a new device");
         						numDevicesDiscovered = temp;
@@ -70,7 +70,7 @@ public class Network implements Runnable {
         							break;
         						}
         					}
-        				}
+        				}*/
         				// need to manually wait for client to be connected to server
         				// because client doesn't block until it's connected.
         				synchronized(clientServer.connected) {

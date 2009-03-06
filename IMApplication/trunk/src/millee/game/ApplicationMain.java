@@ -31,6 +31,16 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 	private static final int NUM_LEVELS = 2;
 	private static final String GAME_LOOP_SOUND = "/game_loop.wav";
 	
+	public static final int START_SCREEN = 0;
+	public static final int CHOOSE_CHAR = 1;
+	public static final int CHOOSE_GAME = 2;
+	public static final int JOIN_GAME = 3;
+	public static final int LEVEL_START_PAGE = 4;
+	public static final int WINNER_SCREEN = 5;
+	public static final int START_OR_JOIN_SCREEN = 6;
+	public static final int START_A_GAME = 7;
+	public static final int INITIAL_LEVEL_GAME = 8;
+	
 	public static Display theDisplay;
 	
 	int characterChoice, gameChoice;
@@ -73,13 +83,14 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 		startScreen.setCommandListener(this);
 		chooseGame = new ChooseGame ("Choose a Game");		
 		chooseGame.setCommandListener(this);
-		joinGame = new JoinGame ("Join a Game", network);		
+		joinGame = new JoinGame ("Join a Game", network, this);		
 		joinGame.setCommandListener(this);
 
 		startOrJoinGame = new StartOrJoinGame("Start or join a game?");
 		startOrJoinGame.setCommandListener(this);
 		
-		startAGame = new StartAGame("Start a game?", network);
+
+		startAGame = new StartAGame("Start a game?", network, this);
 		startAGame.setCommandListener(this);
 		
 		winnerScreen = new WinnerScreen("Winner!");
@@ -214,6 +225,39 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 		display.setCurrent(chooseGame);
 	}*/
 	
+	public void addMsgToGameScreen(int gameScreen, String msg) {
+		switch (gameScreen) {
+			case START_SCREEN: startScreen.addMessage(msg);
+			case CHOOSE_CHAR: charForm.addMessage(msg);
+			case CHOOSE_GAME: chooseGame.addMessage(msg);
+			case JOIN_GAME: joinGame.addMessage(msg);
+			case LEVEL_START_PAGE: levelStartPage.addMessage(msg);
+			case WINNER_SCREEN: winnerScreen.addMessage(msg);
+			case START_OR_JOIN_SCREEN: startOrJoinGame.addMessage(msg);
+			case START_A_GAME: startAGame.addMessage(msg);
+			case INITIAL_LEVEL_GAME: initialLevelPage.addMessage(msg);
+		}
+		
+		
+	}
+	
+	public void replaceMsgOnGameScreen(int gameScreen, String msg) {
+		switch (gameScreen) {
+			/*case START_SCREEN: startScreen.replaceLastMessage(msg);
+			case CHOOSE_CHAR: charForm.replaceLastMessage(msg);
+			case CHOOSE_GAME: chooseGame.replaceLastMessage(msg);
+			case JOIN_GAME: joinGame.replaceLastMessage(msg);
+			case LEVEL_START_PAGE: levelStartPage.replaceLastMessage(msg);
+			case WINNER_SCREEN: winnerScreen.replaceLastMessage(msg);
+			case START_OR_JOIN_SCREEN: startOrJoinGame.replaceLastMessage(msg);*/
+			case START_A_GAME: startAGame.replaceLastMessage(msg);
+			//case INITIAL_LEVEL_GAME: initialLevelPage.replaceLastMessage(msg);
+		}
+		
+		System.out.println("replaced msg on the screen");
+	}
+	
+	
 	public void fullyConnected() {
 		
 		System.out.println("inside fullyConnected()");
@@ -237,8 +281,6 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 			}
 			
 		}
-		
-
 	}
 	
 	public void startGame() {

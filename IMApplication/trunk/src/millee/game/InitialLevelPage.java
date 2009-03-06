@@ -126,4 +126,8 @@ public class InitialLevelPage extends Screen {
 		
 	}
 	
+	public void addMessage(String msg) {
+		this.append(msg);
+	}
+	
 }

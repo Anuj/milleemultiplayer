@@ -50,4 +50,8 @@ public class StartScreen extends Screen {
 	public Command getStartCommand() {
 		return startCommand;
 	}
+	
+	public void addMessage(String msg) {
+		this.append(msg);
+	}
 }

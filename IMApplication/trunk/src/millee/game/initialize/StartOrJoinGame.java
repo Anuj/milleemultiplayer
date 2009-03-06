@@ -27,4 +27,8 @@ public class StartOrJoinGame extends Screen {
         this.addCommand(okCommand);
         this.addCommand(backCommand);
 	}
+	
+	public void addMessage(String msg) {
+		this.append(msg);
+	}
 }
