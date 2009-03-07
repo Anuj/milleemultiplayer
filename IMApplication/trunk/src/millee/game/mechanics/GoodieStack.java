@@ -19,7 +19,7 @@ public class GoodieStack extends Stack {
 	// Constants
 	private static final int TILE_DIMENSIONS = 15;
 	private static final String TILED_IMAGE = "/goodie_stack.png";
-	private static final int MAX_FRUIT = 10;
+	private static final int MAX_FRUIT = 6;
 	
 	// Settings from Player
 	private int _correctType;

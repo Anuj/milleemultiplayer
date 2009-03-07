@@ -48,7 +48,7 @@ public class Round extends GameCanvas implements Runnable {
 	private Network _network;
 	
 	// Constants
-	private static final int SLEEP_TIME = 300;
+	private static final int SLEEP_TIME = 400;
 	private static final int TILE_DIMENSIONS = 20;
 
 	
@@ -379,7 +379,7 @@ public class Round extends GameCanvas implements Runnable {
 			// End game drawing
 			this.setFullScreenMode(false);
 
-			okCmd = new Command("Start Next Round", Command.OK, 1);
+			okCmd = new Command("Continue", Command.OK, 1);
 
 			String scoreReport = "";
 			Player p;
@@ -391,17 +391,17 @@ public class Round extends GameCanvas implements Runnable {
 			displayNotification("Current Scores", scoreReport);
 			
 			if (isServer) {
-				setStatusMessage("Round Complete!");
+				setLowerStatusMessage("Round Complete!");
 				this.addCommand(okCmd);
 			} else {
 				_app.numRoundsLeft--;
 				if (_app.numLevelsLeft > 0 && _app.numRoundsLeft <= 0) {
 					this.addCommand(okCmd);
-					setStatusMessage("Round Complete!");
+					setLowerStatusMessage("Round Complete!");
 					Thread thread = new Thread(new Runnable () {public void run() {_app.waitForServer();}});
 					thread.start();
 				} else if (_app.numRoundsLeft > 0) {
-					set3LineStatusMessage("Round Complete!", "Waiting for server to start", "next round . . .");
+					set3LineStatusMessage("Round Complete!", "Waiting for server to", "start next round . . .");
 					Thread thread = new Thread(new Runnable () {public void run() {_app.waitForServer();}});
 					thread.start();
 				}
@@ -416,34 +416,34 @@ public class Round extends GameCanvas implements Runnable {
 			
 			// Draw goodie stack
 			p.getGoodieStack().redraw(graphics, 0, getHeight()-TILE_DIMENSIONS+5);
-			if (!p.hasCorrectGoodies()) { setStatusMessage("< DROP"); }
+			if (!p.hasCorrectGoodies()) { setLowerStatusMessage("< DROP!"); }
 			
-			setRightStatusMessage("Collect " + colorFromID(p.assignedColor()));
+			setUpperStatusMessage(colorFromID(p.assignedColor()));
 		}
 		
 		// Draw graphics to the screen
 		flushGraphics();
 	}
 	
-	private void setStatusMessage(String msg) {
+	private void setLowerStatusMessage(String msg) {
 		graphics.setColor(255,255,255);
-		graphics.setFont(Font.getFont(Font.FACE_SYSTEM, Font.STYLE_BOLD, Font.SIZE_SMALL));
-		graphics.drawString(msg, getWidth()/2, getHeight(), Graphics.BOTTOM | Graphics.HCENTER);
+		graphics.setFont(Font.getFont(Font.FACE_SYSTEM, Font.STYLE_BOLD, Font.SIZE_MEDIUM));
+		graphics.drawString(msg, getWidth(), getHeight(), Graphics.BOTTOM | Graphics.RIGHT);
 	}
 	
 	private void set3LineStatusMessage(String msg1, String msg2, String msg3) {
 		graphics.setColor(255,255,255);
-		graphics.setFont(Font.getFont(Font.FACE_SYSTEM, Font.STYLE_BOLD, Font.SIZE_SMALL));
+		graphics.setFont(Font.getFont(Font.FACE_SYSTEM, Font.STYLE_BOLD, Font.SIZE_MEDIUM));
 		int fontHeight = graphics.getFont().getHeight();
 		graphics.drawString(msg1, 0, getHeight()-2*fontHeight, Graphics.BOTTOM | Graphics.LEFT);
 		graphics.drawString(msg2, 0, getHeight()-fontHeight, Graphics.BOTTOM | Graphics.LEFT);
 		graphics.drawString(msg3, 0, getHeight(), Graphics.BOTTOM | Graphics.LEFT);
 	}
 	
-	private void setRightStatusMessage(String msg) {
-		graphics.setColor(255,255,255);
-		graphics.setFont(Font.getFont(Font.FACE_SYSTEM, Font.STYLE_PLAIN, Font.SIZE_SMALL));
-		graphics.drawString(msg, getWidth(), getHeight(), Graphics.BOTTOM | Graphics.RIGHT);
+	private void setUpperStatusMessage(String msg) {
+		graphics.setColor(0,0,0);
+		graphics.setFont(Font.getFont(Font.FACE_SYSTEM, Font.STYLE_BOLD, Font.SIZE_LARGE));
+		graphics.drawString(msg, getWidth(), 0, Graphics.TOP | Graphics.RIGHT);
 	}
 	
 	private void displayNotification(String title, String msg) {
