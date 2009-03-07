@@ -47,6 +47,8 @@ public class GoodieStack extends Stack {
 		_greenAnimatedTileIndex = _tiledLayer.createAnimatedTile(Goodie.GREEN_BANANA);
 		_blueAnimatedTileIndex = _tiledLayer.createAnimatedTile(Goodie.BLUE_BERRY);
 		
+		System.out.println("Animated tiles: " +  _blackAnimatedTileIndex + _redAnimatedTileIndex + _greenAnimatedTileIndex + _blueAnimatedTileIndex);
+		
 		_layers.append(_tiledLayer);
 	}
 	
@@ -76,12 +78,11 @@ public class GoodieStack extends Stack {
 	}
 	
 	public void redraw(Graphics g, int x, int y) {
-		
 		_flipCounter = (_flipCounter+1)%2;
-		_tiledLayer.setAnimatedTile(_blackAnimatedTileIndex, Goodie.BLACK_BERRY+_flipCounter);
-		_tiledLayer.setAnimatedTile(_redAnimatedTileIndex, Goodie.RED_TOMATO+_flipCounter);
-		_tiledLayer.setAnimatedTile(_greenAnimatedTileIndex, Goodie.GREEN_BANANA+_flipCounter);
-		_tiledLayer.setAnimatedTile(_blueAnimatedTileIndex, Goodie.BLUE_BERRY+_flipCounter);
+		_tiledLayer.setAnimatedTile(_blackAnimatedTileIndex, (Goodie.BLACK_BERRY*2)-1+_flipCounter);
+		_tiledLayer.setAnimatedTile(_redAnimatedTileIndex, (Goodie.RED_TOMATO*2)-1+_flipCounter);
+		_tiledLayer.setAnimatedTile(_greenAnimatedTileIndex, (Goodie.GREEN_BANANA*2)-1+_flipCounter);
+		_tiledLayer.setAnimatedTile(_blueAnimatedTileIndex, (Goodie.BLUE_BERRY*2)-1+_flipCounter);
 		_layers.paint(g, x, y);
 	}
 }
