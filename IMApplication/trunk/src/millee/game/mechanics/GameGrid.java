@@ -107,9 +107,12 @@ public class GameGrid {
 		Player p = (Player) _players.elementAt(id);
 		Goodie g = p.dropGoodie();
 		
+		System.out.println("Goodie dropped: " + g);
+		if (g == null) { return; }
+		
+		g.sprite.setPosition(_tileDimensions*p.x, _tileDimensions*p.y);
 		_cells[p.y][p.x].setGoodie(g);
 		_nGoodies++;
-		
 		this.movePlayer(id, 0, -1);
 	}
 	

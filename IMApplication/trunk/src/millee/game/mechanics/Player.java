@@ -40,7 +40,7 @@ public class Player {
 	 * @param avatar
 	 * @param virtualID
 	 */
-	public Player(String name, String imgPath, int virtualID) { //, int physicalID) {
+	public Player(String name, String imgPath, int virtualID, boolean isLocal) { //, int physicalID) {
 		
 		this._name = name;
 		this._id = virtualID;
@@ -48,7 +48,15 @@ public class Player {
 		// The color that this character must collect is its ID+1
 		this._assignedColor = virtualID+1;
 		
-		Image avatar = Utilities.createImage(imgPath);
+		Image avatar = null;
+		
+		if (isLocal) {
+			avatar = Utilities.createImage(imgPath);
+		}
+		else {
+			// Ignore the chosen avatar...
+			avatar = Utilities.createImage(Utilities.DEFAULT_IMAGE);
+		}
 		
 		// Keep track of avatar usage counts
 		int nUsage = 1; // Default
