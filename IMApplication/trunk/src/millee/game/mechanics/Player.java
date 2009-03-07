@@ -24,7 +24,7 @@ public class Player {
 	
 	// Player keeps track of his own score & goodies collected
 	private int _score = 0;
-	private GoodieStack _goodies = new GoodieStack();
+	private GoodieStack _goodies;
 	
 	// Player sprite color variations
 	public static final int BLACK = 1;
@@ -47,6 +47,7 @@ public class Player {
 		
 		// The color that this character must collect is its ID+1
 		this._assignedColor = virtualID+1;
+		_goodies = new GoodieStack(_assignedColor);
 		
 		Image avatar = null;
 		
@@ -219,7 +220,7 @@ public class Player {
 	}
 	
 	public void flushGoodieStack() {
-		_goodies = new GoodieStack();
+		_goodies = new GoodieStack(_assignedColor);
 	}
 	
 	public boolean hasCorrectGoodies() {
