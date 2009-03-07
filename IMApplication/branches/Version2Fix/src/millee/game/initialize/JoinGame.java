@@ -26,7 +26,7 @@ public class JoinGame extends Screen {
 		super(title);
 		
 		cancelCommand = new Command("Cancel", Command.CANCEL, 0);
-        gauge = new Gauge("",
+        gauge = new Gauge("Connecting to game #" + gameChoice + "...",
         					false,
         					Gauge.INDEFINITE,
         					Gauge.CONTINUOUS_RUNNING);
@@ -35,7 +35,6 @@ public class JoinGame extends Screen {
         this.network = network;
         
         this.append(gauge);
-        this.append("Connecting to game #" + gameChoice + "...");
         
         // TODO: Only show success message on next page?
 		//msg = new StringItem(null, "You have joined game #" + gameChoice);

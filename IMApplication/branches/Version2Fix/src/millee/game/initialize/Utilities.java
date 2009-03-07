@@ -8,7 +8,7 @@ import javax.microedition.lcdui.Image;
 
 public class Utilities {
 	
-	public static final String DEFAULT_IMAGE = "/dancer_0.png";
+	private static final String DEFAULT_IMAGE = "/dancer_0.png";
 
 	public static Image createImage(String path) {
 		try {

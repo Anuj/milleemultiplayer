@@ -313,10 +313,6 @@ public class Round extends GameCanvas implements Runnable {
 						_grid.movePlayer(clientId, -1, 0);
 						if (isServer) _network.broadcast(msg.msg());
 						break;
-					case 'x':
-						_grid.playerDrop(clientId);
-						if (isServer) _network.broadcast(msg.msg());
-						break;
 					case 'n':
 						break;
 				}
@@ -353,16 +349,12 @@ public class Round extends GameCanvas implements Runnable {
 		} else if(( state & UP_PRESSED ) != 0 ){
 			_grid.movePlayer(localPlayerID, 0, -1);
 			command += this.localPlayerID + ",u";
-		} else if (( state & LEFT_PRESSED ) != 0) {
+		} else if ((state & LEFT_PRESSED) != 0) {
 			_grid.movePlayer(localPlayerID, -1, 0);
 			command += this.localPlayerID + ",l";
-		} else if (( state & RIGHT_PRESSED ) != 0) {
+		} else if ((state & RIGHT_PRESSED) != 0) {
 			_grid.movePlayer(localPlayerID, 1, 0);
 			command += this.localPlayerID + ",r";
-		} else if (( state & this.FIRE_PRESSED ) != 0) {
-			// Drop a goodie command
-			_grid.playerDrop(localPlayerID);
-			command += this.localPlayerID + ",x";
 		}
 	}
 
