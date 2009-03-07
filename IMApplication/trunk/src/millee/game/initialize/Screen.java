@@ -8,7 +8,8 @@ public class Screen extends Form {
 	
 	protected Command okCommand, backCommand, exitCommand, startCommand, cancelCommand;
 	protected ChoiceGroup choiceGroup;
-	//protected int formElementNumber = 0;
+
+	protected int formElementNumber = 0;
 	
 	public Screen(String title) {
 		super(title);
@@ -52,11 +53,24 @@ public class Screen extends Form {
 		return -1;
 	}*/
 	
-	/*public void replaceLastMessage (String msg) {
-		System.out.println("in replaceLastMessage: about to remove msg at " + (formElementNumber-1));
-		this.delete(formElementNumber-1);
-		System.out.println("adding msg = " + msg);
-		this.append(msg);
-	}*/
+	
+	public synchronized void replaceLastMessage (String msg) {
+		//synchronized (replaceObject) {
+			System.out.println("in replaceLastMessage: about to remove msg at " + (formElementNumber-1));
+			try {
+				this.delete(formElementNumber-1);
+			} catch (IndexOutOfBoundsException e) {
+				System.out.println("from delete command");
+				e.printStackTrace();
+			}
+			System.out.println("adding msg = " + msg);
+			try {
+				this.append(msg);
+			} catch (IndexOutOfBoundsException e) {
+				System.out.println("from add command");
+				e.printStackTrace();
+			}
+		//}
+	}
 
 }

@@ -9,7 +9,7 @@ import millee.network.ClientServer;
 import millee.network.Network;
 
 
-public class JoinGame extends Screen implements Runnable {
+public class JoinGame extends Screen {
 
 	private int characterChoice, gameChoice;
 	StringItem msg;
@@ -53,138 +53,11 @@ public class JoinGame extends Screen implements Runnable {
 	
 	public void initClient() {
 		
-		//Network network = new Network();
 		network.initializeNetwork(false, 1, _app);
 		
 		Thread thread = new Thread(network);
         thread.start();
-        
-        /*try {
-			// need to manually wait for client to be connected to server
-			// because client doesn't block until it's connected.
-			synchronized(network.clientServer.connected) {
-				network.clientServer.connected.wait();
-			}
-        } catch (Exception e) {
-			e.printStackTrace();
-		}*/
-        
-        /*while (network.isConnected != true) {
-        	try {
-        		Thread.sleep(150);
-        	} catch ( InterruptedException e ){
-        		e.printStackTrace();
-			}
-        }*/
-        
-        /*try {
-	        synchronized(network.connected) {
-	        	System.out.println("synchronized waiting for netwrk.connected");
-				network.connected.wait();
-			}
-        } catch (Exception e) {
-        	System.err.println(e);
-        }*/
-        
-        //System.out.println("client connected!");
-
-    	//this.append("All the clients have connected.");
-    	//this.append("Choose START to begin the game");
-    	//this.addCommand(startCommand);
-    	
-        
-        //m_bRunThread = true;
-		
 	}
-	
-	public void run() {
-		int numClients = 1;
-        while (m_bRunThread) {
-            try {
-            	// Just by creating a new Application object, you run the application
-            	// either as a client or server depending on the m_bIsServer variable.
-                /*if (app == null) {
-                	app = new IMApplication(m_bIsServer, 1);
-                	//exitMIDlet();
-                }*/
-            	
-            	clientServer = new ClientServer(isServer, 0, _app);
-            	if (isServer) {
-        			//this.numClients = numClients;
-        			clientServer.InitServer(numClients);
-        		} else {
-        			clientServer.InitClient();
-        			try {
-        				// need to manually wait for client to be connected to server
-        				// because client doesn't block until it's connected.
-        				synchronized(clientServer.connected) {
-        					clientServer.connected.wait();
-        				}
-        			} catch (Exception e) {
-        				e.printStackTrace();
-        			}
-        		}
-            	
-                //sendReceive();
-            	
-            	System.out.println("client connected!");
-
-            	this.append("All the clients have connected.");
-            	this.append("Choose START to begin the game");
-            	this.addCommand(startCommand);
-            	//clientServer.printToScreen("Application", "Connected.");
-        		//runApplication(isServer);
-                
-            } catch (Exception ex) {
-                System.out.println(ex.getMessage());
-            }
- 
-        }
-        
-	}
-	
-	/*private void sendReceive() {
-		SenderThread sendThread = null;
-		ReceiverThread recvThread = null;
-		StreamConnection[] streamConns;
-		ClientServer clientServer;
-		
-		if (isServer) {
-			System.out.println("before clientserver init");
-			clientServer = StartAGame.clientServer;
-			System.out.println("after clientserver init");
-			streamConns = clientServer.getStreamConnections();
-			System.out.println("after getStreamConnection(): " + streamConns);
-			sendThread = new SenderThread(streamConns);
-			System.out.println("after creating sendThread");
-			recvThread = new ReceiverThread(streamConns[0], sendThread, isServer);
-			System.out.println("after creating recvThread");
-			recvThread.start();
-			System.out.println("after starting recvThread");
-	    	sendThread.start();
-			System.out.println("after starting sendThread");
-
-		} else {
-			clientServer = JoinGame.clientServer;
-			streamConns = clientServer.getStreamConnections();
-			sendThread = new SenderThread(streamConns);
-			recvThread = new ReceiverThread(streamConns[0], sendThread, isServer);
-			recvThread.start();
-	    	sendThread.start();
-		}
-		
-		String msg = null;
-		msg = clientServer.receiveMessage(recvThread);
-		boolean exitFlag = false;
-		
-		while (!exitFlag) {
-			if ((msg = clientServer.receiveMessage(recvThread)) != null) {
-				System.out.println("msg received: " + msg);
-			}
-			
-			//sendThread.sendMsg("sending: blah blah", new Integer(-1));
-		}
-	}*/
 	
 	public void addMessage(String msg) {
 		this.append(msg);
