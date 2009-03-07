@@ -8,6 +8,8 @@ import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.game.LayerManager;
 import javax.microedition.lcdui.game.TiledLayer;
 
+import millee.game.initialize.Utilities;
+
 /**
  * A two-dimensional grid of Cells
  * @author Simon
@@ -25,7 +27,10 @@ public class GameGrid {
 	private Vector _players = new Vector();
 	
 	// Constants
-	private int _tileDimensions;
+	private static final int TILE_DIMENSIONS = 20;
+	private static final String TILED_IMAGE = "/tiles.png";
+	private static final int FRUIT_INDEX = 3; // Where fruit tiles begin
+	private static final int CHARACTER_INDEX = 8;
 	
 	// Drawing stuff
 	private LayerManager _layers = new LayerManager();
@@ -37,21 +42,21 @@ public class GameGrid {
 	private int _nGoodies = 0;
 	
 	// Builds the game world and prepares to draw it
-	public GameGrid(int width, int height, Image backgroundImage, int tileDimensions) {
+	public GameGrid(int width, int height) { //, Image backgroundImage, int tileDimensions) {
 		_width = width;
 		_height = height;
 		_cells = new GameCell[_height][_width];
-		_tileDimensions = tileDimensions;
-		_tiledLayer = new TiledLayer(_width, _height, backgroundImage, _tileDimensions, _tileDimensions);
+
+		_tiledLayer = new TiledLayer(_width, _height, Utilities.createImage(TILED_IMAGE), TILE_DIMENSIONS, TILE_DIMENSIONS);
 		
 		random = new Random();
 		
 		// Populate GameCell arrays and tiledArray
 		for (int i = 0; i < _height; i++) {
 			for (int j = 0; j < _width; j++) {
-				// Currently, cell can be one of two tiles (id: 1 or 2)
+				// Currently, empty cell can be one of two tiles (id: 1 or 2)
 				_cells[i][j] =  new GameCell();
-				_tiledLayer.setCell(j, i, random.nextInt(2)+1);
+				_tiledLayer.setCell(j, i, FRUIT_INDEX-1);// random.nextInt(NUM_EMPTY_TILES)+1);
 			}
 		}
 
@@ -62,7 +67,7 @@ public class GameGrid {
 	public void insertPlayer(Player p, int cellX, int cellY) {
 		p.x = cellX;
 		p.y = cellY;
-		p.sprite.setPosition(_tileDimensions*cellX, _tileDimensions*cellY);
+		p.sprite.setPosition(TILE_DIMENSIONS*cellX, TILE_DIMENSIONS*cellY);
 		
 		_players.addElement(p);
 		_cells[cellY][cellX].addPlayer(p);
@@ -73,10 +78,11 @@ public class GameGrid {
 	public void insertGoodie(Goodie g, int cellX, int cellY) {
 		g.x = cellX;
 		g.y = cellY;
-		g.sprite.setPosition(_tileDimensions*cellX, _tileDimensions*cellY);
 		
+		_tiledLayer.setCell(cellX, cellY, g.getType()+FRUIT_INDEX-1);
+		//g.sprite.setPosition(_tileDimensions*cellX, _tileDimensions*cellY);
 		_cells[cellY][cellX].setGoodie(g);
-		_layers.insert(g.sprite, 0);
+		//_layers.insert(g.sprite, 0);
 		_nGoodies++;
 	}
 	
@@ -90,7 +96,7 @@ public class GameGrid {
 		p.x = (p.x + _width + dx) % _width;
 		p.y = (p.y + _height + dy) % _height;
 		//System.out.println("P: " + p.x + ", " + p.y);
-		p.sprite.setPosition(_tileDimensions*p.x, _tileDimensions*p.y);
+		p.sprite.setPosition(TILE_DIMENSIONS*p.x, TILE_DIMENSIONS*p.y);
 		
 		GameCell cNew = _cells[p.y][p.x];
 		cNew.addPlayer(p);
@@ -98,7 +104,9 @@ public class GameGrid {
 		// Now check for 'collisions' with goodies
 		if (cNew.hasGoodie()) { // && p.assignedColor() == cNew.getGoodie().getType()) {
 			p.collect(cNew.getGoodie());
+			System.out.println("Picked up Goodie: " + cNew.getGoodie());
 			cNew.unsetGoodie();
+			_tiledLayer.setCell(p.x, p.y, FRUIT_INDEX-1);
 			_nGoodies--;
 		}
 	}
@@ -110,9 +118,11 @@ public class GameGrid {
 		System.out.println("Goodie dropped: " + g);
 		if (g == null) { return; }
 		
-		g.sprite.setPosition(_tileDimensions*p.x, _tileDimensions*p.y);
+		_tiledLayer.setCell(p.x, p.y, g.getType()+FRUIT_INDEX-1);
+		//g.sprite.setPosition(_tileDimensions*p.x, _tileDimensions*p.y);
 		_cells[p.y][p.x].setGoodie(g);
 		_nGoodies++;
+		
 		this.movePlayer(id, 0, -1);
 	}
 	

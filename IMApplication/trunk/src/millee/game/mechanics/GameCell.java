@@ -43,11 +43,11 @@ public class GameCell {
 	
 	public void setGoodie(Goodie g) {
 		_item = g;
-		_item.sprite.setVisible(true);
+		//_item.sprite.setVisible(true);
 	}
 	
 	public void unsetGoodie() {
-		_item.sprite.setVisible(false);
+		//_item.sprite.setVisible(false);
 		_item = null;
 	}
 	

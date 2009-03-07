@@ -27,7 +27,6 @@ public class Round extends GameCanvas implements Runnable {
 	
 	// Stuff for drawing
 	private Graphics graphics;
-	private Image _backgroundImage;
 	private Command exitCmd, okCmd;
 	private int _cellWidth, _cellHeight;
 	
@@ -49,13 +48,12 @@ public class Round extends GameCanvas implements Runnable {
 	
 	// Constants
 	private static final int SLEEP_TIME = 300;
-	private static final int TILE_DIMENSIONS = 15;
+	private static final int TILE_DIMENSIONS = 20;
 
 	
 	/**
 	 * Constructor for Round	
 	 * @param players
-	 * @param backgroundPath
 	 * @param round
 	 * @param level
 	 * @param lastRoundInLevel
@@ -65,7 +63,7 @@ public class Round extends GameCanvas implements Runnable {
 	 * @param network
 	 * @param localPlayerId
 	 */
-	public Round (Vector players, String backgroundPath, int round, int level, boolean lastRoundInLevel, 
+	public Round (Vector players, int round, int level, boolean lastRoundInLevel, 
 					String levelName, int totalNumGoodies,
 					boolean isServer, Network network, int localPlayerId) {
 		
@@ -74,7 +72,6 @@ public class Round extends GameCanvas implements Runnable {
 		this._nPlayers = players.size();
 		this._players = players;
 		
-		this._backgroundImage = Utilities.createImage(backgroundPath);
 		this._cellWidth = this.getWidth()/TILE_DIMENSIONS;
 		this._cellHeight = this.getHeight()/TILE_DIMENSIONS;
 		
@@ -225,10 +222,7 @@ public class Round extends GameCanvas implements Runnable {
 		graphics = getGraphics();
 
 		// Populate it and tell others, or populate it from the information received
-		_grid = new GameGrid(	_cellWidth, 
-								_cellHeight, 
-								_backgroundImage, 
-								TILE_DIMENSIONS);
+		_grid = new GameGrid(_cellWidth,_cellHeight);
 		
 		if (isServer) {	serverBuildGridAndBroadcast(); }
 		else { buildGridFromBroadcast(); }
@@ -395,7 +389,7 @@ public class Round extends GameCanvas implements Runnable {
 			// Display messages for local player
 			Player p = (Player) _players.elementAt(localPlayerID);
 			setStatusMessage("" + p.getScore());
-			setRightStatusMessage("Collect the " + colorFromID(p.assignedColor()) + " fruits!");
+			setRightStatusMessage(colorFromID(p.assignedColor()));
 		}
 		
 		// Draw graphics to the screen
@@ -440,10 +434,10 @@ public class Round extends GameCanvas implements Runnable {
 	 */
 	private String colorFromID(int id) {
 		switch (id) {
-			case 1: return "black";
-			case 2: return "red";
-			case 3: return "green";
-			case 4: return "blue";
+			case 1: return "BLACK";
+			case 2: return "RED";
+			case 3: return "GREEN";
+			case 4: return "BLUE";
 			default: return "UNKNOWN_COLOR";
 		}
 	}
