@@ -37,8 +37,8 @@ public class JoinGame extends Screen {
         this.append(gauge);
         
         // TODO: Only show success message on next page?
-		msg = new StringItem(null, "You have joined game #" + gameChoice);
-        this.append(msg);
+		//msg = new StringItem(null, "You have joined game #" + gameChoice);
+        //this.append(msg);
         
         this.addCommand(cancelCommand);
 	}
