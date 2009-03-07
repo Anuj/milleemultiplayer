@@ -1,5 +1,6 @@
 package millee.game.mechanics;
 import java.util.Hashtable;
+import java.util.Stack;
 
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.game.Sprite;
@@ -21,8 +22,9 @@ public class Player {
 	private int _assignedColor;
 	private int _id;
 	
-	// Player keeps track of his own score
+	// Player keeps track of his own score & goodies collected
 	private int _score = 0;
+	private Stack _goodies = new Stack();
 	
 	// Player sprite color variations
 	public static final int BLACK = 1;
@@ -177,11 +179,11 @@ public class Player {
 	}
 	
 	// Update the player's score in game-like ways
-	public void incrementScore() {
+	private void incrementScore() {
 		_score += 10;
 	}
 	
-	public void decrementScore() {
+	private void decrementScore() {
 		_score -= 10;
 	}
 	
@@ -191,5 +193,16 @@ public class Player {
 	
 	public String getName() {
 		return _name;
+	}
+	
+	public void collect(Goodie g) {
+		_goodies.push(g);
+		if (g.getType() == this._assignedColor) { this.incrementScore(); }
+		else { this.decrementScore(); }
+	}
+	
+	public Goodie dropGoodie() {
+		if (_goodies.isEmpty()) { return null; }
+		return (Goodie) _goodies.pop();
 	}
 }

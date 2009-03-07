@@ -96,8 +96,8 @@ public class GameGrid {
 		cNew.addPlayer(p);
 		
 		// Now check for 'collisions' with goodies
-		if (cNew.hasGoodie() && p.assignedColor() == cNew.getGoodie().getType()) {
-			p.incrementScore();
+		if (cNew.hasGoodie()) { // && p.assignedColor() == cNew.getGoodie().getType()) {
+			p.collect(cNew.getGoodie());
 			cNew.unsetGoodie();
 			_nGoodies--;
 		}
