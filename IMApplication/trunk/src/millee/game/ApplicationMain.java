@@ -32,7 +32,7 @@ import millee.network.Network;
 
 public class ApplicationMain extends MIDlet implements CommandListener {
 	
-	private final static Logger log = Logger.getLogger(ApplicationMain.class);
+	//private final static Logger log = Logger.getLogger(ApplicationMain.class);
 	
 	private static final int NUM_ROUNDS = 2;
 	private static final int NUM_LEVELS = 2;
@@ -78,8 +78,8 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 	private Displayable _previousDisplayable = null;
 	
 	public ApplicationMain () {
-		// Setup logging
-		log.addAppender(new ConsoleAppender());
+		//TODO: Setup logging
+		//log.addAppender(new ConsoleAppender());
 		
 		theDisplay = display = Display.getDisplay(this);
 		_exitCommand = new Command ("Exit", Command.EXIT, 0);
@@ -108,15 +108,15 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 		
 	}
 	protected void destroyApp(boolean arg0) {
-		log.info("Destroying application...");
+		//log.info("Destroying application...");
 	}
 
 	protected void pauseApp() {
-		log.info("Pausing application...");
+		//log.info("Pausing application...");
 	}
 
 	protected void startApp() throws MIDletStateChangeException {
-		log.info("Starting application...");
+		//log.info("Starting application...");
 		numLevelsLeft = NUM_LEVELS;
 		numRoundsLeft = NUM_ROUNDS;
 		//game.start();
