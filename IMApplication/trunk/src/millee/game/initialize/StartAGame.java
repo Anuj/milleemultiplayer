@@ -2,6 +2,8 @@ package millee.game.initialize;
 
 import java.io.IOException;
 
+import javax.bluetooth.LocalDevice;
+
 import millee.game.ApplicationMain;
 import millee.network.ClientServer;
 import millee.network.Network;
@@ -22,30 +24,28 @@ public class StartAGame extends Screen {
 	
 	public StartAGame(String title, Network network, ApplicationMain _app) {
 		super(title);
-		
+
 		this._app = _app;
 		this.network = network;
+	}
+	
+	public void start() {
 		
-		this.append("Started a game...");
+		network.initializeNetwork(true, NUMCLIENTS, _app);
+		
+		Thread thread = new Thread(network);
+        thread.start();
+        
+		String gameName = network.clientServer.getDeviceName();
+		
+		this.append("Started a game called " + gameName.toUpperCase());
 		this.append("Waiting for players to join");
         formElementNumber+=2;
         this.append("");
         formElementNumber+=1;
 		//this.addCommand(backCommand);
         
-		
 		this.addCommand(cancelCommand);
-        
-        
-	}
-	
-	public void setupNetworkPlayers(String myName, String myImagePath) {
-		//Network network = new Network();
-		network.initializeNetwork(true, NUMCLIENTS, _app);
-		
-		Thread thread = new Thread(network);
-        thread.start();
-
 	}
 	
 	/*public int append(String msg) {

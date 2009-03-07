@@ -38,6 +38,7 @@ public class ClientServer implements DiscoveryListener {
     SenderThread senderThread = null;
     ReceiverThread[] recvThreads = null;
     
+    
     private LocalDevice m_LclDevice = null;
     private StreamConnectionNotifier m_StrmNotf = null;
     public boolean m_bIsServer = false,  m_bServerFound = false,  m_bInitServer = false,  m_bInitClient = false;
@@ -72,6 +73,16 @@ public class ClientServer implements DiscoveryListener {
     
     public StreamConnection[] getStreamConnections() {
     	return streamConnections;
+    }
+    
+    public String getDeviceName() {
+    	try {
+			m_LclDevice = LocalDevice.getLocalDevice();
+		} catch (BluetoothStateException e) {
+			System.err.println("Couldn't access the local device");
+			e.printStackTrace();
+		}
+    	return m_LclDevice.getFriendlyName();
     }
     
     // Starts the server and waits until it is connected to 
