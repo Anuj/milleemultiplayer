@@ -68,6 +68,7 @@ public class Round extends GameCanvas implements Runnable {
 					boolean isServer, Network network, int localPlayerId) {
 		
 		super(true);
+		this.setFullScreenMode(true);
 		
 		this._nPlayers = players.size();
 		this._players = players;
@@ -220,7 +221,18 @@ public class Round extends GameCanvas implements Runnable {
 
 		random = new Random();
 		graphics = getGraphics();
-
+		
+		/*
+		displayNotification("GOAL", "Collect all the " + colorFromID(localPlayerID) + " fruits!");
+		flushGraphics();
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		*/
+		
 		// Populate it and tell others, or populate it from the information received
 		_grid = new GameGrid(_cellWidth,_cellHeight);
 		
@@ -374,6 +386,7 @@ public class Round extends GameCanvas implements Runnable {
 		//System.out.println("Your score: " + scores[this.localPlayerID]);
 		if (stopGame) {
 			// End game drawing
+			this.setFullScreenMode(false);
 			okCmd = new Command("OK", Command.OK, 1);
 			this.addCommand(okCmd);
 			setStatusMessage("Round Complete!");
@@ -395,8 +408,9 @@ public class Round extends GameCanvas implements Runnable {
 			
 			// Draw goodie stack
 			p.getGoodieStack().redraw(graphics, 0, getHeight()-TILE_DIMENSIONS+5);
+			setStatusMessage("< DROP");
 			
-			setRightStatusMessage(colorFromID(p.assignedColor()));
+			setRightStatusMessage("Collect " + colorFromID(p.assignedColor()));
 		}
 		
 		// Draw graphics to the screen
@@ -406,12 +420,12 @@ public class Round extends GameCanvas implements Runnable {
 	private void setStatusMessage(String msg) {
 		graphics.setColor(255,255,255);
 		graphics.setFont(Font.getFont(Font.FACE_SYSTEM, Font.STYLE_BOLD, Font.SIZE_MEDIUM));
-		graphics.drawString(msg, 3, getHeight(), Graphics.BOTTOM | Graphics.LEFT);
+		graphics.drawString(msg, getWidth()/2, getHeight(), Graphics.BOTTOM | Graphics.HCENTER);
 	}
 	
 	private void setRightStatusMessage(String msg) {
 		graphics.setColor(255,255,255);
-		graphics.setFont(Font.getFont(Font.FACE_SYSTEM, Font.STYLE_BOLD, Font.SIZE_MEDIUM));
+		graphics.setFont(Font.getFont(Font.FACE_SYSTEM, Font.STYLE_ITALIC, Font.SIZE_SMALL));
 		graphics.drawString(msg, getWidth(), getHeight(), Graphics.BOTTOM | Graphics.RIGHT);
 	}
 	
