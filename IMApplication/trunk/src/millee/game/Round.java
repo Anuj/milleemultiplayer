@@ -377,9 +377,10 @@ public class Round extends GameCanvas implements Runnable {
 		//System.out.println("Your score: " + scores[this.localPlayerID]);
 		if (stopGame) {
 			// End game drawing
+			this.setFullScreenMode(false);
+
 			okCmd = new Command("Start Next Round", Command.OK, 1);
-			
-			
+
 			String scoreReport = "";
 			Player p;
 			for (int i = 0; i<_players.size(); i++) {
@@ -426,7 +427,7 @@ public class Round extends GameCanvas implements Runnable {
 	
 	private void setStatusMessage(String msg) {
 		graphics.setColor(255,255,255);
-		graphics.setFont(Font.getFont(Font.FACE_SYSTEM, Font.STYLE_BOLD, Font.SIZE_MEDIUM));
+		graphics.setFont(Font.getFont(Font.FACE_SYSTEM, Font.STYLE_BOLD, Font.SIZE_SMALL));
 		graphics.drawString(msg, getWidth()/2, getHeight(), Graphics.BOTTOM | Graphics.HCENTER);
 	}
 	
@@ -434,14 +435,14 @@ public class Round extends GameCanvas implements Runnable {
 		graphics.setColor(255,255,255);
 		graphics.setFont(Font.getFont(Font.FACE_SYSTEM, Font.STYLE_BOLD, Font.SIZE_MEDIUM));
 		int fontHeight = graphics.getFont().getHeight();
-		graphics.drawString(msg1, getWidth()/2, getHeight()-2*fontHeight, Graphics.BOTTOM | Graphics.LEFT);
-		graphics.drawString(msg2, getWidth()/2, getHeight()-fontHeight, Graphics.BOTTOM | Graphics.LEFT);
-		graphics.drawString(msg3, getWidth()/2, getHeight(), Graphics.BOTTOM | Graphics.LEFT);
+		graphics.drawString(msg1, 0, getHeight()-2*fontHeight, Graphics.BOTTOM | Graphics.LEFT);
+		graphics.drawString(msg2, 0, getHeight()-fontHeight, Graphics.BOTTOM | Graphics.LEFT);
+		graphics.drawString(msg3, 0, getHeight(), Graphics.BOTTOM | Graphics.LEFT);
 	}
 	
 	private void setRightStatusMessage(String msg) {
 		graphics.setColor(255,255,255);
-		graphics.setFont(Font.getFont(Font.FACE_SYSTEM, Font.STYLE_ITALIC, Font.SIZE_SMALL));
+		graphics.setFont(Font.getFont(Font.FACE_SYSTEM, Font.STYLE_PLAIN, Font.SIZE_SMALL));
 		graphics.drawString(msg, getWidth(), getHeight(), Graphics.BOTTOM | Graphics.RIGHT);
 	}
 	
