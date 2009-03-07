@@ -225,7 +225,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 		display.setCurrent(chooseGame);
 	}*/
 	
-	public void addMsgToGameScreen(int gameScreen, String msg) {
+	/*public void addMsgToGameScreen(int gameScreen, String msg) {
 		switch (gameScreen) {
 			case START_SCREEN: startScreen.addMessage(msg);
 			case CHOOSE_CHAR: charForm.addMessage(msg);
@@ -237,9 +237,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 			case START_A_GAME: startAGame.addMessage(msg);
 			case INITIAL_LEVEL_GAME: initialLevelPage.addMessage(msg);
 		}
-		
-		
-	}
+	}*/
 	
 	public void replaceMsgOnGameScreen(int gameScreen, String msg) {
 		switch (gameScreen) {
@@ -269,7 +267,9 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 		
 		if (isServer) {
 			_players = initialLevelPage.setupPlayers(myName, myImagePath);
+			System.out.println("before adding command to initialLevelPage");
 			initialLevelPage.addCommand(initialLevelPage.getStartCommand());
+			System.out.println("after adding command");
 		}
 		else {
 			localPlayerId = initialLevelPage.sendPlayerInfo(myName, myImagePath);

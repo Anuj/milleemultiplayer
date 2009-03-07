@@ -8,7 +8,7 @@ public class Screen extends Form {
 	
 	protected Command okCommand, backCommand, exitCommand, startCommand, cancelCommand;
 	protected ChoiceGroup choiceGroup;
-	protected int formElementNumber = 0;
+	//protected int formElementNumber = 0;
 	
 	public Screen(String title) {
 		super(title);
@@ -38,10 +38,10 @@ public class Screen extends Form {
 			return choiceGroup.getSelectedIndex();
 		return -1;
 	}
-	
+	/*
 	public void addMessage(String msg) {
 		this.append(msg);
-	}
+	}*/
 	
 	/*public int append(String msg) {
 		int ret = super.append(msg);
