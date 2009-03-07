@@ -32,6 +32,13 @@ public class Network implements Runnable {
 	}
 	
 	public void initializeNetwork(boolean isServer, int numClients, ApplicationMain _app) {
+		if (numClients <= 0)
+			try {
+				throw new Exception ("Number of clients is non-positive");
+			} catch (Exception e) {
+				System.out.println("Number of clients is non-positive");
+				e.printStackTrace();
+			}
 		this.isServer = isServer;
 		this.numClients = numClients;
 		sendBuffer = new Vector();

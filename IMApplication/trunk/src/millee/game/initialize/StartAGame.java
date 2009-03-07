@@ -19,7 +19,8 @@ public class StartAGame extends Screen {
 	private Object replaceObject = new Object();
 
 	// TODO: move NUMCLIENTS + setupPlayers code elsewhere
-	public static final int NUMCLIENTS = 2;
+	//public static final int NUMCLIENTS = 2;
+	public static int numClients = -1;
 	
 	
 	public StartAGame(String title, Network network, ApplicationMain _app) {
@@ -29,9 +30,10 @@ public class StartAGame extends Screen {
 		this.network = network;
 	}
 	
-	public void start() {
+	public void start(int numClients) {
 		
-		network.initializeNetwork(true, NUMCLIENTS, _app);
+		this.numClients = numClients;
+		network.initializeNetwork(true, this.numClients, _app);
 		
 		Thread thread = new Thread(network);
         thread.start();

@@ -64,7 +64,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 	
 	private Vector _players;
 	
-	private List _charList = null, _startOrJoinGameList = null;
+	private List _charList = null, _startOrJoinGameList = null, _chooseNumPlayersList = null;
 	private Command listSelection = null;
 	private Command _exitCommand = null, _backCommand = null;
 	
@@ -155,8 +155,10 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 			_previousDisplayable = getStartOrJoinGameList();
 			if (_startOrJoinGameList.getSelectedIndex() == 0) {
 				isServer = true;
-				startAGame.start();
-				display.setCurrent(startAGame);
+				display.setCurrent(getChooseNumPlayersList());
+				// TODO: UNCOMMENT TO START GAME
+				/*startAGame.start();
+				display.setCurrent(startAGame); */
 				//startAGame.setupNetworkPlayers(myName, myImagePath);
 			} else {
 				isServer = false;
@@ -168,7 +170,13 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 				display.setCurrent(joinGame);
 			}
 			// startMusic(); -- ...no
-		} /*else if (c == chooseGame.joinCommand()) {
+		} else if (c == List.SELECT_COMMAND && d == _chooseNumPlayersList) {
+			startAGame.start(_chooseNumPlayersList.getSelectedIndex());
+			display.setCurrent(startAGame);
+		}
+		
+		
+		/*else if (c == chooseGame.joinCommand()) {
 			System.out.println("detected join command");
 			gameChoice = chooseGame.getListSelection();
 			joinGame.setCharacterChoice(characterChoice);
@@ -354,6 +362,26 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 		}
 		
 		return _startOrJoinGameList;		
+	}
+	
+	private List getChooseNumPlayersList() {
+		
+		if (_chooseNumPlayersList == null) {
+			listSelection = new Command("Select",Command.OK,0);
+	
+			_chooseNumPlayersList = new List("How many players in the game?", List.IMPLICIT);
+			
+			_chooseNumPlayersList.append("1 player", null);
+			_chooseNumPlayersList.append("2 players", null);
+			_chooseNumPlayersList.append("3 players", null);
+			_chooseNumPlayersList.append("4 players", null);
+			
+			_chooseNumPlayersList.setCommandListener(this);
+			_chooseNumPlayersList.addCommand(_exitCommand);
+			_chooseNumPlayersList.addCommand(_backCommand);
+		}
+		
+		return _chooseNumPlayersList;		
 	}
 	
 	/**
