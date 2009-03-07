@@ -167,6 +167,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 		} else if (c == List.SELECT_COMMAND && d == _chooseNumPlayersList) {
 			startAGame.start(_chooseNumPlayersList.getSelectedIndex());
 			display.setCurrent(startAGame);
+			startAGame.startNetwork();
 		} else if (c == initialLevelPage.getStartCommand()) {
 			network.broadcast("go");
 			game = createNewRound();
