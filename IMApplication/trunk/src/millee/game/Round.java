@@ -24,6 +24,7 @@ public class Round extends GameCanvas implements Runnable {
 	// Class elements
 	private volatile Thread thread;
 	private Random random;
+	private ApplicationMain _app;
 	
 	// Stuff for drawing
 	private Graphics graphics;
@@ -63,7 +64,7 @@ public class Round extends GameCanvas implements Runnable {
 	 * @param network
 	 * @param localPlayerId
 	 */
-	public Round (Vector players, int round, int level, boolean lastRoundInLevel, 
+	public Round (ApplicationMain app, Vector players, int round, int level, boolean lastRoundInLevel, 
 					String levelName, int totalNumGoodies,
 					boolean isServer, Network network, int localPlayerId) {
 		
@@ -88,6 +89,7 @@ public class Round extends GameCanvas implements Runnable {
 		
 		this.localPlayerID = localPlayerId;
 		
+		this._app = app;
 		exitCmd = new Command("Exit", Command.EXIT, 0);
 	}
 	
@@ -221,18 +223,7 @@ public class Round extends GameCanvas implements Runnable {
 
 		random = new Random();
 		graphics = getGraphics();
-		
-		/*
-		displayNotification("GOAL", "Collect all the " + colorFromID(localPlayerID) + " fruits!");
-		flushGraphics();
-		try {
-			Thread.sleep(5000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		*/
-		
+
 		// Populate it and tell others, or populate it from the information received
 		_grid = new GameGrid(_cellWidth,_cellHeight);
 		
@@ -386,18 +377,34 @@ public class Round extends GameCanvas implements Runnable {
 		//System.out.println("Your score: " + scores[this.localPlayerID]);
 		if (stopGame) {
 			// End game drawing
-			this.setFullScreenMode(false);
-			okCmd = new Command("OK", Command.OK, 1);
-			this.addCommand(okCmd);
-			setStatusMessage("Round Complete!");
-
+			okCmd = new Command("Start Next Round", Command.OK, 1);
+			
+			
 			String scoreReport = "";
 			Player p;
 			for (int i = 0; i<_players.size(); i++) {
 				p = ((Player) _players.elementAt(i));
 				scoreReport += "Player " + p.getID() + ": " + p.getScore() + "\n";
 			}
+
 			displayNotification("Current Scores", scoreReport);
+			
+			if (isServer) {
+				setStatusMessage("Round Complete!");
+				this.addCommand(okCmd);
+			} else {
+				_app.numRoundsLeft--;
+				if (_app.numLevelsLeft > 0 && _app.numRoundsLeft <= 0) {
+					this.addCommand(okCmd);
+					setStatusMessage("Round Complete!");
+					Thread thread = new Thread(new Runnable () {public void run() {_app.waitForServer();}});
+					thread.start();
+				} else if (_app.numRoundsLeft > 0) {
+					set3LineStatusMessage("Round Complete!", "Waiting for server to start", "next round . . .");
+					Thread thread = new Thread(new Runnable () {public void run() {_app.waitForServer();}});
+					thread.start();
+				}
+			}
 		} else {
 			// Tell the grid to redraw itself
 			_grid.redraw(graphics);
@@ -421,6 +428,15 @@ public class Round extends GameCanvas implements Runnable {
 		graphics.setColor(255,255,255);
 		graphics.setFont(Font.getFont(Font.FACE_SYSTEM, Font.STYLE_BOLD, Font.SIZE_MEDIUM));
 		graphics.drawString(msg, getWidth()/2, getHeight(), Graphics.BOTTOM | Graphics.HCENTER);
+	}
+	
+	private void set3LineStatusMessage(String msg1, String msg2, String msg3) {
+		graphics.setColor(255,255,255);
+		graphics.setFont(Font.getFont(Font.FACE_SYSTEM, Font.STYLE_BOLD, Font.SIZE_MEDIUM));
+		int fontHeight = graphics.getFont().getHeight();
+		graphics.drawString(msg1, getWidth()/2, getHeight()-2*fontHeight, Graphics.BOTTOM | Graphics.LEFT);
+		graphics.drawString(msg2, getWidth()/2, getHeight()-fontHeight, Graphics.BOTTOM | Graphics.LEFT);
+		graphics.drawString(msg3, getWidth()/2, getHeight(), Graphics.BOTTOM | Graphics.LEFT);
 	}
 	
 	private void setRightStatusMessage(String msg) {

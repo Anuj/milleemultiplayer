@@ -1,6 +1,8 @@
 package millee.game;
 import java.util.Vector;
 
+import javax.microedition.lcdui.Alert;
+import javax.microedition.lcdui.AlertType;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Display;
@@ -175,8 +177,9 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 			game.start();
 			display.setCurrent(game);
 		} else if (c == game.getOkCommand()) {
-			numRoundsLeft--;
+			
 			if (numLevelsLeft <= 0 && numRoundsLeft <= 0) {		// end of game
+				numRoundsLeft--;
 				display.setCurrent(winnerScreen);
 			} else if (numRoundsLeft <= 0) {	// end of current level
 				game.hideNotify();
@@ -186,11 +189,15 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 				display.setCurrent(levelStartPage);
 			} else if (numRoundsLeft > 0) {	// end of current round, move on to next round
 				game.hideNotify();
-				game = createNewRound();
-				game.start();
-				if (isServer) network.broadcast("go");
-				if (!isServer && (network.receiveNow().equals("go")));
-				display.setCurrent(game);
+
+				System.out.println("end of round.  start of next round");
+				if (isServer) {
+					network.broadcast("go");
+					game = createNewRound();
+					game.start();
+					display.setCurrent(game);
+					
+				}
 			}	
 		} else if (c == levelStartPage.getStartCommand()) {
 			game = createNewRound();
@@ -276,6 +283,18 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 		}
 	}
 	
+	public void waitForServer() {
+		String input;
+
+		game.hideNotify();
+		while (!(input = network.receiveNow().msg()).equals("go")) {
+			continue;
+		}
+		game = createNewRound();
+		game.start();
+		display.setCurrent(game);
+	}
+	
 	public void startGame() {
 		game = createNewRound();
 		numLevelsLeft--;
@@ -304,7 +323,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 		possibleTokenText[3] = "Yellow";
 		*/
 		
-		Round game = new Round(_players, numRoundsLeft, numLevelsLeft, false, "Colours",
+		Round game = new Round(this, _players, numRoundsLeft, numLevelsLeft, false, "Colours",
 								4, isServer, network, localPlayerId);
 		game.setCommandListener(this);
 		return game;
