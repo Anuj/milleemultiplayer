@@ -138,15 +138,15 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 			// TODO: Not hardcode this, find better player pictures
 			if (characterChoice == 0) {
 				myName = "Raj";
-				myImagePath = "/dancer_0.png";
+				myImagePath = "/dancer_1.png";
 			}
 			else if (characterChoice == 1) {
 				myName = "Sri";
-				myImagePath = "/dancer_1.png";
+				myImagePath = "/dancer_2.png";
 			}
 			else if (characterChoice == 2) {
 				myName = "Neha";
-				myImagePath = "/dancer_2.png";
+				myImagePath = "/dancer_3.png";
 			}
 			
 			_previousDisplayable = getCharacterChoiceList();
@@ -283,9 +283,11 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 	}
 	
 	private Round createNewRound() {
+		/* Not needed any more...
+		
 		int[] scoreAssignment = new int[3];
 		String[] possibleTokenPaths = new String[4], possibleTokenText = new String[4];
-		
+
 		scoreAssignment[0] = 5;
 		scoreAssignment[1] = 10;
 		scoreAssignment[2] = 20;
@@ -299,7 +301,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 		possibleTokenText[1] = "Blue";
 		possibleTokenText[2] = "Green";
 		possibleTokenText[3] = "Yellow";
-		
+		*/
 		
 		Round game = new Round(_players, "/tiles.png", numRoundsLeft, numLevelsLeft, false, "Colours",
 								4, isServer, network, localPlayerId);
@@ -311,9 +313,9 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 		
 		if (_charList == null) {
 		
-			Image rajImage = Utilities.createImage("/dancer_0.png");
-	        Image sriImage = Utilities.createImage("/dancer_1.png");
-	        Image nehaImage = Utilities.createImage("/dancer_2.png");
+			Image rajImage = Utilities.createImage("/dancer_1.png");
+	        Image sriImage = Utilities.createImage("/dancer_2.png");
+	        Image nehaImage = Utilities.createImage("/dancer_3.png");
 			
 			_charList = new List("Characters", List.IMPLICIT);
 			_charList.append("Raj", rajImage);
