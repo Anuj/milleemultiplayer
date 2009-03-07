@@ -38,7 +38,6 @@ public class ClientServer implements DiscoveryListener {
     SenderThread senderThread = null;
     ReceiverThread[] recvThreads = null;
     
-    
     private LocalDevice m_LclDevice = null;
     private StreamConnectionNotifier m_StrmNotf = null;
     public boolean m_bIsServer = false,  m_bServerFound = false,  m_bInitServer = false,  m_bInitClient = false;

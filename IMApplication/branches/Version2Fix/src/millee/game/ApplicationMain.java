@@ -64,7 +64,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 	
 	private Vector _players;
 	
-	private List _charList = null, _startOrJoinGameList = null, _chooseNumPlayersList = null;
+	private List _charList = null, _startOrJoinGameList = null;
 	private Command listSelection = null;
 	private Command _exitCommand = null, _backCommand = null;
 	
@@ -138,15 +138,15 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 			// TODO: Not hardcode this, find better player pictures
 			if (characterChoice == 0) {
 				myName = "Raj";
-				myImagePath = "/dancer_1.png";
+				myImagePath = "/dancer_0.png";
 			}
 			else if (characterChoice == 1) {
 				myName = "Sri";
-				myImagePath = "/dancer_2.png";
+				myImagePath = "/dancer_1.png";
 			}
 			else if (characterChoice == 2) {
 				myName = "Neha";
-				myImagePath = "/dancer_3.png";
+				myImagePath = "/dancer_2.png";
 			}
 			
 			_previousDisplayable = getCharacterChoiceList();
@@ -155,19 +155,28 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 			_previousDisplayable = getStartOrJoinGameList();
 			if (_startOrJoinGameList.getSelectedIndex() == 0) {
 				isServer = true;
-				display.setCurrent(getChooseNumPlayersList());
+				startAGame.start();
+				display.setCurrent(startAGame);
+				startAGame.setupNetworkPlayers(myName, myImagePath);
 			} else {
 				isServer = false;
 				joinGame.initClient();
 				joinGame.setCharacterChoice(characterChoice);
 				joinGame.setGameChoice(gameChoice);
+				//joinGame.joinTheGame();
+				//updateDevicesDiscovered(new Vector());
 				display.setCurrent(joinGame);
 			}
 			// startMusic(); -- ...no
-		} else if (c == List.SELECT_COMMAND && d == _chooseNumPlayersList) {
-			startAGame.start(_chooseNumPlayersList.getSelectedIndex());
-			display.setCurrent(startAGame);
-		} else if (c == initialLevelPage.getStartCommand()) {
+		} /*else if (c == chooseGame.joinCommand()) {
+			System.out.println("detected join command");
+			gameChoice = chooseGame.getListSelection();
+			joinGame.setCharacterChoice(characterChoice);
+			joinGame.setGameChoice(gameChoice);
+			joinGame.joinTheGame();
+			display.setCurrent(joinGame);
+			
+		}*/ else if (c == initialLevelPage.getStartCommand()) {
 			network.broadcast("go");
 			game = createNewRound();
 			numLevelsLeft--;
@@ -283,11 +292,9 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 	}
 	
 	private Round createNewRound() {
-		/* Not needed any more...
-		
 		int[] scoreAssignment = new int[3];
 		String[] possibleTokenPaths = new String[4], possibleTokenText = new String[4];
-
+		
 		scoreAssignment[0] = 5;
 		scoreAssignment[1] = 10;
 		scoreAssignment[2] = 20;
@@ -301,7 +308,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 		possibleTokenText[1] = "Blue";
 		possibleTokenText[2] = "Green";
 		possibleTokenText[3] = "Yellow";
-		*/
+		
 		
 		Round game = new Round(_players, "/tiles.png", numRoundsLeft, numLevelsLeft, false, "Colours",
 								4, isServer, network, localPlayerId);
@@ -313,9 +320,9 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 		
 		if (_charList == null) {
 		
-			Image rajImage = Utilities.createImage("/dancer_1.png");
-	        Image sriImage = Utilities.createImage("/dancer_2.png");
-	        Image nehaImage = Utilities.createImage("/dancer_3.png");
+			Image rajImage = Utilities.createImage("/dancer_0.png");
+	        Image sriImage = Utilities.createImage("/dancer_1.png");
+	        Image nehaImage = Utilities.createImage("/dancer_2.png");
 			
 			_charList = new List("Characters", List.IMPLICIT);
 			_charList.append("Raj", rajImage);
@@ -347,26 +354,6 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 		}
 		
 		return _startOrJoinGameList;		
-	}
-	
-	private List getChooseNumPlayersList() {
-		
-		if (_chooseNumPlayersList == null) {
-			listSelection = new Command("Select",Command.OK,0);
-	
-			_chooseNumPlayersList = new List("How many players in the game?", List.IMPLICIT);
-			
-			_chooseNumPlayersList.append("1 player", null);
-			_chooseNumPlayersList.append("2 players", null);
-			_chooseNumPlayersList.append("3 players", null);
-			_chooseNumPlayersList.append("4 players", null);
-			
-			_chooseNumPlayersList.setCommandListener(this);
-			_chooseNumPlayersList.addCommand(_exitCommand);
-			_chooseNumPlayersList.addCommand(_backCommand);
-		}
-		
-		return _chooseNumPlayersList;		
 	}
 	
 	/**

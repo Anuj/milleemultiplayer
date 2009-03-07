@@ -96,24 +96,11 @@ public class GameGrid {
 		cNew.addPlayer(p);
 		
 		// Now check for 'collisions' with goodies
-		if (cNew.hasGoodie()) { // && p.assignedColor() == cNew.getGoodie().getType()) {
-			p.collect(cNew.getGoodie());
+		if (cNew.hasGoodie() && p.assignedColor() == cNew.getGoodie().getType()) {
+			p.incrementScore();
 			cNew.unsetGoodie();
 			_nGoodies--;
 		}
-	}
-	
-	public void playerDrop(int id) {
-		Player p = (Player) _players.elementAt(id);
-		Goodie g = p.dropGoodie();
-		
-		System.out.println("Goodie dropped: " + g);
-		if (g == null) { return; }
-		
-		g.sprite.setPosition(_tileDimensions*p.x, _tileDimensions*p.y);
-		_cells[p.y][p.x].setGoodie(g);
-		_nGoodies++;
-		this.movePlayer(id, 0, -1);
 	}
 	
 	// Tells the entire grid to redraw itself, players and all

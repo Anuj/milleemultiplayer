@@ -1,6 +1,5 @@
 package millee.game.mechanics;
 import java.util.Hashtable;
-import java.util.Stack;
 
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.game.Sprite;
@@ -22,9 +21,8 @@ public class Player {
 	private int _assignedColor;
 	private int _id;
 	
-	// Player keeps track of his own score & goodies collected
+	// Player keeps track of his own score
 	private int _score = 0;
-	private Stack _goodies = new Stack();
 	
 	// Player sprite color variations
 	public static final int BLACK = 1;
@@ -40,7 +38,7 @@ public class Player {
 	 * @param avatar
 	 * @param virtualID
 	 */
-	public Player(String name, String imgPath, int virtualID, boolean isLocal) { //, int physicalID) {
+	public Player(String name, String imgPath, int virtualID) { //, int physicalID) {
 		
 		this._name = name;
 		this._id = virtualID;
@@ -48,15 +46,7 @@ public class Player {
 		// The color that this character must collect is its ID+1
 		this._assignedColor = virtualID+1;
 		
-		Image avatar = null;
-		
-		if (isLocal) {
-			avatar = Utilities.createImage(imgPath);
-		}
-		else {
-			// Ignore the chosen avatar...
-			avatar = Utilities.createImage(Utilities.DEFAULT_IMAGE);
-		}
+		Image avatar = Utilities.createImage(imgPath);
 		
 		// Keep track of avatar usage counts
 		int nUsage = 1; // Default
@@ -68,12 +58,12 @@ public class Player {
 		avatarUsageCounts.put(imgPath, new Integer(nUsage));
 
 		// Alter color if necessary
-		//if (nUsage > 1) {
-		//	sprite = new Sprite(applyVariation(avatar,nUsage));
-		//}
-		//else {
+		if (nUsage > 1) {
+			sprite = new Sprite(applyVariation(avatar,nUsage));
+		}
+		else {
 			sprite = new Sprite(avatar);
-		//}
+		}
 	}
 	
 	private Image applyVariation(Image img, int var) {
@@ -187,11 +177,11 @@ public class Player {
 	}
 	
 	// Update the player's score in game-like ways
-	private void incrementScore() {
+	public void incrementScore() {
 		_score += 10;
 	}
 	
-	private void decrementScore() {
+	public void decrementScore() {
 		_score -= 10;
 	}
 	
@@ -201,16 +191,5 @@ public class Player {
 	
 	public String getName() {
 		return _name;
-	}
-	
-	public void collect(Goodie g) {
-		_goodies.push(g);
-		if (g.getType() == this._assignedColor) { this.incrementScore(); }
-		else { this.decrementScore(); }
-	}
-	
-	public Goodie dropGoodie() {
-		if (_goodies.isEmpty()) { return null; }
-		return (Goodie) _goodies.pop();
 	}
 }
