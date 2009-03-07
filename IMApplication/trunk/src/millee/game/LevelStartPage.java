@@ -28,8 +28,18 @@ public class LevelStartPage extends Screen {
 		
 		this.append(str);
 		this.append(str2);
-		this.addCommand(startCommand);
 		this.addCommand(exitCommand);
+		
+		if (isServer) {
+			this.append("Press START to begin the next level!");
+			this.addCommand(startCommand);
+			System.out.println("after adding command");
+		} else {
+			//this.addCommand(startCommand);
+			this.append("Waiting for server to start the game...");
+			
+			//sendPlayerInfo(myName, myImagePath);
+		}
 	}
 	
 	public void addMessage(String msg) {
