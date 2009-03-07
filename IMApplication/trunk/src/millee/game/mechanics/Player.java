@@ -24,7 +24,7 @@ public class Player {
 	
 	// Player keeps track of his own score & goodies collected
 	private int _score = 0;
-	private Stack _goodies = new Stack();
+	private GoodieStack _goodies = new GoodieStack();
 	
 	// Player sprite color variations
 	public static final int BLACK = 1;
@@ -212,5 +212,23 @@ public class Player {
 	public Goodie dropGoodie() {
 		if (_goodies.isEmpty()) { return null; }
 		return (Goodie) _goodies.pop();
+	}
+	
+	public GoodieStack getGoodieStack() {
+		return _goodies;
+	}
+	
+	public void flushGoodieStack() {
+		_goodies = new GoodieStack();
+	}
+	
+	public boolean hasCorrectGoodies() {
+		Goodie g = null;
+		for (int i = 0; i < _goodies.size(); i++) {
+			g = (Goodie) _goodies.elementAt(i);
+			if (g.getType() != this._assignedColor) { return false; }
+		}
+		
+		return true;
 	}
 }

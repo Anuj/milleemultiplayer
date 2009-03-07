@@ -251,6 +251,9 @@ public class Round extends GameCanvas implements Runnable {
 			// Check if the grid is empty
 			if (_grid.isWon()) {
 				stopGame = true;
+				for (int i = 0; i < _players.size(); i++) {
+					((Player) _players.elementAt(i)).flushGoodieStack();
+				}
 				System.out.println("Game has ended");
 			}
 			
@@ -388,7 +391,11 @@ public class Round extends GameCanvas implements Runnable {
 			
 			// Display messages for local player
 			Player p = (Player) _players.elementAt(localPlayerID);
-			setStatusMessage("" + p.getScore());
+			//setStatusMessage("" + p.getScore());
+			
+			// Draw goodie stack
+			p.getGoodieStack().redraw(graphics, 0, getHeight()-TILE_DIMENSIONS);
+			
 			setRightStatusMessage(colorFromID(p.assignedColor()));
 		}
 		
