@@ -3,3 +3,5 @@
 2. How complex should the game rules become? How about having extra 'dummy' goodies that no one is supposed to collect, and ensure they are still on the field before the game moves on?
 
 3. What and how many kinds of studies should we do? Should we limit by number of rounds, time, or just raw patience with our game?
+
+4. Do we want support multiple games within a short radius? 
