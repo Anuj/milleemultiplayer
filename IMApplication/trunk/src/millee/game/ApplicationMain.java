@@ -156,35 +156,18 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 			if (_startOrJoinGameList.getSelectedIndex() == 0) {
 				isServer = true;
 				display.setCurrent(getChooseNumPlayersList());
-				// TODO: UNCOMMENT TO START GAME
-				/*startAGame.start();
-				display.setCurrent(startAGame); */
-				//startAGame.setupNetworkPlayers(myName, myImagePath);
 			} else {
 				isServer = false;
 				joinGame.initClient();
 				joinGame.setCharacterChoice(characterChoice);
 				joinGame.setGameChoice(gameChoice);
-				//joinGame.joinTheGame();
-				//updateDevicesDiscovered(new Vector());
 				display.setCurrent(joinGame);
 			}
 			// startMusic(); -- ...no
 		} else if (c == List.SELECT_COMMAND && d == _chooseNumPlayersList) {
 			startAGame.start(_chooseNumPlayersList.getSelectedIndex());
 			display.setCurrent(startAGame);
-		}
-		
-		
-		/*else if (c == chooseGame.joinCommand()) {
-			System.out.println("detected join command");
-			gameChoice = chooseGame.getListSelection();
-			joinGame.setCharacterChoice(characterChoice);
-			joinGame.setGameChoice(gameChoice);
-			joinGame.joinTheGame();
-			display.setCurrent(joinGame);
-			
-		}*/ else if (c == initialLevelPage.getStartCommand()) {
+		} else if (c == initialLevelPage.getStartCommand()) {
 			network.broadcast("go");
 			game = createNewRound();
 			numLevelsLeft--;
