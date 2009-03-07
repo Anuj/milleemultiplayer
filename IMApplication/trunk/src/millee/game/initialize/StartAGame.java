@@ -35,9 +35,7 @@ public class StartAGame extends Screen {
 		this.numClients = numClients;
 		network.initializeNetwork(true, this.numClients, _app);
 		
-		Thread thread = new Thread(network);
-        thread.start();
-        
+	
 		String gameName = network.clientServer.getDeviceName();
 		
 		this.append("Started a game called " + gameName.toUpperCase());
@@ -48,6 +46,12 @@ public class StartAGame extends Screen {
 		//this.addCommand(backCommand);
         
 		this.addCommand(cancelCommand);
+	}
+	
+	public void startNetwork() {
+		Thread thread = new Thread(network);
+        thread.start();
+        
 	}
 	
 	/*public int append(String msg) {
