@@ -87,7 +87,7 @@ public class ClientServer implements DiscoveryListener {
         	
         	
         	for (int i = 0; i < numConnections; i++) {
-        		m_strUrl = "btspp://localhost:" + RFCOMM_UUID[0] + ";name=colourcolour;authorize=false";
+        		m_strUrl = "btspp://localhost:" + RFCOMM_UUID[0] + ";name=colourcolour;authorize=false;authenticate=false";
         		m_LclDevice = LocalDevice.getLocalDevice();
         		System.out.println("my name is: " + m_LclDevice.getFriendlyName());
                 m_LclDevice.setDiscoverable(DiscoveryAgent.GIAC);
@@ -209,7 +209,7 @@ public class ClientServer implements DiscoveryListener {
     	System.out.println("records.length: " + records.length);
     	
         for (int i = 0; i < records.length; i++) {
-            m_strUrl = records[i].getConnectionURL(ServiceRecord.AUTHENTICATE_ENCRYPT, false);
+            m_strUrl = records[i].getConnectionURL(ServiceRecord.NOAUTHENTICATE_NOENCRYPT, false);
             System.out.println("m_strUrl: " + m_strUrl);
             
             if (m_strUrl.startsWith("btspp")) {

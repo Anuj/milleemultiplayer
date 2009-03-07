@@ -105,6 +105,7 @@ public class ClientServer implements DiscoveryListener {
                 m_StrmNotf.close();
         	}
         	
+        	// TODO: find out why this update message causes an IndexOutOfBounds error
         	updateServerScreenStatus("All players have joined.\n.  Push START to begin.");
         	
             System.out.println("finished connecting");
@@ -283,6 +284,7 @@ public class ClientServer implements DiscoveryListener {
 		//}
 	}*/
     
+    
     private class ScreenUpdater implements Runnable {
     	
     	int gameScreen;
@@ -296,7 +298,6 @@ public class ClientServer implements DiscoveryListener {
 			_app.replaceMsgOnGameScreen(gameScreen, msg);
 			System.out.println("replaced the msg on the screen.  thread about to die.");
 		}
-    	
     }
 }
 
