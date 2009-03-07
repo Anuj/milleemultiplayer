@@ -408,7 +408,7 @@ public class Round extends GameCanvas implements Runnable {
 			
 			// Draw goodie stack
 			p.getGoodieStack().redraw(graphics, 0, getHeight()-TILE_DIMENSIONS+5);
-			setStatusMessage("< DROP");
+			if (!p.hasCorrectGoodies()) { setStatusMessage("< DROP"); }
 			
 			setRightStatusMessage("Collect " + colorFromID(p.assignedColor()));
 		}
