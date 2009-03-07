@@ -12,6 +12,9 @@ import javax.microedition.lcdui.List;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 
+import net.sf.microlog.Logger;
+import net.sf.microlog.appender.ConsoleAppender;
+
 import millee.game.initialize.ChooseCharacter;
 import millee.game.initialize.ChooseGame;
 import millee.game.initialize.JoinGame;
@@ -29,9 +32,11 @@ import millee.network.Network;
 
 public class ApplicationMain extends MIDlet implements CommandListener {
 	
+	private final static Logger log = Logger.getLogger(ApplicationMain.class);
+	
 	private static final int NUM_ROUNDS = 2;
 	private static final int NUM_LEVELS = 2;
-	private static final String GAME_LOOP_SOUND = "/game_loop.wav";
+	//private static final String GAME_LOOP_SOUND = "/game_loop.wav";
 	
 	public static final int START_SCREEN = 0;
 	public static final int CHOOSE_CHAR = 1;
@@ -73,6 +78,9 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 	private Displayable _previousDisplayable = null;
 	
 	public ApplicationMain () {
+		// Setup logging
+		log.addAppender(new ConsoleAppender());
+		
 		theDisplay = display = Display.getDisplay(this);
 		_exitCommand = new Command ("Exit", Command.EXIT, 0);
 		_backCommand = new Command ("Back", Command.BACK, 1);
@@ -100,17 +108,15 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 		
 	}
 	protected void destroyApp(boolean arg0) {
-		// TODO Auto-generated method stub
-		
+		log.info("Destroying application...");
 	}
 
 	protected void pauseApp() {
-		// TODO Auto-generated method stub
-		
+		log.info("Pausing application...");
 	}
 
 	protected void startApp() throws MIDletStateChangeException {
-		
+		log.info("Starting application...");
 		numLevelsLeft = NUM_LEVELS;
 		numRoundsLeft = NUM_ROUNDS;
 		//game.start();

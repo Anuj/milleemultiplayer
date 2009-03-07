@@ -3,5 +3,6 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="res"/>
 	<classpathentry kind="con" path="J2MELIB"/>
+	<classpathentry kind="lib" path="C:/Users/Simon/workspace/IMApplication/microlog-logger-1.1.1-me.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
