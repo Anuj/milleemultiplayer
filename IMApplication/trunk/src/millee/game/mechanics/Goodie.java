@@ -13,10 +13,11 @@ public class Goodie {
 	protected int y;
 	
 	// Sprite must have its own coordinates
-	protected Sprite sprite;
+	//protected Sprite sprite;
 	
 	public Goodie(int type) {
 		_type = type;
+		/*
 		switch (type) {
 		case 1: sprite = new Sprite(Utilities.createImage(BLACK_BERRY_PATH)); break;
 		case 2: sprite = new Sprite(Utilities.createImage(RED_TOMATO_PATH)); break;
@@ -26,6 +27,7 @@ public class Goodie {
 		default:
 			sprite = new Sprite(Utilities.createImage(RED_TOMATO_PATH));
 		}
+		*/
 	}
 	
 	public int getType() {
@@ -38,9 +40,10 @@ public class Goodie {
 	public static int GREEN_BANANA = 3;
 	public static int BLUE_BERRY = 4;
 	
+	/*
 	private static final String BLACK_BERRY_PATH = "/black_berry.png";
 	private static final String RED_TOMATO_PATH = "/tomato.png";
 	private static final String GREEN_BANANA_PATH = "/green_banana.png";
 	private static final String BLUE_BERRY_PATH = "/blue_berry.png";
-	
+	*/
 }

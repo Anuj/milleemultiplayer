@@ -303,7 +303,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 		possibleTokenText[3] = "Yellow";
 		*/
 		
-		Round game = new Round(_players, "/tiles.png", numRoundsLeft, numLevelsLeft, false, "Colours",
+		Round game = new Round(_players, numRoundsLeft, numLevelsLeft, false, "Colours",
 								4, isServer, network, localPlayerId);
 		game.setCommandListener(this);
 		return game;
