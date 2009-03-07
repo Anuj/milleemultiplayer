@@ -56,7 +56,7 @@ public class GameGrid {
 			for (int j = 0; j < _width; j++) {
 				// Currently, empty cell can be one of two tiles (id: 1 or 2)
 				_cells[i][j] =  new GameCell();
-				_tiledLayer.setCell(j, i, FRUIT_INDEX-1);// random.nextInt(NUM_EMPTY_TILES)+1);
+				_tiledLayer.setCell(j, i, 1); //FRUIT_INDEX-1);// random.nextInt(NUM_EMPTY_TILES)+1);
 			}
 		}
 
@@ -106,7 +106,7 @@ public class GameGrid {
 			p.collect(cNew.getGoodie());
 			System.out.println("Picked up Goodie: " + cNew.getGoodie());
 			cNew.unsetGoodie();
-			_tiledLayer.setCell(p.x, p.y, FRUIT_INDEX-1);
+			_tiledLayer.setCell(p.x, p.y, 1); //FRUIT_INDEX-1);
 			_nGoodies--;
 		}
 	}
@@ -132,7 +132,19 @@ public class GameGrid {
 	}
 	
 	public boolean isWon() {
-		return (_nGoodies == 0);
+		if (!(_nGoodies == 0)) { return false; }
+		
+		Player p = null;
+		
+		// Check that each player has only his respective color goodies
+		for (int i = 0; i < _players.size(); i++) {
+			p = (Player) _players.elementAt(i);
+			if (!p.hasCorrectGoodies()) { return false; }
+		}
+		
+		return true;
+		
+		
 		/* Dumb search
 		for (int i = 0; i < _height; i++) {
 			for (int j = 0; j < _width; j++) {

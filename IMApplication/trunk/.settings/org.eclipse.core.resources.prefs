@@ -1,4 +1,4 @@
-#Sat Mar 07 03:16:34 PST 2009
+#Sat Mar 07 04:00:10 PST 2009
 eclipse.preferences.version=1
 encoding//.processed/src/millee/game/ApplicationMain.java=UTF-8
 encoding//.processed/src/millee/game/InitialLevelPage.java=UTF-8
@@ -17,6 +17,7 @@ encoding//.processed/src/millee/game/initialize/WinnerScreen.java=UTF-8
 encoding//.processed/src/millee/game/mechanics/GameCell.java=UTF-8
 encoding//.processed/src/millee/game/mechanics/GameGrid.java=UTF-8
 encoding//.processed/src/millee/game/mechanics/Goodie.java=UTF-8
+encoding//.processed/src/millee/game/mechanics/GoodieStack.java=UTF-8
 encoding//.processed/src/millee/game/mechanics/Player.java=UTF-8
 encoding//.processed/src/millee/imapplication/Application.java=UTF-8
 encoding//.processed/src/millee/imapplication/BlueToothExp.java=UTF-8
