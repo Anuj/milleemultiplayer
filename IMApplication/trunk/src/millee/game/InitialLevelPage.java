@@ -16,15 +16,14 @@ import millee.network.Network;
 public class InitialLevelPage extends Screen {
 	
 	Network network;
-	int characterChoice;
-
+	private int _myID;
+	
 	public InitialLevelPage(String title, Network network, int characterChoice, boolean isServer, String myName, String myImagePath, ApplicationMain app) {
 		super(title);
 		
 		StringItem str = new StringItem("Colour Colour", "Level 1: Colours");
 		StringItem str2 = new StringItem(null, "Ready! Set! Go!");
 		
-		this.characterChoice = characterChoice;
 		this.network = network;
 		//network.sendReceive();
 		
@@ -53,7 +52,7 @@ public class InitialLevelPage extends Screen {
 	     StringBuffer initialBroadcast = new StringBuffer("");
 	     
 	     // Set up our own local player first
-	     newPlayers.addElement(new Player(myName, myImagePath, 0));
+	     newPlayers.addElement(new Player(myName, myImagePath, 0, true));
 	     
 	     initialBroadcast.append(0);
 	     initialBroadcast.append(",");
@@ -87,7 +86,7 @@ public class InitialLevelPage extends Screen {
 	    	 initialBroadcast.append(";");
 	    	 //System.out.println("playerImagePath = " + playerImagePath);
 	    	 
-	    	 newPlayers.addElement(new Player(playerName, playerImagePath, i));
+	    	 newPlayers.addElement(new Player(playerName, playerImagePath, i, false));
 				
 	    	 // Now to tell the new player their ID:
 	    	 network.send(msg.recipient(), String.valueOf(i));
@@ -103,7 +102,8 @@ public class InitialLevelPage extends Screen {
 		network.broadcast(myName + "," + myImagePath);
 		//network.broadcast(myImagePath);
 		
-		return Integer.parseInt(network.receiveNow().msg());
+		_myID = Integer.parseInt(network.receiveNow().msg());
+		return _myID;
 		// need to save this to the player at some point and pass into Round
 	}
 	
@@ -116,7 +116,7 @@ public class InitialLevelPage extends Screen {
 		
 		for (int i = 0; i<sPlayers.length; i++) {
 			playerInfo = Utilities.split(sPlayers[i], ",", 3);
-			tmpPlayer = new Player(playerInfo[1], playerInfo[2], Integer.parseInt(playerInfo[0]));
+			tmpPlayer = new Player(playerInfo[1], playerInfo[2], Integer.parseInt(playerInfo[0]), (i == _myID));
 			// TODO: Assign the player a color to collect here?
 			players.addElement(tmpPlayer);
 		}

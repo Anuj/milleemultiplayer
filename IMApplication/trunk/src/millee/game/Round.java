@@ -313,6 +313,10 @@ public class Round extends GameCanvas implements Runnable {
 						_grid.movePlayer(clientId, -1, 0);
 						if (isServer) _network.broadcast(msg.msg());
 						break;
+					case 'x':
+						_grid.playerDrop(clientId);
+						if (isServer) _network.broadcast(msg.msg());
+						break;
 					case 'n':
 						break;
 				}
