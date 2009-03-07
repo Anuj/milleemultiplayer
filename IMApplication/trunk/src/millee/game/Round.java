@@ -69,7 +69,7 @@ public class Round extends GameCanvas implements Runnable {
 					boolean isServer, Network network, int localPlayerId) {
 		
 		super(true);
-		this.setFullScreenMode(true);
+		// this.setFullScreenMode(true);
 		
 		this._nPlayers = players.size();
 		this._players = players;
@@ -433,7 +433,7 @@ public class Round extends GameCanvas implements Runnable {
 	
 	private void set3LineStatusMessage(String msg1, String msg2, String msg3) {
 		graphics.setColor(255,255,255);
-		graphics.setFont(Font.getFont(Font.FACE_SYSTEM, Font.STYLE_BOLD, Font.SIZE_MEDIUM));
+		graphics.setFont(Font.getFont(Font.FACE_SYSTEM, Font.STYLE_BOLD, Font.SIZE_SMALL));
 		int fontHeight = graphics.getFont().getHeight();
 		graphics.drawString(msg1, 0, getHeight()-2*fontHeight, Graphics.BOTTOM | Graphics.LEFT);
 		graphics.drawString(msg2, 0, getHeight()-fontHeight, Graphics.BOTTOM | Graphics.LEFT);
