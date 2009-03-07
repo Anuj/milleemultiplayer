@@ -241,13 +241,13 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 	
 	public void replaceMsgOnGameScreen(int gameScreen, String msg) {
 		switch (gameScreen) {
-			/*case START_SCREEN: startScreen.replaceLastMessage(msg);
+			case START_SCREEN: startScreen.replaceLastMessage(msg);
 			case CHOOSE_CHAR: charForm.replaceLastMessage(msg);
 			case CHOOSE_GAME: chooseGame.replaceLastMessage(msg);
 			case JOIN_GAME: joinGame.replaceLastMessage(msg);
 			case LEVEL_START_PAGE: levelStartPage.replaceLastMessage(msg);
 			case WINNER_SCREEN: winnerScreen.replaceLastMessage(msg);
-			case START_OR_JOIN_SCREEN: startOrJoinGame.replaceLastMessage(msg);*/
+			case START_OR_JOIN_SCREEN: startOrJoinGame.replaceLastMessage(msg);
 			case START_A_GAME: startAGame.replaceLastMessage(msg);
 			//case INITIAL_LEVEL_GAME: initialLevelPage.replaceLastMessage(msg);
 		}
