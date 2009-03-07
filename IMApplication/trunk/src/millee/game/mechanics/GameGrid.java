@@ -103,6 +103,16 @@ public class GameGrid {
 		}
 	}
 	
+	public void playerDrop(int id) {
+		Player p = (Player) _players.elementAt(id);
+		Goodie g = p.dropGoodie();
+		
+		_cells[p.y][p.x].setGoodie(g);
+		_nGoodies++;
+		
+		this.movePlayer(id, 0, -1);
+	}
+	
 	// Tells the entire grid to redraw itself, players and all
 	public void redraw(Graphics g) {
 		_layers.paint(g, 0, 0);

@@ -60,12 +60,12 @@ public class Player {
 		avatarUsageCounts.put(imgPath, new Integer(nUsage));
 
 		// Alter color if necessary
-		if (nUsage > 1) {
-			sprite = new Sprite(applyVariation(avatar,nUsage));
-		}
-		else {
+		//if (nUsage > 1) {
+		//	sprite = new Sprite(applyVariation(avatar,nUsage));
+		//}
+		//else {
 			sprite = new Sprite(avatar);
-		}
+		//}
 	}
 	
 	private Image applyVariation(Image img, int var) {
