@@ -1,3 +1,5 @@
 1. Should we have multiple levels with rounds in each level?  Should each level have its own screen in between the rounds?
 
 2. How complex should the game rules become? How about having extra 'dummy' goodies that no one is supposed to collect, and ensure they are still on the field before the game moves on?
+
+3. What and how many kinds of studies should we do? Should we limit by number of rounds, time, or just raw patience with our game?
