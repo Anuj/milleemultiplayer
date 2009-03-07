@@ -68,7 +68,7 @@ public class InitialLevelPage extends Screen {
 	     String[] msgs = null;
 	     
 	     
-	     for (int i = 1; i <= StartAGame.NUMCLIENTS; i++) {
+	     for (int i = 1; i <= StartAGame.numClients; i++) {
 	    	 //System.out.println("beginning of for loop at iteration: " + i);
 	    	 initialBroadcast.append(i);
 	    	 initialBroadcast.append(",");
