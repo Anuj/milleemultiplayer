@@ -385,19 +385,19 @@ public class Round extends GameCanvas implements Runnable {
 			Player p;
 			for (int i = 0; i<_players.size(); i++) {
 				p = ((Player) _players.elementAt(i));
-				scoreReport += "Player " + p.getID() + ": " + p.getScore() + "\n";
+				scoreReport += p.getName() + ": " + p.getScore() + "\n";
 			}
 
 			displayNotification("Current Scores", scoreReport);
 			
 			if (isServer) {
-				setLowerStatusMessage("Round Complete!");
+				setFloatingStatusMessage("Round Complete!");
 				this.addCommand(okCmd);
 			} else {
 				_app.numRoundsLeft--;
 				if (_app.numLevelsLeft > 0 && _app.numRoundsLeft <= 0) {
 					this.addCommand(okCmd);
-					setLowerStatusMessage("Round Complete!");
+					setFloatingStatusMessage("Round Complete!");
 					Thread thread = new Thread(new Runnable () {public void run() {_app.waitForServer();}});
 					thread.start();
 				} else if (_app.numRoundsLeft > 0) {
@@ -416,19 +416,19 @@ public class Round extends GameCanvas implements Runnable {
 			
 			// Draw goodie stack
 			p.getGoodieStack().redraw(graphics, 0, getHeight()-TILE_DIMENSIONS+5);
-			if (!p.hasCorrectGoodies()) { setLowerStatusMessage("< DROP!"); }
+			if (!p.hasCorrectGoodies()) { setFloatingStatusMessage("DROP!"); }
 			
-			setUpperStatusMessage(colorFromID(p.assignedColor()));
+			setLowerStatusMessage("Collect " + colorFromID(p.assignedColor()));
 		}
 		
 		// Draw graphics to the screen
 		flushGraphics();
 	}
 	
-	private void setLowerStatusMessage(String msg) {
-		graphics.setColor(255,255,255);
-		graphics.setFont(Font.getFont(Font.FACE_SYSTEM, Font.STYLE_BOLD, Font.SIZE_MEDIUM));
-		graphics.drawString(msg, getWidth(), getHeight(), Graphics.BOTTOM | Graphics.RIGHT);
+	private void setFloatingStatusMessage(String msg) {
+		graphics.setColor(0,0,0);
+		graphics.setFont(Font.getFont(Font.FACE_SYSTEM, Font.STYLE_BOLD, Font.SIZE_LARGE));
+		graphics.drawString(msg, 3, _cellHeight*TILE_DIMENSIONS, Graphics.BOTTOM | Graphics.LEFT);
 	}
 	
 	private void set3LineStatusMessage(String msg1, String msg2, String msg3) {
@@ -440,10 +440,10 @@ public class Round extends GameCanvas implements Runnable {
 		graphics.drawString(msg3, 0, getHeight(), Graphics.BOTTOM | Graphics.LEFT);
 	}
 	
-	private void setUpperStatusMessage(String msg) {
-		graphics.setColor(0,0,0);
-		graphics.setFont(Font.getFont(Font.FACE_SYSTEM, Font.STYLE_BOLD, Font.SIZE_LARGE));
-		graphics.drawString(msg, getWidth(), 0, Graphics.TOP | Graphics.RIGHT);
+	private void setLowerStatusMessage(String msg) {
+		graphics.setColor(255,255,255);
+		graphics.setFont(Font.getFont(Font.FACE_SYSTEM, Font.STYLE_BOLD, Font.SIZE_MEDIUM));
+		graphics.drawString(msg, getWidth(), getHeight(), Graphics.BOTTOM | Graphics.RIGHT);
 	}
 	
 	private void displayNotification(String title, String msg) {
