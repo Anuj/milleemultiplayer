@@ -1,8 +1,5 @@
 package millee.game.mechanics;
 
-import javax.microedition.lcdui.game.Sprite;
-
-import millee.game.initialize.Utilities;
 
 public class Goodie {
 

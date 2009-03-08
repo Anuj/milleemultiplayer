@@ -4,10 +4,10 @@ import java.util.Random;
 import java.util.Vector;
 
 import javax.microedition.lcdui.Graphics;
-import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.game.LayerManager;
 import javax.microedition.lcdui.game.TiledLayer;
 
+import millee.game.ApplicationMain;
 import millee.game.initialize.Utilities;
 
 /**
@@ -95,7 +95,7 @@ public class GameGrid {
 		// Wraps around borders
 		p.x = (p.x + _width + dx) % _width;
 		p.y = (p.y + _height + dy) % _height;
-		//System.out.println("P: " + p.x + ", " + p.y);
+		//ApplicationMain.log.info("P: " + p.x + ", " + p.y);
 		p.sprite.setPosition(TILE_DIMENSIONS*p.x, TILE_DIMENSIONS*p.y);
 		
 		GameCell cNew = _cells[p.y][p.x];
@@ -104,7 +104,7 @@ public class GameGrid {
 		// Now check for 'collisions' with goodies
 		if (cNew.hasGoodie()) { // && p.assignedColor() == cNew.getGoodie().getType()) {
 			p.collect(cNew.getGoodie());
-			System.out.println("Picked up Goodie: " + cNew.getGoodie());
+			ApplicationMain.log.info("Picked up Goodie: " + cNew.getGoodie());
 			cNew.unsetGoodie();
 			_tiledLayer.setCell(p.x, p.y, 1); //FRUIT_INDEX-1);
 			_nGoodies--;
@@ -115,7 +115,7 @@ public class GameGrid {
 		Player p = (Player) _players.elementAt(id);
 		Goodie g = p.dropGoodie();
 		
-		System.out.println("Goodie dropped: " + g);
+		ApplicationMain.log.info("Goodie dropped: " + g);
 		if (g == null) { return; }
 		
 		_tiledLayer.setCell(p.x, p.y, g.getType()+FRUIT_INDEX-1);

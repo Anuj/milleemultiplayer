@@ -139,7 +139,7 @@ public class BlueToothExp extends MIDlet implements CommandListener, Runnable {
                 	exitMIDlet();
                 }
             } catch (Exception ex) {
-                System.out.println(ex.getMessage());
+                ApplicationMain.log.info(ex.getMessage());
             }
  
         }

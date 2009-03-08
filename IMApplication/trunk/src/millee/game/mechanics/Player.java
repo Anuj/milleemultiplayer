@@ -1,6 +1,5 @@
 package millee.game.mechanics;
 import java.util.Hashtable;
-import java.util.Stack;
 
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.game.Sprite;
