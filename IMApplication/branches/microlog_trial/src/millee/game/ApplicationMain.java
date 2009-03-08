@@ -1,8 +1,6 @@
 package millee.game;
 import java.util.Vector;
 
-import javax.microedition.lcdui.Alert;
-import javax.microedition.lcdui.AlertType;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Display;
@@ -32,7 +30,7 @@ import millee.network.Network;
 
 public class ApplicationMain extends MIDlet implements CommandListener {
 	
-	//private final static Logger log = Logger.getLogger(ApplicationMain.class);
+	private final static Logger log = Logger.getLogger();
 	
 	private static final int NUM_ROUNDS = 2;
 	private static final int NUM_LEVELS = 2;
@@ -79,7 +77,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 	
 	public ApplicationMain () {
 		//TODO: Setup logging
-		//log.addAppender(new ConsoleAppender());
+		log.addAppender(new ConsoleAppender());
 		
 		theDisplay = display = Display.getDisplay(this);
 		_exitCommand = new Command ("Exit", Command.EXIT, 0);
@@ -108,15 +106,15 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 		
 	}
 	protected void destroyApp(boolean arg0) {
-		//log.info("Destroying application...");
+		log.info("Destroying application...");
 	}
 
 	protected void pauseApp() {
-		//log.info("Pausing application...");
+		log.info("Pausing application...");
 	}
 
 	protected void startApp() throws MIDletStateChangeException {
-		//log.info("Starting application...");
+		log.info("Starting application...");
 		numLevelsLeft = NUM_LEVELS;
 		numRoundsLeft = NUM_ROUNDS;
 		//game.start();
