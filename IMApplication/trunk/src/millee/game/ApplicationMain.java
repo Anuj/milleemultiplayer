@@ -204,22 +204,20 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 			numRoundsLeft--;
 			display.setCurrent(winnerScreen);
 		}*/
-			if (numRoundsLeft <= 0) {	// end of current level
-				display.setCurrent(winnerScreen);
-			} else if (numRoundsLeft > 0) {	// end of current round, move on to next round
+			//if (numRoundsLeft <= 0) {	// end of current level
+				//display.setCurrent(winnerScreen);
+			//} else if (numRoundsLeft > 0) {	// end of current round, move on to next round
 				game.hideNotify();
 				
-				//System.out.println("end of round.  start of next round");
-				
-				//System.out.println("end of round.  start of next round");
 				if (isServer) {
 					network.broadcast("go");
 					game = createNewRound();
 					game.start();
 					display.setCurrent(game);
-				
-			}
-		}
+				}
+			//}
+		} else if (c == game.getNoCommand()) {
+			display.setCurrent(winnerScreen);
 		} else if (c == levelStartPage.getStartCommand()) {
 			game = createNewRound();
 			game.start();
