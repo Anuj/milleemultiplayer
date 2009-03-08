@@ -11,9 +11,8 @@ public class WinnerScreen extends Screen {
 		
 		StringItem str = new StringItem("Colour Colour", "Game Over");
 		
-		StringItem scores = new StringItem(null, "Congratulations Ram!");
+		StringItem scores = new StringItem(null, "Congratulations!");
 		StringItem congrats = new StringItem(null, "You won with a score of 120.");
-		
 		
 		this.append(str);
 		this.append(congrats);
