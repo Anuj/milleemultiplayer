@@ -36,7 +36,7 @@ public class Network implements Runnable {
 			try {
 				throw new Exception ("Number of clients is non-positive");
 			} catch (Exception e) {
-				ApplicationMain.log.info("Number of clients is non-positive");
+				System.out.println("Number of clients is non-positive");
 				e.printStackTrace();
 			}
 		this.isServer = isServer;
@@ -69,7 +69,7 @@ public class Network implements Runnable {
         				
         				/*while (true) {
         					if ((temp = clientServer.numDevicesDiscovered) > numDevicesDiscovered) {
-        						ApplicationMain.log.info("discovered a new device");
+        						System.out.println("discovered a new device");
         						numDevicesDiscovered = temp;
         						_app.updateDevicesDiscovered(clientServer.devicesDiscoveredNames);
         						Thread.sleep(SLEEP_TIME);
@@ -97,7 +97,7 @@ public class Network implements Runnable {
             	
             	isConnected = true;
             	
-            	ApplicationMain.log.info("_app: " + _app);
+            	System.out.println("_app: " + _app);
             	_app.fullyConnected();
             	
             	/*
@@ -117,27 +117,27 @@ public class Network implements Runnable {
         		}*/
                 
             } catch (Exception ex) {
-                ApplicationMain.log.info(ex.getMessage());
+                System.out.println(ex.getMessage());
             }
 	}
 	
 	/*public void send(String msg) {
 		String finalMsg = msg.concat("\0");
-		ApplicationMain.log.info("Sending: " + finalMsg);
+		System.out.println("Sending: " + finalMsg);
 		sendThread.sendMsg(finalMsg, new Integer(-1));
 	}*/
 	
 	// Send a 'private' message to one client only
 	public void send(int clientID, String msg) {
 		String finalMsg = msg.concat("\0");
-		ApplicationMain.log.info("Sending to client #" + clientID + ": " + msg);
+		System.out.println("Sending to client #" + clientID + ": " + msg);
 		clientServer.send(finalMsg, clientID);
 	}
 	
 	// Send a message to ALL CONNECTED CLIENTS
 	public void broadcast(String msg) {
 		String finalMsg = msg.concat("\0");
-		ApplicationMain.log.info("Broadcasting: " + msg);
+		System.out.println("Broadcasting: " + msg);
 		clientServer.send(finalMsg);
 	}
 	
@@ -150,7 +150,7 @@ public class Network implements Runnable {
 			if ((msg = clientServer.receiveMessage()) != null) {
 				msg.removeNull();
 				//msg = msg.substring(0, msg.length()-1);
-				ApplicationMain.log.info("Received: " + msg.msg());
+				System.out.println("Received: " + msg.msg());
 			}
 		}
 		
@@ -161,7 +161,7 @@ public class Network implements Runnable {
 	public Message receiveLater() {
 		Message msg = null;
 		if ((msg = clientServer.receiveMessage()) != null) {
-			ApplicationMain.log.info("Received: " + msg.msg());
+			System.out.println("Received: " + msg.msg());
 			//msg = msg.substring(0, msg.length()-1);
 			msg.removeNull();
 		}
@@ -169,7 +169,7 @@ public class Network implements Runnable {
 	}
 	
 	public void sendReceive() {
-		/*ApplicationMain.log.info("connected!");
+		/*System.out.println("connected!");
     	//connected.notifyAll();
     	
     	
@@ -181,7 +181,7 @@ public class Network implements Runnable {
 		} else {
 			while (!exitFlag) {
 				if ((msg = clientServer.receiveMessage(recvThread)) != null) {
-					ApplicationMain.log.info("msg received: " + msg);
+					System.out.println("msg received: " + msg);
 				}
 				
 				//sendThread.sendMsg("sending: blah blah", new Integer(-1));
