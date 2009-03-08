@@ -8,13 +8,20 @@ public class WinnerScreen extends Screen {
 	public WinnerScreen (String title) {
 		super(title);
 		// TODO Auto-generated constructor stub
+	}
+	
+	public void start(boolean isServer) {
 		
-		StringItem str = new StringItem("Colour Colour", "Game Over");
+		if (isServer) {
+			this.append("You ended the game.\n");
+			this.append("-----------------------------\n");
+		} else {
+			this.append("Server ended the game.\n");
+			this.append("-----------------------------\n");
+		}
 		
-		StringItem scores = new StringItem(null, "Congratulations!");
-		StringItem congrats = new StringItem(null, "You won with a score of 120.");
+		StringItem congrats = new StringItem(null, "Your group finished with score = 120.");
 		
-		this.append(str);
 		this.append(congrats);
 		
 		this.addCommand(exitCommand);
