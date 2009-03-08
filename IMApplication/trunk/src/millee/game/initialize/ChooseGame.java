@@ -7,6 +7,8 @@ import javax.microedition.lcdui.Choice;
 import javax.microedition.lcdui.ChoiceGroup;
 import javax.microedition.lcdui.Image;
 
+import millee.game.ApplicationMain;
+
 
 public class ChooseGame extends Screen {
 
@@ -30,7 +32,7 @@ public class ChooseGame extends Screen {
         boolean finished = false;
         for(int i = 0; i<devicesDiscoveredNames.size(); i++) {
         	String currElem = (String) devicesDiscoveredNames.elementAt(i);
-        	System.out.println("found device: " + currElem);
+        	ApplicationMain.log.info("found device: " + currElem);
         	if (!currElem.equals("finished")) {
             	choiceGroup.append(currElem,horrorImage);
         	} else {

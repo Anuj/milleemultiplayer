@@ -1,13 +1,12 @@
 package millee.game.mechanics;
 
-import java.util.Random;
 import java.util.Stack;
-import java.util.Vector;
 
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.game.LayerManager;
 import javax.microedition.lcdui.game.TiledLayer;
 
+import millee.game.ApplicationMain;
 import millee.game.initialize.Utilities;
 
 /**
@@ -47,7 +46,7 @@ public class GoodieStack extends Stack {
 		_greenAnimatedTileIndex = _tiledLayer.createAnimatedTile(Goodie.GREEN_BANANA);
 		_blueAnimatedTileIndex = _tiledLayer.createAnimatedTile(Goodie.BLUE_BERRY);
 		
-		System.out.println("Animated tiles: " +  _blackAnimatedTileIndex + _redAnimatedTileIndex + _greenAnimatedTileIndex + _blueAnimatedTileIndex);
+		ApplicationMain.log.info("Animated tiles: " +  _blackAnimatedTileIndex + _redAnimatedTileIndex + _greenAnimatedTileIndex + _blueAnimatedTileIndex);
 		
 		_layers.append(_tiledLayer);
 	}

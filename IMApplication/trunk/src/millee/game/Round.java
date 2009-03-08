@@ -5,7 +5,6 @@ import java.util.Vector;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
-import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.game.GameCanvas;
 
 import millee.game.initialize.Utilities;
@@ -186,15 +185,15 @@ public class Round extends GameCanvas implements Runnable {
 		String[] playerInfo = null;
 		Player tmpPlayer = null;
 		int x,y;
-		//System.out.println("sPlayers = " + sPlayers);
+		//ApplicationMain.log.info("sPlayers = " + sPlayers);
 		for (int i = 0; i < sPlayers.length; i++) {
-			//System.out.println("splayers[" + i + "] = " + sPlayers[i]);
-			//System.out.println("putting player " + i + " on the board");
+			//ApplicationMain.log.info("splayers[" + i + "] = " + sPlayers[i]);
+			//ApplicationMain.log.info("putting player " + i + " on the board");
 			playerInfo = Utilities.split(sPlayers[i], ",", 3);
-			//System.out.println("playerInfo = " + playerInfo);
+			//ApplicationMain.log.info("playerInfo = " + playerInfo);
 			// TODO: Deal with the lack of a name, image
 			tmpPlayer = (Player) _players.elementAt(i);
-			//System.out.println("player's name is " + tmpPlayer);
+			//ApplicationMain.log.info("player's name is " + tmpPlayer);
 			//new Player("PLAYER " + playerInfo[0], Utilities.createImage("/dancer_small.png"), Integer.parseInt(playerInfo[0]), 0);
 			x = Integer.parseInt(playerInfo[1]);
 			y = Integer.parseInt(playerInfo[2]);
@@ -257,7 +256,7 @@ public class Round extends GameCanvas implements Runnable {
 				for (int i = 0; i < _players.size(); i++) {
 					((Player) _players.elementAt(i)).flushGoodieStack();
 				}
-				System.out.println("Game has ended");
+				ApplicationMain.log.info("Game has ended");
 			}
 			
 			// If the game isn't over, look for inputs
@@ -374,7 +373,7 @@ public class Round extends GameCanvas implements Runnable {
 		graphics.setColor(0,0,0);
 		graphics.fillRect(0,0,getWidth(),getHeight());
 		
-		//System.out.println("Your score: " + scores[this.localPlayerID]);
+		//ApplicationMain.log.info("Your score: " + scores[this.localPlayerID]);
 		if (stopGame) {
 			// End game drawing
 			this.setFullScreenMode(false);

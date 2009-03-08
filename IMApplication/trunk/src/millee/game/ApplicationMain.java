@@ -1,8 +1,6 @@
 package millee.game;
 import java.util.Vector;
 
-import javax.microedition.lcdui.Alert;
-import javax.microedition.lcdui.AlertType;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Display;
@@ -11,9 +9,6 @@ import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.List;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
-
-import net.sf.microlog.Logger;
-import net.sf.microlog.appender.ConsoleAppender;
 
 import millee.game.initialize.ChooseCharacter;
 import millee.game.initialize.ChooseGame;
@@ -25,6 +20,8 @@ import millee.game.initialize.Utilities;
 import millee.game.initialize.WinnerScreen;
 import millee.network.Message;
 import millee.network.Network;
+import net.sf.microlog.Logger;
+import net.sf.microlog.appender.ConsoleAppender;
 /**
  * @author Priyanka
  *
@@ -195,7 +192,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 			} else if (numRoundsLeft > 0) {	// end of current round, move on to next round
 				game.hideNotify();
 
-				System.out.println("end of round.  start of next round");
+				ApplicationMain.log.info("end of round.  start of next round");
 				if (isServer) {
 					network.broadcast("go");
 					game = createNewRound();
@@ -213,7 +210,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 			display.setCurrent(game);
 		}
 		else {
-			System.out.println("Shouldn't come here: Sorry your keypresses didn't match anything here");
+			ApplicationMain.log.info("Shouldn't come here: Sorry your keypresses didn't match anything here");
 		}
 		
 		/** TODO: Fix this incomplete statement
@@ -224,7 +221,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
     }
 
 	/*public void updateDevicesDiscovered(Vector devicesDiscoveredNames) {
-		System.out.println("in updateDevicesDiscovered");
+		ApplicationMain.log.info("in updateDevicesDiscovered");
 		chooseGame = new ChooseGame ("Choose a Game", devicesDiscoveredNames);
 		chooseGame.setCommandListener(this);
 		display.setCurrent(chooseGame);
@@ -257,24 +254,24 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 			//case INITIAL_LEVEL_GAME: initialLevelPage.replaceLastMessage(msg);
 		}
 		
-		System.out.println("replaced msg on the screen");
+		ApplicationMain.log.info("replaced msg on the screen");
 	}
 	
 	
 	public void fullyConnected() {
 		
-		System.out.println("inside fullyConnected()");
+		ApplicationMain.log.info("inside fullyConnected()");
 		
 		initialLevelPage = new InitialLevelPage("Level 1", network, this.characterChoice, isServer, myName, myImagePath, this);
 		initialLevelPage.setCommandListener(this);
-		System.out.println("About to display the levelStartPage");
+		ApplicationMain.log.info("About to display the levelStartPage");
 		display.setCurrent(initialLevelPage);
 		
 		if (isServer) {
 			_players = initialLevelPage.setupPlayers(myName, myImagePath);
-			System.out.println("before adding command to initialLevelPage");
+			ApplicationMain.log.info("before adding command to initialLevelPage");
 			initialLevelPage.addCommand(initialLevelPage.getStartCommand());
-			System.out.println("after adding command");
+			ApplicationMain.log.info("after adding command");
 		}
 		else {
 			localPlayerId = initialLevelPage.sendPlayerInfo(myName, myImagePath);
