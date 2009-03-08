@@ -50,6 +50,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 	int localPlayerId;
 	boolean isServer;
 	String myName, myImagePath;
+	String serverName = null;
 	
 	Round game;
 	Display display;
@@ -95,7 +96,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 		startAGame = new StartAGame("Start a game?", network, this);
 		startAGame.setCommandListener(this);
 		
-		winnerScreen = new WinnerScreen("Winner!");
+		winnerScreen = new WinnerScreen("Game Over");
 		winnerScreen.setCommandListener(this);
 		
 	}
@@ -217,7 +218,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 				}
 			//}
 		} else if (c == game.getNoCommand()) {
-			winnerScreen.start(isServer);
+			winnerScreen.start(isServer, network.clientServer.getServerName());
 			display.setCurrent(winnerScreen);
 			network.broadcast(Message.GAME_OVER);
 		} else if (c == levelStartPage.getStartCommand()) {
@@ -311,7 +312,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 			input = network.receiveNow().msg();
 
 			if (input.equals(Message.GAME_OVER)) {
-				winnerScreen.start(isServer);
+				winnerScreen.start(isServer, network.clientServer.getDeviceName());
 				display.setCurrent(winnerScreen);
 				break;
 			}

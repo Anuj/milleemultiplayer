@@ -10,13 +10,13 @@ public class WinnerScreen extends Screen {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public void start(boolean isServer) {
+	public void start(boolean isServer, String serverName) {
 		
 		if (isServer) {
 			this.append("You ended the game.\n");
 			this.append("-----------------------------\n");
 		} else {
-			this.append("Server ended the game.\n");
+			this.append(serverName + " ended the game.\n");
 			this.append("-----------------------------\n");
 		}
 		
