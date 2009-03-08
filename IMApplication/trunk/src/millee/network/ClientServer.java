@@ -45,6 +45,7 @@ public class ClientServer implements DiscoveryListener {
     private static String m_strUrl;
     
     ApplicationMain _app = null;
+    String serverName = null;
     
     public ClientServer (boolean isServer, int numClients, ApplicationMain _app) {
     	System.out.println("initializing clientServer");
@@ -189,6 +190,13 @@ public class ClientServer implements DiscoveryListener {
     	SearchAvailDevices();
     }
     
+    public String getServerName() {
+    	if (serverName != null) {
+    		return serverName.toUpperCase();
+    	}
+    	return serverName;
+    }
+    
     public void SearchAvailDevices() {
         try {
             m_LclDevice = LocalDevice.getLocalDevice();
@@ -239,6 +247,13 @@ public class ClientServer implements DiscoveryListener {
             if (m_strUrl.startsWith("btspp")) {
                 m_bServerFound = true;
                 m_bInitClient = true;
+                try {
+					serverName = records[i].getHostDevice().getFriendlyName(true);
+				} catch (IOException e) {
+					System.err.print("Couldn't access the remove Device");
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
                 break;
             }
         }
