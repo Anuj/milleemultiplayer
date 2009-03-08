@@ -388,17 +388,18 @@ public class Round extends GameCanvas implements Runnable {
 			}
 
 			displayNotification("Current Scores", scoreReport);
+
+			_app.numRoundsLeft--;
 			
 			if (isServer) {
 				setFloatingStatusMessage("Round Complete!");
 				this.addCommand(okCmd);
 			} else {
-				_app.numRoundsLeft--;
-				if (_app.numLevelsLeft > 0 && _app.numRoundsLeft <= 0) {
+				if (_app.numRoundsLeft <= 0) {
 					this.addCommand(okCmd);
-					setFloatingStatusMessage("Round Complete!");
+					/*setLowerStatusMessage("Round Complete!");
 					Thread thread = new Thread(new Runnable () {public void run() {_app.waitForServer();}});
-					thread.start();
+					thread.start();*/
 				} else if (_app.numRoundsLeft > 0) {
 					set3LineStatusMessage("Round Complete!", "Waiting for server to", "start next round . . .");
 					Thread thread = new Thread(new Runnable () {public void run() {_app.waitForServer();}});

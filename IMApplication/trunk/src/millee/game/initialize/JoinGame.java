@@ -35,7 +35,7 @@ public class JoinGame extends Screen {
         this.network = network;
         
         this.append(gauge);
-        this.append("Connecting to game #" + gameChoice + "...");
+        this.append("Connecting to existing game...");
         
         // TODO: Only show success message on next page?
 		//msg = new StringItem(null, "You have joined game #" + gameChoice);

@@ -1,6 +1,8 @@
 package millee.game;
 import java.util.Vector;
 
+import javax.microedition.lcdui.Alert;
+import javax.microedition.lcdui.AlertType;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Display;
@@ -29,10 +31,13 @@ import net.sf.microlog.appender.ConsoleAppender;
 
 public class ApplicationMain extends MIDlet implements CommandListener {
 	
-	public static final Logger log = Logger.getLogger(ApplicationMain.class);
+	private static final int NUM_ROUNDS = 5;
+	private static final int NUM_LEVELS = 5;
+	//private static final String GAME_LOOP_SOUND = "/game_loop.wav";
+	public final static Logger log = Logger.getLogger(ApplicationMain.class);
 	
-	private static final int NUM_ROUNDS = 2;
-	private static final int NUM_LEVELS = 2;
+	//private static final int NUM_ROUNDS = 2;
+	//private static final int NUM_LEVELS = 2;
 	//private static final String GAME_LOOP_SOUND = "/game_loop.wav";
 	
 	public static final int START_SCREEN = 0;
@@ -180,7 +185,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 			display.setCurrent(game);
 		} else if (c == game.getOkCommand()) {
 			
-			if (numLevelsLeft <= 0 && numRoundsLeft <= 0) {		// end of game
+			/*if (numLevelsLeft <= 0 && numRoundsLeft <= 0) {		// end of game
 				numRoundsLeft--;
 				display.setCurrent(winnerScreen);
 			} else if (numRoundsLeft <= 0) {	// end of current level
@@ -192,7 +197,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 			} else if (numRoundsLeft > 0) {	// end of current round, move on to next round
 				game.hideNotify();
 
-				ApplicationMain.log.info("end of round.  start of next round");
+				System.out.println("end of round.  start of next round");
 				if (isServer) {
 					network.broadcast("go");
 					game = createNewRound();
@@ -200,10 +205,31 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 					display.setCurrent(game);
 					
 				}
-			}	
+			}*/	
+			
+		/*if (numLevelsLeft <= 0 && numRoundsLeft <= 0) {		// end of game
+			numRoundsLeft--;
+			display.setCurrent(winnerScreen);
+		}*/
+			if (numRoundsLeft <= 0) {	// end of current level
+				display.setCurrent(winnerScreen);
+			} else if (numRoundsLeft > 0) {	// end of current round, move on to next round
+				game.hideNotify();
+				
+				ApplicationMain.log.info("end of round.  start of next round");
+				
+				//System.out.println("end of round.  start of next round");
+				if (isServer) {
+					network.broadcast("go");
+					game = createNewRound();
+					game.start();
+					display.setCurrent(game);
+				
+			}
+		}
+			
 		} else if (c == levelStartPage.getStartCommand()) {
 			game = createNewRound();
-			numLevelsLeft--;
 			game.start();
 			if (isServer) network.broadcast("go");
 			if (!isServer && (network.receiveNow().equals("go")));

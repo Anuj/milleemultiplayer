@@ -34,8 +34,8 @@ public class StartAGame extends Screen {
 	
 		String gameName = network.clientServer.getDeviceName();
 		
-		this.append("Started a game called " + gameName.toUpperCase());
-		this.append("Waiting for players to join");
+		this.append("Started a game called " + gameName.toUpperCase() + ".\n");
+		this.append("-----------------------------\n");
         formElementNumber+=2;
         this.append("");
         formElementNumber+=1;

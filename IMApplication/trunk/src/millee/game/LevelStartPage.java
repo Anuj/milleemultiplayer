@@ -17,8 +17,14 @@ public class LevelStartPage extends Screen {
 		super(title);
 		// TODO Auto-generated constructor stub
 		
-		StringItem str = new StringItem("Colour Colour", "Level 1: Colours");
-		StringItem str2 = new StringItem(null, "Ready! Set! Go!");
+		StringItem str = new StringItem("Colour Colour", "Level 1: Colours\n");
+		StringItem str2 = new StringItem(null, "Ready! Set! Go!\n\n");
+	
+		this.append(str);
+		this.append(str2);
+		
+		this.append("--------------------");
+		
 		
 		this.characterChoice = characterChoice;
 		this.network = network;
@@ -26,8 +32,6 @@ public class LevelStartPage extends Screen {
 		
 		this._app = app;
 		
-		this.append(str);
-		this.append(str2);
 		this.addCommand(exitCommand);
 		
 		if (isServer) {
@@ -36,7 +40,7 @@ public class LevelStartPage extends Screen {
 			ApplicationMain.log.info("after adding command");
 		} else {
 			//this.addCommand(startCommand);
-			this.append("Waiting for server to start the game...");
+			this.append("Waiting for server to start the game . . .");
 			
 			//sendPlayerInfo(myName, myImagePath);
 		}
