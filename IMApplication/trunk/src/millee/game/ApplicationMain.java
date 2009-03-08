@@ -171,7 +171,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 			display.setCurrent(startAGame);
 			startAGame.startNetwork();
 		} else if (c == initialLevelPage.getStartCommand()) {
-			network.broadcast("go");
+			network.broadcast(Message.GO);
 			game = createNewRound();
 			numLevelsLeft--;
 			game.start();
@@ -192,7 +192,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 
 				System.out.println("end of round.  start of next round");
 				if (isServer) {
-					network.broadcast("go");
+					network.broadcast(Message.GO);
 					game = createNewRound();
 					game.start();
 					display.setCurrent(game);
@@ -210,19 +210,21 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 				game.hideNotify();
 				
 				if (isServer) {
-					network.broadcast("go");
+					network.broadcast(Message.GO);
 					game = createNewRound();
 					game.start();
 					display.setCurrent(game);
 				}
 			//}
 		} else if (c == game.getNoCommand()) {
+			winnerScreen.start(isServer);
 			display.setCurrent(winnerScreen);
+			network.broadcast(Message.GAME_OVER);
 		} else if (c == levelStartPage.getStartCommand()) {
 			game = createNewRound();
 			game.start();
-			if (isServer) network.broadcast("go");
-			if (!isServer && (network.receiveNow().equals("go")));
+			if (isServer) network.broadcast(Message.GO);
+			if (!isServer && (network.receiveNow().equals(Message.GO)));
 			display.setCurrent(game);
 		}
 		else {
@@ -294,7 +296,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 			_players = initialLevelPage.createPlayersByClients();
 			
 			Message msg = network.receiveNow();
-			if (msg.msg().equals("go")) {
+			if (msg.msg().equals(Message.GO)) {
 				startGame();
 			}
 			
@@ -305,12 +307,22 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 		String input;
 
 		game.hideNotify();
-		while (!(input = network.receiveNow().msg()).equals("go")) {
-			continue;
+		while (true) {
+			input = network.receiveNow().msg();
+
+			if (input.equals(Message.GAME_OVER)) {
+				winnerScreen.start(isServer);
+				display.setCurrent(winnerScreen);
+				break;
+			}
+			else if (input.equals(Message.GO)) {
+				game = createNewRound();
+				game.start();
+				display.setCurrent(game);
+				break;
+			}
 		}
-		game = createNewRound();
-		game.start();
-		display.setCurrent(game);
+		
 	}
 	
 	public void startGame() {
