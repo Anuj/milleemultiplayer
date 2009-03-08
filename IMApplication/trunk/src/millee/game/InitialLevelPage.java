@@ -21,11 +21,14 @@ public class InitialLevelPage extends Screen {
 	public InitialLevelPage(String title, Network network, int characterChoice, boolean isServer, String myName, String myImagePath, ApplicationMain app) {
 		super(title);
 		
-		StringItem str = new StringItem("Colour Colour", network.clientServer.getDeviceName() + "'s game\n");
+		//StringItem str = new StringItem("Colour Colour", network.clientServer.getDeviceName() + "'s game\n");
 		
-		this.append(str);
+		//this.append(str);
 		
-		this.append("-----------------------------\n");
+		if (isServer) {
+			this.append(network.clientServer.getServerName() + "'s game\n");
+			this.append("-----------------------------\n");
+		}
 		
 		this.network = network;
 		//network.sendReceive();
@@ -35,7 +38,7 @@ public class InitialLevelPage extends Screen {
 		System.out.println("in levelstartpage");
 		
 		if (isServer) {
-			this.append("All clients are now connected.\nPress START to begin the game!\n");
+			this.append("All players are now connected.\nPress START to begin the game!\n");
 			//this.addCommand(startCommand);
 			System.out.println("after adding command");
 		} else {

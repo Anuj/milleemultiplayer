@@ -281,7 +281,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 		
 		System.out.println("inside fullyConnected()");
 		
-		initialLevelPage = new InitialLevelPage("Level 1", network, this.characterChoice, isServer, myName, myImagePath, this);
+		initialLevelPage = new InitialLevelPage("Colour, Colour", network, this.characterChoice, isServer, myName, myImagePath, this);
 		initialLevelPage.setCommandListener(this);
 		System.out.println("About to display the levelStartPage");
 		display.setCurrent(initialLevelPage);
@@ -312,7 +312,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 			input = network.receiveNow().msg();
 
 			if (input.equals(Message.GAME_OVER)) {
-				winnerScreen.start(isServer, network.clientServer.getDeviceName());
+				winnerScreen.start(isServer, network.clientServer.getServerName());
 				display.setCurrent(winnerScreen);
 				break;
 			}
