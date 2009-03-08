@@ -18,7 +18,6 @@ public class WinnerScreen extends Screen {
 		this.append(str);
 		this.append(congrats);
 		
-		this.addCommand(okCommand);
 		this.addCommand(exitCommand);
 		
 	}
