@@ -22,8 +22,6 @@ import millee.game.initialize.Utilities;
 import millee.game.initialize.WinnerScreen;
 import millee.network.Message;
 import millee.network.Network;
-import net.sf.microlog.Logger;
-import net.sf.microlog.appender.ConsoleAppender;
 /**
  * @author Priyanka
  *
@@ -31,14 +29,9 @@ import net.sf.microlog.appender.ConsoleAppender;
 
 public class ApplicationMain extends MIDlet implements CommandListener {
 	
-	private static final int NUM_ROUNDS = 5;
-	private static final int NUM_LEVELS = 5;
-	//private static final String GAME_LOOP_SOUND = "/game_loop.wav";
-	public final static Logger log = Logger.getLogger(ApplicationMain.class);
-	
-	//private static final int NUM_ROUNDS = 2;
-	//private static final int NUM_LEVELS = 2;
-	//private static final String GAME_LOOP_SOUND = "/game_loop.wav";
+	private static final int NUM_ROUNDS = 2;
+	private static final int NUM_LEVELS = 2;
+	private static final String GAME_LOOP_SOUND = "/game_loop.wav";
 	
 	public static final int START_SCREEN = 0;
 	public static final int CHOOSE_CHAR = 1;
@@ -80,8 +73,6 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 	private Displayable _previousDisplayable = null;
 	
 	public ApplicationMain () {
-		log.addAppender(new ConsoleAppender());
-		
 		theDisplay = display = Display.getDisplay(this);
 		_exitCommand = new Command ("Exit", Command.EXIT, 0);
 		_backCommand = new Command ("Back", Command.BACK, 1);
@@ -109,15 +100,17 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 		
 	}
 	protected void destroyApp(boolean arg0) {
-		log.info("Destroying application...");
+		// TODO Auto-generated method stub
+		
 	}
 
 	protected void pauseApp() {
-		log.info("Pausing application...");
+		// TODO Auto-generated method stub
+		
 	}
 
 	protected void startApp() throws MIDletStateChangeException {
-		log.info("Starting application...");
+		
 		numLevelsLeft = NUM_LEVELS;
 		numRoundsLeft = NUM_ROUNDS;
 		//game.start();
@@ -216,7 +209,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 			} else if (numRoundsLeft > 0) {	// end of current round, move on to next round
 				game.hideNotify();
 				
-				ApplicationMain.log.info("end of round.  start of next round");
+				//System.out.println("end of round.  start of next round");
 				
 				//System.out.println("end of round.  start of next round");
 				if (isServer) {
@@ -227,7 +220,6 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 				
 			}
 		}
-			
 		} else if (c == levelStartPage.getStartCommand()) {
 			game = createNewRound();
 			game.start();
@@ -236,7 +228,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 			display.setCurrent(game);
 		}
 		else {
-			ApplicationMain.log.info("Shouldn't come here: Sorry your keypresses didn't match anything here");
+			System.out.println("Shouldn't come here: Sorry your keypresses didn't match anything here");
 		}
 		
 		/** TODO: Fix this incomplete statement
@@ -247,7 +239,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
     }
 
 	/*public void updateDevicesDiscovered(Vector devicesDiscoveredNames) {
-		ApplicationMain.log.info("in updateDevicesDiscovered");
+		System.out.println("in updateDevicesDiscovered");
 		chooseGame = new ChooseGame ("Choose a Game", devicesDiscoveredNames);
 		chooseGame.setCommandListener(this);
 		display.setCurrent(chooseGame);
@@ -280,24 +272,24 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 			//case INITIAL_LEVEL_GAME: initialLevelPage.replaceLastMessage(msg);
 		}
 		
-		ApplicationMain.log.info("replaced msg on the screen");
+		System.out.println("replaced msg on the screen");
 	}
 	
 	
 	public void fullyConnected() {
 		
-		ApplicationMain.log.info("inside fullyConnected()");
+		System.out.println("inside fullyConnected()");
 		
 		initialLevelPage = new InitialLevelPage("Level 1", network, this.characterChoice, isServer, myName, myImagePath, this);
 		initialLevelPage.setCommandListener(this);
-		ApplicationMain.log.info("About to display the levelStartPage");
+		System.out.println("About to display the levelStartPage");
 		display.setCurrent(initialLevelPage);
 		
 		if (isServer) {
 			_players = initialLevelPage.setupPlayers(myName, myImagePath);
-			ApplicationMain.log.info("before adding command to initialLevelPage");
+			System.out.println("before adding command to initialLevelPage");
 			initialLevelPage.addCommand(initialLevelPage.getStartCommand());
-			ApplicationMain.log.info("after adding command");
+			System.out.println("after adding command");
 		}
 		else {
 			localPlayerId = initialLevelPage.sendPlayerInfo(myName, myImagePath);

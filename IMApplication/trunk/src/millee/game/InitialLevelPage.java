@@ -34,12 +34,12 @@ public class InitialLevelPage extends Screen {
 		
 		this.addCommand(exitCommand);
 		
-		ApplicationMain.log.info("in levelstartpage");
+		System.out.println("in levelstartpage");
 		
 		if (isServer) {
 			this.append("All clients are now connected.\nPress START to begin the game!\n");
 			//this.addCommand(startCommand);
-			ApplicationMain.log.info("after adding command");
+			System.out.println("after adding command");
 		} else {
 			//this.addCommand(startCommand);
 			this.append("You are connected.\n  Waiting for server to start the game . . .\n");
@@ -49,7 +49,7 @@ public class InitialLevelPage extends Screen {
 	}
 	
 	public Vector setupPlayers(String myName, String myImagePath) {
-		 ApplicationMain.log.info("Server on!");       
+		 System.out.println("Server on!");       
 		 
 	     Vector newPlayers = new Vector();
 	     StringBuffer initialBroadcast = new StringBuffer("");
@@ -71,7 +71,7 @@ public class InitialLevelPage extends Screen {
 	     
 	     
 	     for (int i = 1; i <= StartAGame.numClients; i++) {
-	    	 //ApplicationMain.log.info("beginning of for loop at iteration: " + i);
+	    	 //System.out.println("beginning of for loop at iteration: " + i);
 	    	 initialBroadcast.append(i);
 	    	 initialBroadcast.append(",");
 	    	 msg = network.receiveNow(); // Blocks until the messages arrive
@@ -81,13 +81,13 @@ public class InitialLevelPage extends Screen {
 	    	 playerName = msgs[0];
 	    	 initialBroadcast.append(playerName);
 	    	 initialBroadcast.append(",");
-	    	 //ApplicationMain.log.info("playerName = " + playerName);
+	    	 //System.out.println("playerName = " + playerName);
 	    	 
 	    	 playerImagePath = msgs[1];
 	    	 
 	    	 initialBroadcast.append(playerImagePath);
 	    	 initialBroadcast.append(";");
-	    	 //ApplicationMain.log.info("playerImagePath = " + playerImagePath);
+	    	 //System.out.println("playerImagePath = " + playerImagePath);
 	    	 
 	    	 newPlayers.addElement(new Player(playerName, playerImagePath, i, false));
 				
