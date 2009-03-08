@@ -191,6 +191,9 @@ public class ClientServer implements DiscoveryListener {
     }
     
     public String getServerName() {
+    	if (isServer) {
+    		return this.getDeviceName();
+    	}
     	if (serverName != null) {
     		return serverName.toUpperCase();
     	}
