@@ -35,12 +35,12 @@ public class InitialLevelPage extends Screen {
 		
 		this.addCommand(exitCommand);
 		
-		System.out.println("in levelstartpage");
+		ApplicationMain.log.info("in levelstartpage");
 		
 		if (isServer) {
 			this.append("All players are now connected.\nPress START to begin the game!\n");
 			//this.addCommand(startCommand);
-			System.out.println("after adding command");
+			ApplicationMain.log.info("after adding command");
 		} else {
 			//this.addCommand(startCommand);
 			String serverName = network.clientServer.getServerName();
@@ -51,7 +51,7 @@ public class InitialLevelPage extends Screen {
 	}
 	
 	public Vector setupPlayers(String myName, String myImagePath) {
-		 System.out.println("Server on!");       
+		 ApplicationMain.log.info("Server on!");       
 		 
 	     Vector newPlayers = new Vector();
 	     StringBuffer initialBroadcast = new StringBuffer("");
@@ -73,7 +73,7 @@ public class InitialLevelPage extends Screen {
 	     
 	     
 	     for (int i = 1; i <= StartAGame.numClients; i++) {
-	    	 //System.out.println("beginning of for loop at iteration: " + i);
+	    	 //ApplicationMain.log.info("beginning of for loop at iteration: " + i);
 	    	 initialBroadcast.append(i);
 	    	 initialBroadcast.append(",");
 	    	 msg = network.receiveNow(); // Blocks until the messages arrive
@@ -83,13 +83,13 @@ public class InitialLevelPage extends Screen {
 	    	 playerName = msgs[0];
 	    	 initialBroadcast.append(playerName);
 	    	 initialBroadcast.append(",");
-	    	 //System.out.println("playerName = " + playerName);
+	    	 //ApplicationMain.log.info("playerName = " + playerName);
 	    	 
 	    	 playerImagePath = msgs[1];
 	    	 
 	    	 initialBroadcast.append(playerImagePath);
 	    	 initialBroadcast.append(";");
-	    	 //System.out.println("playerImagePath = " + playerImagePath);
+	    	 //ApplicationMain.log.info("playerImagePath = " + playerImagePath);
 	    	 
 	    	 newPlayers.addElement(new Player(playerName, playerImagePath, i, false));
 				

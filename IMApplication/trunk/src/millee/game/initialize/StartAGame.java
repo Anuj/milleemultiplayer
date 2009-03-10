@@ -52,9 +52,9 @@ public class StartAGame extends Screen {
 	
 	/*public int append(String msg) {
 		int ret = super.append(msg);
-		System.out.println("in append: about to add msg = " + msg + " at formElementNumber = " + formElementNumber);
+		ApplicationMain.log.info("in append: about to add msg = " + msg + " at formElementNumber = " + formElementNumber);
 		formElementNumber+=1;
-		System.out.println("after formLEmentNUmebr inc");
+		ApplicationMain.log.info("after formLEmentNUmebr inc");
 		return ret;
 	}*/
 

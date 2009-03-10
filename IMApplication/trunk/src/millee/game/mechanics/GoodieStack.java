@@ -46,7 +46,7 @@ public class GoodieStack extends Stack {
 		_greenAnimatedTileIndex = _tiledLayer.createAnimatedTile(Goodie.GREEN_BANANA);
 		_blueAnimatedTileIndex = _tiledLayer.createAnimatedTile(Goodie.BLUE_BERRY);
 		
-		System.out.println("Animated tiles: " +  _blackAnimatedTileIndex + _redAnimatedTileIndex + _greenAnimatedTileIndex + _blueAnimatedTileIndex);
+		ApplicationMain.log.info("Animated tiles: " +  _blackAnimatedTileIndex + _redAnimatedTileIndex + _greenAnimatedTileIndex + _blueAnimatedTileIndex);
 		
 		_layers.append(_tiledLayer);
 	}

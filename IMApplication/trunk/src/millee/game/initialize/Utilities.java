@@ -6,6 +6,8 @@ import java.util.Vector;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
+import millee.game.ApplicationMain;
+
 public class Utilities {
 	
 	public static final String DEFAULT_IMAGE = "/dancer_0.png";
@@ -15,11 +17,11 @@ public class Utilities {
 			return Image.createImage(path);
 		}
         catch (IOException e) {
-        	System.err.println("IOException: " + e);
+        	ApplicationMain.log.error("Exception while loading image! Loading default...", e);
         	try {
 				return Image.createImage(DEFAULT_IMAGE);
 			} catch (IOException e1) {
-				e1.printStackTrace();
+				ApplicationMain.log.error("Exception while loading default image! Giving up...", e1);
 				return null;
 			}
         }
