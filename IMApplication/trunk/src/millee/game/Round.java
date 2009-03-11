@@ -41,7 +41,6 @@ public class Round extends GameCanvas implements Runnable {
 	private int _nPlayers, _roundID, _levelID;
 	private boolean _bLastRound;
 	private String _levelName;
-	private int _numGoodies;
 	private int localPlayerID;
 	private boolean isServer;
 	private Network _network;
@@ -64,7 +63,7 @@ public class Round extends GameCanvas implements Runnable {
 	 * @param localPlayerId
 	 */
 	public Round (ApplicationMain app, Vector players, int round, int level, boolean lastRoundInLevel, 
-					String levelName, int totalNumGoodies,
+					String levelName,
 					boolean isServer, Network network, int localPlayerId) {
 		
 		super(true);
@@ -80,8 +79,6 @@ public class Round extends GameCanvas implements Runnable {
 		this._levelID = level;
 		this._bLastRound = lastRoundInLevel;
 		this._levelName = levelName;
-		
-		this._numGoodies = totalNumGoodies;
 		
 		this.isServer = isServer;
 		this._network = network;
@@ -144,9 +141,9 @@ public class Round extends GameCanvas implements Runnable {
 		
 		broadcastString.append('|');
 		
-		// Add goodies
-		for (i = 0; i < _numGoodies; i++) {
-			goodieType = random.nextInt(_nPlayers)+1;
+		// Add goodies - two for each player
+		for (i = 0; i < _nPlayers*2; i++) {
+			goodieType = (i%_nPlayers)+1;
 
 			// Don't put goodies in cells that already have them or where players are
 			while (_grid.hasPlayerAt(x, y) || _grid.hasGoodieAt(x, y)) {
