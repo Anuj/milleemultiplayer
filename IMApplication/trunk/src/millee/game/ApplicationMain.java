@@ -1,8 +1,6 @@
 package millee.game;
 import java.util.Vector;
 
-import javax.microedition.lcdui.Alert;
-import javax.microedition.lcdui.AlertType;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Display;
@@ -11,9 +9,6 @@ import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.List;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
-
-import net.sf.microlog.Logger;
-import net.sf.microlog.appender.ConsoleAppender;
 
 import millee.game.initialize.ChooseCharacter;
 import millee.game.initialize.ChooseGame;
@@ -25,6 +20,9 @@ import millee.game.initialize.Utilities;
 import millee.game.initialize.WinnerScreen;
 import millee.network.Message;
 import millee.network.Network;
+import net.sf.microlog.Logger;
+import net.sf.microlog.appender.ConsoleAppender;
+import net.sf.microlog.appender.FileAppender;
 /**
  * @author Priyanka
  *
@@ -81,8 +79,10 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 	
 	public ApplicationMain () {
 		// Start logging
+		FileAppender appender = new FileAppender();
+		appender.setFileName("MILLEE." + System.currentTimeMillis() + ".log");
+		log.addAppender(appender);
 		log.addAppender(new ConsoleAppender());
-		
 		
 		theDisplay = display = Display.getDisplay(this);
 		_exitCommand = new Command ("Exit", Command.EXIT, 0);
