@@ -23,6 +23,7 @@ import millee.network.Network;
 import net.sf.microlog.Logger;
 import net.sf.microlog.appender.ConsoleAppender;
 import net.sf.microlog.appender.FileAppender;
+import net.sf.microlog.appender.RecordStoreAppender;
 /**
  * @author Priyanka
  *
@@ -79,10 +80,11 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 	
 	public ApplicationMain () {
 		// Start logging
-		FileAppender appender = new FileAppender();
-		appender.setFileName("MILLEE." + System.currentTimeMillis() + ".log");
-		log.addAppender(appender);
+		FileAppender fileApp = new FileAppender();
+		fileApp.setFileName("MILLEE." + System.currentTimeMillis() + ".log");
+		log.addAppender(fileApp);
 		log.addAppender(new ConsoleAppender());
+		//log.addAppender(new RecordStoreAppender());
 		
 		theDisplay = display = Display.getDisplay(this);
 		_exitCommand = new Command ("Exit", Command.EXIT, 0);
@@ -364,8 +366,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 		possibleTokenText[3] = "Yellow";
 		*/
 		
-		Round game = new Round(this, _players, numRoundsLeft, numLevelsLeft, false, "Colours",
-								4, isServer, network, localPlayerId);
+		Round game = new Round(this, _players, numRoundsLeft, numLevelsLeft, false, "Colours", isServer, network, localPlayerId);
 		game.setCommandListener(this);
 		return game;
 	}
