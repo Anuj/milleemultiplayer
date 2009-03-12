@@ -28,7 +28,7 @@ import millee.imapplication.BlueToothExp;
  */
 public class ClientServer implements DiscoveryListener {
 	
-    UUID[] RFCOMM_UUID = {new UUID(0x0003), new UUID(0x0004)};
+    UUID[] RFCOMM_UUID = {new UUID(0x0003), new UUID(0x0004), new UUID(0x0005)};
     private DiscoveryAgent m_DscrAgent = null;
     public Object connected = new Object();
         
@@ -266,20 +266,20 @@ public class ClientServer implements DiscoveryListener {
     }
  
     public void deviceDiscovered(RemoteDevice btDevice, DeviceClass cod) {
-        try {
-        	ApplicationMain.log.info("btDevice name: " + btDevice.getFriendlyName(true));
-        	ApplicationMain.log.info("btDevice addr: " + btDevice.getBluetoothAddress());
+    	try {
+            System.out.println("btDevice name: " + btDevice.getFriendlyName(true));
+            System.out.println("btDevice addr: " + btDevice.getBluetoothAddress());
             UUID uuidSet[] = new UUID[1];
-            uuidSet[0] = RFCOMM_UUID[0];
-            int searchID = m_DscrAgent.searchServices(null, uuidSet, btDevice, this);
-            
-            uuidSet[0] = RFCOMM_UUID[1];
-            searchID = m_DscrAgent.searchServices(null, uuidSet, btDevice, this);
-            ApplicationMain.log.info("after searchServices with searchID = " + searchID);
-        } catch (Exception e) {
-        	ApplicationMain.log.info("Exception in deviceDiscovered");
-            e.printStackTrace();
-        }
+        
+	        for (int i = 0; i <numClients; i++) {
+	                uuidSet[0] = RFCOMM_UUID[i];
+	                int searchID = m_DscrAgent.searchServices(null, uuidSet, btDevice, this);
+	                System.out.println("after searchServices #" + i + " with searchID = " + searchID);
+	        }
+	    } catch (Exception e) {
+	            System.out.println("Exception in deviceDiscovered");
+	        e.printStackTrace();
+	    }
     }
     
     public Message receiveMessage() {
