@@ -137,6 +137,9 @@ public class Round extends GameCanvas implements Runnable {
 			broadcastString.append(',');
 			broadcastString.append(y);
 			broadcastString.append(';');
+			
+			// Take this opportunity to assign players' colors
+			p.setColor((p.assignedColor()%_nPlayers)+1);
 		}
 		
 		broadcastString.append('|');
@@ -195,6 +198,9 @@ public class Round extends GameCanvas implements Runnable {
 			x = Integer.parseInt(playerInfo[1]);
 			y = Integer.parseInt(playerInfo[2]);
 			_grid.insertPlayer(tmpPlayer, x, y);
+			
+			// Take this opportunity to assign players' colors
+			tmpPlayer.setColor((tmpPlayer.assignedColor()%_nPlayers)+1);
 		}
 		
 		// Get the goodie information
@@ -249,9 +255,9 @@ public class Round extends GameCanvas implements Runnable {
 			// Check if the grid is empty
 			if (_grid.isWon()) {
 				stopGame = true;
-				for (int i = 0; i < _players.size(); i++) {
-					((Player) _players.elementAt(i)).flushGoodieStack();
-				}
+				//for (int i = 0; i < _players.size(); i++) {
+				//	((Player) _players.elementAt(i)).flushGoodieStack();
+				//}
 				ApplicationMain.log.trace("Game has ended");
 			}
 			
