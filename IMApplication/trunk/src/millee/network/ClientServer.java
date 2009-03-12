@@ -250,6 +250,9 @@ public class ClientServer implements DiscoveryListener {
             if (m_strUrl.startsWith("btspp")) {
                 m_bServerFound = true;
                 m_bInitClient = true;
+                // TODO: Ensure that this code is only entered once.  Make sure the serverName
+                // doesn't get reset.
+                // Turn off all device discovery and search discovery once the client is connected.
                 try {
 					serverName = records[i].getHostDevice().getFriendlyName(true);
 				} catch (IOException e) {
