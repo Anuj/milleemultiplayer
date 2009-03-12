@@ -218,7 +218,7 @@ public class Round extends GameCanvas implements Runnable {
 	 * How to tell the Round to begin.
 	 */
 	public void start() {
-
+		System.out.println("beginning of the start function of the game");
 		random = new Random();
 		graphics = getGraphics();
 

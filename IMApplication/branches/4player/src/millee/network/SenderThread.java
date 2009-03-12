@@ -44,8 +44,11 @@ public class SenderThread extends Thread {
     /** Broadcasts msg to all clients */
 	public void sendMsg (String msg, Integer senderHashcode) {
 		synchronized (msgQueue) {
+			System.out.println("outputStreams.length: " + outputStreams.length);
+		
 			for (int j = 0; j<outputStreams.length; j++) {
 				msgQueue.addElement(new Message(msg, j, senderHashcode));
+				System.out.println("Sending to client #" + j);
 				msgQueue.notify();
 			}
 			
