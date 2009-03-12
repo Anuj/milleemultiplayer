@@ -1,7 +1,0 @@
-MIDlet-1: AppMain,,millee.game.ApplicationMain
-MIDlet-Jar-URL: ColourColour.jar
-MIDlet-Name: ColourColour Game
-MIDlet-Vendor: Midlet Suite Vendor
-MIDlet-Version: 1.3.4
-MicroEdition-Configuration: CLDC-1.1
-MicroEdition-Profile: MIDP-2.0
