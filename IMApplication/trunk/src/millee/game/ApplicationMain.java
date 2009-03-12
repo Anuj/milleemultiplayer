@@ -81,8 +81,14 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 	
 	public ApplicationMain () {
 		// Setup and begin logging
-		Properties properties = new Properties();
-		log.configure(properties);
+		log.configure(new Properties());
+		
+		// RecordStore logging...
+		RecordStoreAppender ra = new RecordStoreAppender();
+		String logName = "MILLEE." + System.currentTimeMillis() + ".log";
+		ra.setRecordStoreName(logName);
+		log.addAppender(ra);
+		log.info(logName);
 		
 		/* File logging - probably will not work...
 		FileAppender fileApp = new FileAppender();
