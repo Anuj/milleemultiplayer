@@ -2,8 +2,6 @@ package millee.game.initialize;
 
 import java.util.Vector;
 
-import javax.microedition.lcdui.StringItem;
-
 import millee.game.mechanics.Player;
 
 

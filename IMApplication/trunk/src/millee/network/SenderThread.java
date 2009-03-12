@@ -92,9 +92,9 @@ public class SenderThread extends Thread {
 						
 						/*for (int j = 0; j<outputStreams.length; j++) {
 							if (hashcode != outputStreamsHashcodes[j]) {
-								ApplicationMain.log.info("hashcode: " + hashcode);
-								ApplicationMain.log.info("outputStreamsHashcodes: " + outputStreamsHashcodes[j]);
-								ApplicationMain.log.info("sending: " + data);
+								ApplicationMain.log.trace("hashcode: " + hashcode);
+								ApplicationMain.log.trace("outputStreamsHashcodes: " + outputStreamsHashcodes[j]);
+								ApplicationMain.log.trace("sending: " + data);
 								outputStreams[j].write(data);
 								outputStreams[j].flush();
 							}

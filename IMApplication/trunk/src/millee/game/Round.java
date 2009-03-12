@@ -182,15 +182,15 @@ public class Round extends GameCanvas implements Runnable {
 		String[] playerInfo = null;
 		Player tmpPlayer = null;
 		int x,y;
-		//ApplicationMain.log.info("sPlayers = " + sPlayers);
+		//ApplicationMain.log.trace("sPlayers = " + sPlayers);
 		for (int i = 0; i < sPlayers.length; i++) {
-			//ApplicationMain.log.info("splayers[" + i + "] = " + sPlayers[i]);
-			//ApplicationMain.log.info("putting player " + i + " on the board");
+			//ApplicationMain.log.trace("splayers[" + i + "] = " + sPlayers[i]);
+			//ApplicationMain.log.trace("putting player " + i + " on the board");
 			playerInfo = Utilities.split(sPlayers[i], ",", 3);
-			//ApplicationMain.log.info("playerInfo = " + playerInfo);
+			//ApplicationMain.log.trace("playerInfo = " + playerInfo);
 			// TODO: Deal with the lack of a name, image
 			tmpPlayer = (Player) _players.elementAt(i);
-			//ApplicationMain.log.info("player's name is " + tmpPlayer);
+			//ApplicationMain.log.trace("player's name is " + tmpPlayer);
 			//new Player("PLAYER " + playerInfo[0], Utilities.createImage("/dancer_small.png"), Integer.parseInt(playerInfo[0]), 0);
 			x = Integer.parseInt(playerInfo[1]);
 			y = Integer.parseInt(playerInfo[2]);
@@ -252,7 +252,7 @@ public class Round extends GameCanvas implements Runnable {
 				for (int i = 0; i < _players.size(); i++) {
 					((Player) _players.elementAt(i)).flushGoodieStack();
 				}
-				ApplicationMain.log.info("Game has ended");
+				ApplicationMain.log.trace("Game has ended");
 			}
 			
 			// If the game isn't over, look for inputs
@@ -369,7 +369,7 @@ public class Round extends GameCanvas implements Runnable {
 		graphics.setColor(0,0,0);
 		graphics.fillRect(0,0,getWidth(),getHeight());
 		
-		//ApplicationMain.log.info("Your score: " + scores[this.localPlayerID]);
+		//ApplicationMain.log.trace("Your score: " + scores[this.localPlayerID]);
 		if (stopGame) {
 			// End game drawing
 			this.setFullScreenMode(false);
