@@ -24,6 +24,7 @@ import net.sf.microlog.Logger;
 import net.sf.microlog.appender.ConsoleAppender;
 import net.sf.microlog.appender.FileAppender;
 import net.sf.microlog.appender.RecordStoreAppender;
+import net.sf.microlog.util.Properties;
 /**
  * @author Priyanka
  *
@@ -79,12 +80,16 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 	private Displayable _previousDisplayable = null;
 	
 	public ApplicationMain () {
-		// Start logging
+		// Setup and begin logging
+		Properties properties = new Properties();
+		log.configure(properties);
+		
+		/* File logging - probably will not work...
 		FileAppender fileApp = new FileAppender();
 		fileApp.setFileName("MILLEE." + System.currentTimeMillis() + ".log");
 		log.addAppender(fileApp);
 		log.addAppender(new ConsoleAppender());
-		//log.addAppender(new RecordStoreAppender());
+		*/
 		
 		theDisplay = display = Display.getDisplay(this);
 		_exitCommand = new Command ("Exit", Command.EXIT, 0);
