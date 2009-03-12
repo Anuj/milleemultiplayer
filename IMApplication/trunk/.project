@@ -1,3 +1,29 @@
+<<<<<<< .mine
+<<<<<<< .working
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>IMApplication</name>
+	<comment></comment>
+	<projects>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>org.eclipse.jdt.core.javabuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
+			<name>org.eclipse.mtj.core.preverifier</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>org.eclipse.jdt.core.javanature</nature>
+		<nature>org.eclipse.mtj.core.nature</nature>
+	</natures>
+</projectDescription>
+=======
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
 	<name>ColourColour</name>
@@ -27,3 +53,35 @@
 		<nature>eclipseme.core.preprocessingNature</nature>
 	</natures>
 </projectDescription>
+>>>>>>> .merge-right.r133
+=======
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>ColourColour</name>
+	<comment></comment>
+	<projects>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>eclipseme.core.preprocessor</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
+			<name>org.eclipse.jdt.core.javabuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
+			<name>eclipseme.core.preverifier</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>org.eclipse.jdt.core.javanature</nature>
+		<nature>eclipseme.core.nature</nature>
+		<nature>eclipseme.core.preprocessingNature</nature>
+	</natures>
+</projectDescription>
+>>>>>>> .r133
