@@ -48,7 +48,7 @@ public class ClientServer implements DiscoveryListener {
     String serverName = null;
     
     public ClientServer (boolean isServer, int numClients, ApplicationMain _app) {
-    	ApplicationMain.log.info("initializing clientServer");
+    	ApplicationMain.log.trace("initializing clientServer");
     	this.isServer = isServer;
     	this.numClients = numClients;
     	this._app = _app;
@@ -91,7 +91,7 @@ public class ClientServer implements DiscoveryListener {
     public void InitServer(int numConnections) {
         
         try {
-        	ApplicationMain.log.info("Connecting...");
+        	ApplicationMain.log.trace("Connecting...");
         	//ApplicationMain.theDisplay.setCurrent(new TextBox("Server: ", "Connecting...", 30, TextField.ANY));
         	//this.printToScreen("Application", "Connecting...");
         	streamConnections = new StreamConnection[numConnections];
@@ -103,16 +103,16 @@ public class ClientServer implements DiscoveryListener {
         		m_strUrl = "btspp://localhost:" + RFCOMM_UUID[i] + ";name=rfcommtest;authorize=false";
         		m_LclDevice = LocalDevice.getLocalDevice();
                 m_LclDevice.setDiscoverable(DiscoveryAgent.GIAC);
-                ApplicationMain.log.info("waiting to connect to client #" + i);
+                ApplicationMain.log.trace("waiting to connect to client #" + i);
                 m_StrmNotf = (StreamConnectionNotifier) Connector.open(m_strUrl);
                
                 
-                ApplicationMain.log.info("after updateGameScreen...");
+                ApplicationMain.log.trace("after updateGameScreen...");
                 
                 StreamConnection m_StrmConn = m_StrmNotf.acceptAndOpen();
                 updateServerScreenStatus((i+1) + " player(s)have joined.  Waiting for " + (numConnections-1-i) + " player(s) to join.");
  
-                ApplicationMain.log.info("Just connected to client #" + i);
+                ApplicationMain.log.trace("Just connected to client #" + i);
                 streamConnections[i] = m_StrmConn;
                 m_StrmNotf.close();
         	}
@@ -120,7 +120,7 @@ public class ClientServer implements DiscoveryListener {
         	// TODO: find out why this update message causes an IndexOutOfBounds error
         	updateServerScreenStatus("All players have joined.\n.  Push START to begin.");
         	
-            ApplicationMain.log.info("finished connecting");
+            ApplicationMain.log.trace("finished connecting");
 
         	
         } catch (BluetoothStateException e) {
@@ -138,18 +138,18 @@ public class ClientServer implements DiscoveryListener {
      * receiverThreads and the client has only 1 receiverThread
      */
     public void createIOThreads() {
-    	ApplicationMain.log.info("Creating IOThreads");
+    	ApplicationMain.log.trace("Creating IOThreads");
     	senderThread = new SenderThread(streamConnections);
     	senderThread.start();
     	if (isServer) {
-    		ApplicationMain.log.info("for the server");
+    		ApplicationMain.log.trace("for the server");
     		recvThreads = new ReceiverThread[numClients];
     		ReceiverThread temp;
     		for (int i = 0; i<numClients; i++) {
     			temp = new ReceiverThread(streamConnections[i], senderThread, isServer, i);
     			temp.start();
     			recvThreads[i] = temp;
-    			ApplicationMain.log.info("created recvThread #" + i);
+    			ApplicationMain.log.trace("created recvThread #" + i);
     		}
 			//streamConns = clientServer.getStreamConnections();
 			/*sendThread = new SenderThread(streamConns);
@@ -159,21 +159,21 @@ public class ClientServer implements DiscoveryListener {
 
 		} else {
 			recvThreads = new ReceiverThread[1];
-			ApplicationMain.log.info("for the client");
+			ApplicationMain.log.trace("for the client");
 			//streamConns = clientServer.getStreamConnections();
 			//sendThread = new SenderThread(streamConns);
-			ApplicationMain.log.info(streamConnections);
-			ApplicationMain.log.info(streamConnections[0]);
-			ApplicationMain.log.info(senderThread);
+			ApplicationMain.log.trace(streamConnections);
+			ApplicationMain.log.trace(streamConnections[0]);
+			ApplicationMain.log.trace(senderThread);
 			ReceiverThread recv = new ReceiverThread(streamConnections[0], senderThread, isServer, 0);
 			//recvThread = new ReceiverThread(streamConns[0], sendThread, isServer);
-			ApplicationMain.log.info(recv);
+			ApplicationMain.log.trace(recv);
 			recv.start();
 			recvThreads[0] = recv;
-			ApplicationMain.log.info("after starting the receiver Thread");
+			ApplicationMain.log.trace("after starting the receiver Thread");
 	    	//sendThread.start();
 		}
-    	ApplicationMain.log.info("end of createIOThreads");
+    	ApplicationMain.log.trace("end of createIOThreads");
     }
     
     /*public void updateGameScreen(int gameScreen, String msg) {
@@ -186,7 +186,7 @@ public class ClientServer implements DiscoveryListener {
     
     // Starts the inquiry process for a client.
     public void InitClient() {
-    	ApplicationMain.log.info("initializing the client");
+    	ApplicationMain.log.trace("initializing the client");
     	SearchAvailDevices();
     }
     
@@ -220,13 +220,13 @@ public class ClientServer implements DiscoveryListener {
             try {
 
             	//this.printToScreen("Application", "Connecting...");
-            	ApplicationMain.log.info("Client Connecting...");
+            	ApplicationMain.log.trace("Client Connecting...");
             	StreamConnection m_StrmConn = (StreamConnection) Connector.open(m_strUrl);
-            	ApplicationMain.log.info("m_StrmConn = " + m_StrmConn);
+            	ApplicationMain.log.trace("m_StrmConn = " + m_StrmConn);
             	streamConnections = new StreamConnection[1];
             	
             	streamConnections[0] = m_StrmConn;
-            	ApplicationMain.log.info("Connected");
+            	ApplicationMain.log.trace("Connected");
             	//this.printToScreen("Application", "Connected.");
             	
             	synchronized(connected) {
@@ -241,11 +241,11 @@ public class ClientServer implements DiscoveryListener {
     
     public void servicesDiscovered(int transID, ServiceRecord[] records) {
     	
-    	ApplicationMain.log.info("records.length: " + records.length);
+    	ApplicationMain.log.trace("records.length: " + records.length);
     	
         for (int i = 0; i < records.length; i++) {
             m_strUrl = records[i].getConnectionURL(ServiceRecord.AUTHENTICATE_ENCRYPT, false);
-            ApplicationMain.log.info("m_strUrl: " + m_strUrl);
+            ApplicationMain.log.trace("m_strUrl: " + m_strUrl);
  
             if (m_strUrl.startsWith("btspp")) {
                 m_bServerFound = true;
@@ -328,7 +328,7 @@ public class ClientServer implements DiscoveryListener {
     	}
 		public void run() {
 			_app.replaceMsgOnGameScreen(gameScreen, msg);
-			ApplicationMain.log.info("replaced the msg on the screen.  thread about to die.");
+			ApplicationMain.log.trace("replaced the msg on the screen.  thread about to die.");
 		}
     }
 }

@@ -95,7 +95,7 @@ public class GameGrid {
 		// Wraps around borders
 		p.x = (p.x + _width + dx) % _width;
 		p.y = (p.y + _height + dy) % _height;
-		//ApplicationMain.log.info("P: " + p.x + ", " + p.y);
+		//ApplicationMain.log.trace("P: " + p.x + ", " + p.y);
 		p.sprite.setPosition(TILE_DIMENSIONS*p.x, TILE_DIMENSIONS*p.y);
 		
 		GameCell cNew = _cells[p.y][p.x];
@@ -104,7 +104,7 @@ public class GameGrid {
 		// Now check for 'collisions' with goodies
 		if (cNew.hasGoodie()) { // && p.assignedColor() == cNew.getGoodie().getType()) {
 			p.collect(cNew.getGoodie());
-			ApplicationMain.log.info("Picked up Goodie: " + cNew.getGoodie());
+			ApplicationMain.log.trace("Picked up Goodie: " + cNew.getGoodie());
 			cNew.unsetGoodie();
 			_tiledLayer.setCell(p.x, p.y, 1); //FRUIT_INDEX-1);
 			_nGoodies--;
@@ -115,7 +115,7 @@ public class GameGrid {
 		Player p = (Player) _players.elementAt(id);
 		Goodie g = p.dropGoodie();
 		
-		ApplicationMain.log.info("Goodie dropped: " + g);
+		ApplicationMain.log.trace("Goodie dropped: " + g);
 		if (g == null) { return; }
 		
 		_tiledLayer.setCell(p.x, p.y, g.getType()+FRUIT_INDEX-1);

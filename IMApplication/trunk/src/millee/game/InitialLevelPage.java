@@ -33,12 +33,12 @@ public class InitialLevelPage extends Screen {
 		
 		this.addCommand(exitCommand);
 		
-		ApplicationMain.log.info("in levelstartpage");
+		ApplicationMain.log.trace("in levelstartpage");
 		
 		if (isServer) {
 			this.append("All players are now connected.\nPress START to begin the game!\n");
 			//this.addCommand(startCommand);
-			ApplicationMain.log.info("after adding command");
+			ApplicationMain.log.trace("after adding command");
 		} else {
 			//this.addCommand(startCommand);
 			String serverName = network.clientServer.getServerName();
@@ -49,7 +49,7 @@ public class InitialLevelPage extends Screen {
 	}
 	
 	public Vector setupPlayers(String myName, String myImagePath) {
-		 ApplicationMain.log.info("Server on!");       
+		 ApplicationMain.log.trace("Server on!");       
 		 
 	     Vector newPlayers = new Vector();
 	     StringBuffer initialBroadcast = new StringBuffer("");
@@ -71,7 +71,7 @@ public class InitialLevelPage extends Screen {
 	     
 	     
 	     for (int i = 1; i <= StartAGame.numClients; i++) {
-	    	 //ApplicationMain.log.info("beginning of for loop at iteration: " + i);
+	    	 //ApplicationMain.log.trace("beginning of for loop at iteration: " + i);
 	    	 initialBroadcast.append(i);
 	    	 initialBroadcast.append(",");
 	    	 msg = network.receiveNow(); // Blocks until the messages arrive
@@ -81,13 +81,13 @@ public class InitialLevelPage extends Screen {
 	    	 playerName = msgs[0];
 	    	 initialBroadcast.append(playerName);
 	    	 initialBroadcast.append(",");
-	    	 //ApplicationMain.log.info("playerName = " + playerName);
+	    	 //ApplicationMain.log.trace("playerName = " + playerName);
 	    	 
 	    	 playerImagePath = msgs[1];
 	    	 
 	    	 initialBroadcast.append(playerImagePath);
 	    	 initialBroadcast.append(";");
-	    	 //ApplicationMain.log.info("playerImagePath = " + playerImagePath);
+	    	 //ApplicationMain.log.trace("playerImagePath = " + playerImagePath);
 	    	 
 	    	 newPlayers.addElement(new Player(playerName, playerImagePath, i, false));
 				

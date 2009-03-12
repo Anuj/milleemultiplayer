@@ -48,9 +48,9 @@ public class Screen extends Form {
 	
 	/*public int append(String msg) {
 		int ret = super.append(msg);
-		ApplicationMain.log.info("in append: about to add msg = " + msg + " at formElementNumber = " + formElementNumber);
+		ApplicationMain.log.trace("in append: about to add msg = " + msg + " at formElementNumber = " + formElementNumber);
 		formElementNumber+=1;
-		ApplicationMain.log.info("after formLEmentNUmebr inc");
+		ApplicationMain.log.trace("after formLEmentNUmebr inc");
 		return ret;
 		return -1;
 	}*/
@@ -58,18 +58,18 @@ public class Screen extends Form {
 	
 	public synchronized void replaceLastMessage (String msg) {
 		//synchronized (replaceObject) {
-			ApplicationMain.log.info("in replaceLastMessage: about to remove msg at " + (formElementNumber-1));
+			ApplicationMain.log.trace("in replaceLastMessage: about to remove msg at " + (formElementNumber-1));
 			try {
 				this.delete(formElementNumber-1);
 			} catch (IndexOutOfBoundsException e) {
-				ApplicationMain.log.info("from delete command");
+				ApplicationMain.log.trace("from delete command");
 				e.printStackTrace();
 			}
-			ApplicationMain.log.info("adding msg = " + msg);
+			ApplicationMain.log.trace("adding msg = " + msg);
 			try {
 				this.append(msg);
 			} catch (IndexOutOfBoundsException e) {
-				ApplicationMain.log.info("from add command");
+				ApplicationMain.log.trace("from add command");
 				e.printStackTrace();
 			}
 		//}

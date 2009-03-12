@@ -8,10 +8,7 @@ import javax.microedition.midlet.MIDletStateChangeException;
 import javax.microedition.rms.RecordEnumeration;
 import javax.microedition.rms.RecordStore;
 import javax.microedition.rms.RecordStoreException;
-import javax.microedition.rms.RecordStoreFullException;
-import javax.microedition.rms.RecordStoreNotFoundException;
 
-import millee.game.ApplicationMain;
 import net.sf.microlog.Logger;
 import net.sf.microlog.appender.ConsoleAppender;
 
@@ -58,7 +55,7 @@ public class LogDumper extends MIDlet {
 				}
 				
 				// TODO: Delete the record store afterwards?
-			
+				RecordStore.deleteRecordStore(rs.getName());				
 			} catch (RecordStoreException e) {
 				log.error("Problem with RecordStore!");
 			}
