@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mtjMetadata jad="ColourColour.jad" version="0.9.1.200812231341">
    <device group="Sun Java(TM) Wireless Toolkit 2.5.2_01 for CLDC" name="MediaControlSkin"/>
-   <signing signProject="false"/>
+   <signing signProject="false">
+      <keystore>$/keystore.key</keystore>
+      <alias>mykey</alias>
+      <provider/>
+      <keystoreType/>
+      <passwords storePasswords="0"/>
+   </signing>
    <configurations>
       <configuration active="true" name="MediaControlSkin">
          <device group="Sun Java(TM) Wireless Toolkit 2.5.2_01 for CLDC" name="MediaControlSkin"/>

@@ -1,4 +1,5 @@
 package millee.game;
+import java.io.IOException;
 import java.util.Vector;
 
 import javax.microedition.lcdui.Command;
@@ -79,6 +80,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 	
 	public ApplicationMain () {
 		// Setup and begin logging
+		log.removeAllAppenders();
 		log.configure(new Properties());
 		
 		// RecordStore logging...
@@ -86,7 +88,6 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 		String logName = "MILLEE." + System.currentTimeMillis() + ".log";
 		ra.setRecordStoreName(logName);
 		log.addAppender(ra);
-		log.info(logName);
 		
 		/* File logging - probably will not work...
 		FileAppender fileApp = new FileAppender();
@@ -123,7 +124,12 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 	}
 	protected void destroyApp(boolean arg0) {
 		log.info("Destroying application...");
-		
+		try {
+			log.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	protected void pauseApp() {
