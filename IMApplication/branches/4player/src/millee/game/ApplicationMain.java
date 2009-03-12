@@ -216,7 +216,6 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 					game.start();
 					display.setCurrent(game);
 				}
-			//}
 		} else if (c == game.getNoCommand()) {
 			winnerScreen.start(isServer, network.clientServer.getServerName());
 			display.setCurrent(winnerScreen);
@@ -293,14 +292,20 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 			System.out.println("after adding command");
 		}
 		else {
+			System.out.println("about to initialize everything");
 			localPlayerId = initialLevelPage.sendPlayerInfo(myName, myImagePath);
+			System.out.println("after determinning localPlayerID");
 			_players = initialLevelPage.createPlayersByClients();
+			System.out.println("after initing _players");
 			
+			System.out.println("after getting all initialization information from server.  Waiting to get GO from server");
 			Message msg = network.receiveNow();
+			System.out.println("received: " + msg);
+			System.out.println("received: " + msg.msg());
 			if (msg.msg().equals(Message.GO)) {
+				System.out.println("about to start game");
 				startGame();
 			}
-			
 		}
 	}
 	
@@ -329,6 +334,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 	public void startGame() {
 		game = createNewRound();
 		numLevelsLeft--;
+		System.out.println("About to start the game");
 		game.start();
 		display.setCurrent(game);
 	}
