@@ -379,11 +379,18 @@ public class Round extends GameCanvas implements Runnable {
 
 			String scoreReport = "";
 			Player p;
+			
+			scoreReport += "---------------------------------------------------\n";
+			scoreReport += "Group Score is " + Player.getGroupScore() + "\n";
+			scoreReport += "---------------------------------------------------\n";
+
+			
 			for (int i = 0; i<_players.size(); i++) {
 				p = ((Player) _players.elementAt(i));
-				scoreReport += p.getName() + ": " + p.getScore() + "\n";
+				scoreReport += "		" + p.getName() + ": " + p.getScore() + "\n";
 			}
-
+			
+			
 			displayNotification("Current Scores", scoreReport);
 			
 			if (isServer) {

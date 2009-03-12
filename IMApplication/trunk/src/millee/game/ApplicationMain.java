@@ -235,7 +235,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 				}
 			//}
 		} else if (c == game.getNoCommand()) {
-			winnerScreen.start(isServer, network.clientServer.getServerName());
+			winnerScreen.start(isServer, network.clientServer.getServerName(), _players);
 			display.setCurrent(winnerScreen);
 			network.broadcast(Message.GAME_OVER);
 		} else if (c == levelStartPage.getStartCommand()) {
@@ -329,7 +329,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 			input = network.receiveNow().msg();
 
 			if (input.equals(Message.GAME_OVER)) {
-				winnerScreen.start(isServer, network.clientServer.getServerName());
+				winnerScreen.start(isServer, network.clientServer.getServerName(), _players);
 				display.setCurrent(winnerScreen);
 				break;
 			}

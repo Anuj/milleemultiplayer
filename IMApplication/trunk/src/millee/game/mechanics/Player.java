@@ -25,6 +25,9 @@ public class Player {
 	private int _score = 0;
 	private GoodieStack _goodies;
 	
+	// Group Score is a total of all the players scores.
+	private static int _groupScore = 0;
+	
 	// Player sprite color variations
 	public static final int BLACK = 1;
 	public static final int RED = 2;
@@ -74,6 +77,10 @@ public class Player {
 		//else {
 			sprite = new Sprite(avatar);
 		//}
+	}
+	
+	public static int getGroupScore() {
+		return _groupScore;
 	}
 	
 	private Image applyVariation(Image img, int var) {
@@ -189,10 +196,12 @@ public class Player {
 	// Update the player's score in game-like ways
 	private void incrementScore() {
 		_score += 10;
+		_groupScore += 10;
 	}
 	
 	private void decrementScore() {
 		_score -= 10;
+		_groupScore -= 10;
 	}
 	
 	public int getScore() {
@@ -211,7 +220,9 @@ public class Player {
 	
 	public Goodie dropGoodie() {
 		if (_goodies.isEmpty()) { return null; }
-		return (Goodie) _goodies.pop();
+		Goodie g = (Goodie) _goodies.pop();
+		if (g.getType() == this._assignedColor) { this.decrementScore(); }
+		return g;
 	}
 	
 	public GoodieStack getGoodieStack() {
