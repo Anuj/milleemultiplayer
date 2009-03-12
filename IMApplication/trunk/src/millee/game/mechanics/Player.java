@@ -49,7 +49,7 @@ public class Player {
 		
 		// The color that this character must collect is its ID+1
 		this._assignedColor = virtualID+1;
-		_goodies = new GoodieStack(_assignedColor);
+		//_goodies = new GoodieStack(_assignedColor);
 		
 		Image avatar = null;
 		
@@ -184,9 +184,10 @@ public class Player {
 		return sprite;
 	}
 	
-	// Get and set this player's assigned color
+	// Get and set this player's assigned color and refresh their GoodieStack
 	public void setColor(int color) {
 		_assignedColor = color;
+		_goodies = new GoodieStack(_assignedColor);
 	}
 	
 	public int assignedColor() {
@@ -228,11 +229,11 @@ public class Player {
 	public GoodieStack getGoodieStack() {
 		return _goodies;
 	}
-	
+	/*
 	public void flushGoodieStack() {
 		_goodies = new GoodieStack(_assignedColor);
 	}
-	
+	*/
 	public boolean hasCorrectGoodies() {
 		Goodie g = null;
 		for (int i = 0; i < _goodies.size(); i++) {
