@@ -38,7 +38,9 @@ public class Round extends GameCanvas implements Runnable {
 	private boolean stopGame = false;
 	private String command = "";
 	
-	private int _nPlayers, _roundID, _levelID;
+	private int _nPlayers;
+	private static int _roundID = 0;
+
 	private boolean _bLastRound;
 	private String _levelName;
 	private int localPlayerID;
@@ -46,9 +48,10 @@ public class Round extends GameCanvas implements Runnable {
 	private Network _network;
 	
 	// Constants
-	private static final int SLEEP_TIME = 400;
+	private static final int SLEEP_TIME = 200;
 	private static final int TILE_DIMENSIONS = 20;
 
+	
 	
 	/**
 	 * Constructor for Round	
@@ -62,23 +65,18 @@ public class Round extends GameCanvas implements Runnable {
 	 * @param network
 	 * @param localPlayerId
 	 */
-	public Round (ApplicationMain app, Vector players, int round, int level, boolean lastRoundInLevel, 
-					String levelName,
-					boolean isServer, Network network, int localPlayerId) {
+	public Round (ApplicationMain app, Vector players, boolean isServer, Network network, int localPlayerId) {
 		
 		super(true);
 		// this.setFullScreenMode(true);
+		
+		_roundID++;
 		
 		this._nPlayers = players.size();
 		this._players = players;
 		
 		this._cellWidth = this.getWidth()/TILE_DIMENSIONS;
 		this._cellHeight = this.getHeight()/TILE_DIMENSIONS;
-		
-		this._roundID = round;
-		this._levelID = level;
-		this._bLastRound = lastRoundInLevel;
-		this._levelName = levelName;
 		
 		this.isServer = isServer;
 		this._network = network;
@@ -165,6 +163,7 @@ public class Round extends GameCanvas implements Runnable {
 		
 		// Broadcast this information to all clients
 		_network.broadcast(broadcastString.toString());
+		ApplicationMain.log.info("Server broadcasts configuration: " + broadcastString.toString());
 	}
 	
 	/**
@@ -177,6 +176,8 @@ public class Round extends GameCanvas implements Runnable {
 		while ((input = _network.receiveNow().msg()).indexOf("|") < 0) {
 			continue;
 		}
+		
+		ApplicationMain.log.info("Client receives configuration: " + input.toString());
 		
 		String[] blocks = Utilities.split(input, "|", 2);
 		
@@ -258,7 +259,7 @@ public class Round extends GameCanvas implements Runnable {
 				//for (int i = 0; i < _players.size(); i++) {
 				//	((Player) _players.elementAt(i)).flushGoodieStack();
 				//}
-				ApplicationMain.log.trace("Game has ended");
+				ApplicationMain.log.info("Round " + _roundID + " has ended.");
 			}
 			
 			// If the game isn't over, look for inputs
