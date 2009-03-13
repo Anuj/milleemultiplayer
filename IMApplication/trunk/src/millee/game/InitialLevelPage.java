@@ -3,6 +3,8 @@ package millee.game;
 
 import java.util.Vector;
 
+import javax.microedition.lcdui.Image;
+
 import millee.game.initialize.Screen;
 import millee.game.initialize.StartAGame;
 import millee.game.initialize.Utilities;
@@ -44,7 +46,6 @@ public class InitialLevelPage extends Screen {
 		} else {
 			//this.addCommand(startCommand);
 			String serverName = network.clientServer.getServerName();
-			this.append("Your character name is " + myName.toUpperCase() + "\n");
 			this.append("You are connected to " + serverName + "'s game.\nWaiting for " + serverName + " to start the game . . .\n");
 			
 			//sendPlayerInfo(myName, myImagePath);
@@ -64,7 +65,14 @@ public class InitialLevelPage extends Screen {
 	     System.out.println("myName = " + myName);
 	     
 	     // Set up our own local player first
-	     newPlayers.addElement(new Player(myName, myImagePath, 0, true));
+	     Player player = new Player(myName, myImagePath, 0, true);
+	     newPlayers.addElement(player);
+	     myImagePath = player.getImagePath();
+	     System.out.println("imagePath = " + myImagePath);
+	     Image img = Utilities.createImage(myImagePath);
+	     this.append("\n\nYour name is: " + player.getName().toUpperCase());
+	     this.append("\nYour character is: ");
+	     this.append(img);
 	     
 	     System.out.println("created player");
 	     
@@ -131,6 +139,16 @@ public class InitialLevelPage extends Screen {
 		for (int i = 0; i<sPlayers.length; i++) {
 			playerInfo = Utilities.split(sPlayers[i], ",", 3);
 			tmpPlayer = new Player(playerInfo[1], playerInfo[2], Integer.parseInt(playerInfo[0]), (i == _myID));
+			
+			if (i == _myID) {
+				String myImagePath = tmpPlayer.getImagePath();
+				System.out.println("imagePath = " + myImagePath);
+			     Image img = Utilities.createImage(myImagePath);
+			     this.append("\n\nYour name is: " + tmpPlayer.getName().toUpperCase());
+			     this.append("\nYour character is: ");
+			     this.append(img);
+			     
+			}
 			// TODO: Assign the player a color to collect here?
 			players.addElement(tmpPlayer);
 		}
