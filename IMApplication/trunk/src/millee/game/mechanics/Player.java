@@ -63,24 +63,30 @@ public class Player {
 			avatar = Utilities.createImage(imgPath);
 		}*/
 		
+		String myImagePath = "/dancer_1.png";
+		
 		if (virtualID == 0) {
 			avatar = Utilities.createImage("/dancer_1.png");
+			myImagePath = "/dancer_1.png";
 		} else if (virtualID == 1) {
 			avatar = Utilities.createImage("/dancer_2.png");
+			myImagePath = "/dancer_2.png";
 		} else if (virtualID == 2) {
 			avatar = Utilities.createImage("/dancer_3.png");
+			myImagePath = "/dancer_3.png";
 		} else if (virtualID == 3) {
 			avatar = Utilities.createImage("/dancer_1.png");
+			myImagePath = "/dancer_1.png";
 		}
 		
 		// Keep track of avatar usage counts
 		int nUsage = 1; // Default
-		if (avatarUsageCounts.containsKey(imgPath)) {
+		if (avatarUsageCounts.containsKey(myImagePath)) {
 			// Get and increment value
-			nUsage = ((Integer) avatarUsageCounts.get(imgPath)).intValue();
+			nUsage = ((Integer) avatarUsageCounts.get(myImagePath)).intValue();
 			nUsage++;
 		}
-		avatarUsageCounts.put(imgPath, new Integer(nUsage));
+		avatarUsageCounts.put(myImagePath, new Integer(nUsage));
 
 		// Alter color if necessary
 		//if (nUsage > 1) {
