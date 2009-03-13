@@ -321,9 +321,6 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 		display.setCurrent(initialLevelPage);
 		
 		if (isServer) {
-			//System.out.println("is server");
-			//System.out.println("myName = " + myName);
-			//myName = "Raj";
 			_players = initialLevelPage.setupPlayers(myName, myImagePath);
 			ApplicationMain.log.info("before adding command to initialLevelPage");
 			initialLevelPage.addCommand(initialLevelPage.getStartCommand());

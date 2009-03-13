@@ -9,6 +9,7 @@ import millee.game.initialize.Utilities;
 
 public class Player {
 	private String _name;
+	private String _imagePath;
 	
 	// Location in cell coordinates
 	protected int x;
@@ -63,30 +64,30 @@ public class Player {
 			avatar = Utilities.createImage(imgPath);
 		}*/
 		
-		String myImagePath = "/dancer_1.png";
+		_imagePath = "/dancer_1.png";
 		
 		if (virtualID == 0) {
 			avatar = Utilities.createImage("/dancer_1.png");
-			myImagePath = "/dancer_1.png";
+			_imagePath = "/dancer_1.png";
 		} else if (virtualID == 1) {
 			avatar = Utilities.createImage("/dancer_2.png");
-			myImagePath = "/dancer_2.png";
+			_imagePath = "/dancer_2.png";
 		} else if (virtualID == 2) {
 			avatar = Utilities.createImage("/dancer_3.png");
-			myImagePath = "/dancer_3.png";
+			_imagePath = "/dancer_3.png";
 		} else if (virtualID == 3) {
 			avatar = Utilities.createImage("/dancer_1.png");
-			myImagePath = "/dancer_1.png";
+			_imagePath = "/dancer_1.png";
 		}
 		
 		// Keep track of avatar usage counts
 		int nUsage = 1; // Default
-		if (avatarUsageCounts.containsKey(myImagePath)) {
+		if (avatarUsageCounts.containsKey(_imagePath)) {
 			// Get and increment value
-			nUsage = ((Integer) avatarUsageCounts.get(myImagePath)).intValue();
+			nUsage = ((Integer) avatarUsageCounts.get(_imagePath)).intValue();
 			nUsage++;
 		}
-		avatarUsageCounts.put(myImagePath, new Integer(nUsage));
+		avatarUsageCounts.put(_imagePath, new Integer(nUsage));
 
 		// Alter color if necessary
 		//if (nUsage > 1) {
@@ -99,6 +100,10 @@ public class Player {
 	
 	public static int getGroupScore() {
 		return _groupScore;
+	}
+	
+	public String getImagePath() {
+		return _imagePath;
 	}
 	
 	private Image applyVariation(Image img, int var) {
