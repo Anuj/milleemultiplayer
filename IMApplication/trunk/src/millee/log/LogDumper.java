@@ -34,7 +34,7 @@ import net.sf.microlog.util.Properties;
 public class LogDumper extends MIDlet implements CommandListener {
 	
 	// Logger instance to be used to write out
-	private static final Logger log = Logger.getLogger(LogDumper.class);
+	private static final Logger log = Logger.getLogger(); //LogDumper.class);
 	
 	private static final int HEADER_SIZE = 10;
 	
