@@ -267,6 +267,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 			winnerScreen.start(isServer, network.clientServer.getServerName(), _players);
 			display.setCurrent(winnerScreen);
 			network.broadcast(Message.GAME_OVER);
+			network.clientServer.closeAllConnections();
 		} else if (c == levelStartPage.getStartCommand()) {
 			game = createNewRound();
 			game.start();
@@ -360,6 +361,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 
 			if (input.equals(Message.GAME_OVER)) {
 				winnerScreen.start(isServer, network.clientServer.getServerName(), _players);
+				network.clientServer.closeAllConnections();
 				display.setCurrent(winnerScreen);
 				break;
 			}
