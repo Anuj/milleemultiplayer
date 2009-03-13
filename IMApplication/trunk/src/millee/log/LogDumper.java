@@ -22,6 +22,7 @@ import javax.microedition.rms.RecordStoreNotFoundException;
 import net.sf.microlog.Formatter;
 import net.sf.microlog.Logger;
 import net.sf.microlog.appender.ConsoleAppender;
+import net.sf.microlog.bluetooth.BluetoothSerialAppender;
 import net.sf.microlog.format.PatternFormatter;
 import net.sf.microlog.util.Properties;
 
@@ -56,13 +57,16 @@ public class LogDumper extends MIDlet implements CommandListener {
 		log.removeAllAppenders();
 		
 		ConsoleAppender ca = new ConsoleAppender();
+		BluetoothSerialAppender ba = new BluetoothSerialAppender();
 
 		// Make the pattern a simple dump of the existing logs
 		PatternFormatter p = new PatternFormatter();
 		p.setPattern("%m");
 		
 		ca.setFormatter(p);
+		ba.setFormatter(p);
 		log.addAppender(ca);
+		log.addAppender(ba);
 	}
 	
 	/*
