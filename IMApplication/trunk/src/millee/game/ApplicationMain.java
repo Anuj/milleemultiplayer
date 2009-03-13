@@ -403,7 +403,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 		possibleTokenText[3] = "Yellow";
 		*/
 		
-		Round game = new Round(this, _players, numRoundsLeft, numLevelsLeft, false, "Colours", isServer, network, localPlayerId);
+		Round game = new Round(this, _players, isServer, network, localPlayerId);
 		game.setCommandListener(this);
 		return game;
 	}
