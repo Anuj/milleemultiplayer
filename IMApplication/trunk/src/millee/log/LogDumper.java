@@ -152,7 +152,9 @@ public class LogDumper extends MIDlet implements CommandListener {
 		}
 		else {
 			Alert a = new Alert("No log files to dump!");
+			a.setTimeout(3000);
 			a.addCommand(_exitCommand);
+			a.setCommandListener(this);
 			_display.setCurrent(a);
 		}
 		
@@ -167,21 +169,33 @@ public class LogDumper extends MIDlet implements CommandListener {
 			notifyDestroyed();
 		} else if (c.getCommandType() == Command.ITEM) {
 			boolean[] checkedItems = new boolean[_logList.size()];
-			String individualItem = null;
-			
 			_logList.getSelectedFlags(checkedItems);
+			
 			for (int i = 0; i < checkedItems.length; i++) {
 				if (checkedItems[i]) {
-					individualItem = _logList.getString(i);
 					try {
-						RecordStore.deleteRecordStore(individualItem);
+						deleteRecordStore(_logList.getString(i));
+						_logList.delete(i);
 					} catch (RecordStoreException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						Alert a = new Alert("Problem deleting RecordStore #" + i);
+						a.setTimeout(3000);
+						_display.setCurrent(a);
 					}
 				}
 			}
 		}
 	}
-
+	
+	private void deleteRecordStore(String rsName) throws RecordStoreException {
+		try {
+			RecordStore rs = RecordStore.openRecordStore(rsName, false);
+			rs.closeRecordStore();
+			rs.closeRecordStore();
+		} catch (RecordStoreException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			RecordStore.deleteRecordStore(rsName);
+		}
+	}
 }
