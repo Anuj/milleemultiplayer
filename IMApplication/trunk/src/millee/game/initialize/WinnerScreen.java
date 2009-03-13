@@ -23,7 +23,7 @@ public class WinnerScreen extends Screen {
 		}
 		
 		String congrats = new String("Your group finished with score = " + Player.getGroupScore());
-		congrats += "---------------------------------------------------\n";
+		congrats += "\n-----------------------------\n";
 
 		Player p;
 		for (int i = 0; i<_players.size(); i++) {

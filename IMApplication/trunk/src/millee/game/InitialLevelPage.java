@@ -70,8 +70,7 @@ public class InitialLevelPage extends Screen {
 	     myImagePath = player.getImagePath();
 	     System.out.println("imagePath = " + myImagePath);
 	     Image img = Utilities.createImage(myImagePath);
-	     this.append("\n\nYour name is: " + player.getName().toUpperCase());
-	     this.append("\nYour character is: ");
+	     this.append("\n\nYour character is: ");
 	     this.append(img);
 	     
 	     System.out.println("created player");
