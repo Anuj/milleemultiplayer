@@ -150,8 +150,8 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 		
 		// RecordStore logging...
 		RecordStoreAppender ra = new RecordStoreAppender();
-		Date rightNow = new Date();
-		ra.setRecordStoreName(rightNow.toString());
+		//Date rightNow = new Date();
+		ra.setRecordStoreName("MILLEE." + System.currentTimeMillis() + ".log");
 		ra.setMaxRecordEntries(100);
 		ra.setFormatter(p);
 		log.addAppender(ra);
