@@ -96,7 +96,6 @@ public class ClientServer implements DiscoveryListener {
         	//this.printToScreen("Application", "Connecting...");
         	streamConnections = new StreamConnection[numConnections];
         	
-        	
             updateServerScreenStatus("Waiting for " + numConnections + " player(s) to join");
         	
         	for (int i = 0; i < numConnections; i++) {
@@ -183,6 +182,19 @@ public class ClientServer implements DiscoveryListener {
         
     	
     }*/
+    
+    public void closeAllConnections() {
+    	for (int i = 0; i<streamConnections.length; i++) {
+    		StreamConnection conn = streamConnections[i];
+    		try {
+    			System.out.println("closing connection: " + conn.toString());
+				conn.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    	}
+    }
     
     // Starts the inquiry process for a client.
     public void InitClient() {
