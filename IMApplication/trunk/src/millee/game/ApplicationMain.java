@@ -158,8 +158,8 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 			display.setCurrent(_previousDisplayable);
 		} else if (c == startScreen.getStartCommand()) {
 			_previousDisplayable = startScreen;
-			display.setCurrent(getCharacterChoiceList());
-			//display.setCurrent(getStartOrJoinGameList());
+			//display.setCurrent(getCharacterChoiceList());
+			display.setCurrent(getStartOrJoinGameList());
 		} else if (c.getCommandType() == Command.CANCEL) {
 			display.setCurrent(getStartOrJoinGameList());
 		} else if (c == List.SELECT_COMMAND && d == _charList) {
@@ -307,16 +307,16 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 	public void fullyConnected() {
 		
 		ApplicationMain.log.info("inside fullyConnected()");
-		myName = "Raj";
+		myName = network.clientServer.getDeviceName();
 		initialLevelPage = new InitialLevelPage("Colour, Colour", network, this.characterChoice, isServer, myName, myImagePath, this);
 		initialLevelPage.setCommandListener(this);
 		ApplicationMain.log.info("About to display the levelStartPage");
 		display.setCurrent(initialLevelPage);
 		
 		if (isServer) {
-			System.out.println("is server");
-			System.out.println("myName = " + myName);
-			myName = "Raj";
+			//System.out.println("is server");
+			//System.out.println("myName = " + myName);
+			//myName = "Raj";
 			_players = initialLevelPage.setupPlayers(myName, myImagePath);
 			ApplicationMain.log.info("before adding command to initialLevelPage");
 			initialLevelPage.addCommand(initialLevelPage.getStartCommand());

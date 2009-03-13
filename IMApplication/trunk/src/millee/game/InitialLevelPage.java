@@ -54,13 +54,19 @@ public class InitialLevelPage extends Screen {
 	public Vector setupPlayers(String myName, String myImagePath) {
 		 ApplicationMain.log.trace("Server on!");       
 		 
+		 System.out.println("inside setupPlayers");
+		 
 		 myName = this.myName;
 		 
 	     Vector newPlayers = new Vector();
 	     StringBuffer initialBroadcast = new StringBuffer("");
 	     
+	     System.out.println("myName = " + myName);
+	     
 	     // Set up our own local player first
 	     newPlayers.addElement(new Player(myName, myImagePath, 0, true));
+	     
+	     System.out.println("created player");
 	     
 	     initialBroadcast.append(0);
 	     initialBroadcast.append(",");
