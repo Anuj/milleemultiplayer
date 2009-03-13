@@ -34,6 +34,7 @@ public class StartAGame extends Screen {
 	
 		String gameName = network.clientServer.getDeviceName();
 		
+		ApplicationMain.log.info("Started a game called " + gameName.toUpperCase());
 		this.append("Started a game called " + gameName.toUpperCase() + ".\n");
 		this.append("-----------------------------\n");
         formElementNumber+=2;

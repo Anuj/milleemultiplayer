@@ -43,19 +43,11 @@ public class Network implements Runnable {
 	}
 	
 	public void run() {
-        //while (m_bRunThread) {
             try {
-            	// Just by creating a new Application object, you run the application
-            	// either as a client or server depending on the m_bIsServer variable.
-                /*if (app == null) {
-                	app = new IMApplication(m_bIsServer, 1);
-                	//exitMIDlet();
-                }*/
-            	
             	if (isServer) {
-            		
             		// Blocks until it connects to numClients
         			clientServer.InitServer(numClients);
+        			ApplicationMain.log.info("Done connecting to all clients");
         		} else {
         			int numDevicesDiscovered = 0;
         			int temp = 0;
