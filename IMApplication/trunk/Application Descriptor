@@ -1,10 +1,10 @@
-MIDlet-3: LogDumper,,millee.log.LogDumper
-MIDlet-2: LogViewer,,net.sf.microlog.ui.RecordStoreLogViewer
 MIDlet-1: ColourGame,,millee.game.ApplicationMain
+MIDlet-2: LogViewer,,net.sf.microlog.ui.RecordStoreLogViewer
+MIDlet-3: LogDumper,,millee.log.LogDumper
 MIDlet-Jar-URL: ColourColour.jar
-MicroEdition-Configuration: CLDC-1.1
-MIDlet-Version: 1.4.1
 MIDlet-Name: ColourColour Game
-MIDlet-Vendor: Midlet Suite Vendor
 MIDlet-Permissions: javax.microedition.io.Connector.file.read, javax.microedition.io.Connector.file.write, javax.microedition.io.Connector.bluetooth.client, javax.microedition.io.Connector.bluetooth.server
+MIDlet-Vendor: Midlet Suite Vendor
+MIDlet-Version: 1.4.4
+MicroEdition-Configuration: CLDC-1.1
 MicroEdition-Profile: MIDP-2.0
