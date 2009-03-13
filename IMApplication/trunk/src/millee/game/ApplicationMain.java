@@ -335,7 +335,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 			
 			Message msg = network.receiveNow();
 			if (msg.msg().equals(Message.GO)) {
-				ApplicationMain.log.info("Waiting for server to start the game");
+				ApplicationMain.log.info("Waiting for server to start the round.");
 				startGame();
 			}
 			
@@ -347,7 +347,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 
 		game.hideNotify();
 
-		ApplicationMain.log.info("Waiting for server to start the game");
+		ApplicationMain.log.info("Waiting for server to start the round.");
 		
 		while (true) {
 			input = network.receiveNow().msg();
