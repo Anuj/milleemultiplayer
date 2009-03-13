@@ -1,5 +1,6 @@
 package millee.game;
 import java.io.IOException;
+import java.util.Date;
 import java.util.Vector;
 
 import javax.microedition.lcdui.Command;
@@ -10,6 +11,8 @@ import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.List;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
+
+import com.sun.j2me.global.DateTimeFormat;
 
 import millee.game.initialize.ChooseCharacter;
 import millee.game.initialize.ChooseGame;
@@ -25,6 +28,8 @@ import net.sf.microlog.Logger;
 import net.sf.microlog.appender.ConsoleAppender;
 import net.sf.microlog.appender.FileAppender;
 import net.sf.microlog.appender.RecordStoreAppender;
+import net.sf.microlog.format.PatternFormatter;
+import net.sf.microlog.time.DateFormatter;
 import net.sf.microlog.util.Properties;
 /**
  * @author Priyanka
@@ -135,14 +140,21 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 	 */
 	private void setupLogging() {
 		log.removeAllAppenders();
-		log.addAppender(new ConsoleAppender());
+		
+		// Make the pattern include time in a readable format
+		PatternFormatter p = new PatternFormatter();
+		p.setPattern("%d: [%P] %m %T");
+		
+		// Console logging
+		ConsoleAppender ca = new ConsoleAppender();
+		ca.setFormatter(p);
+		log.addAppender(ca);
 		
 		// RecordStore logging...
 		RecordStoreAppender ra = new RecordStoreAppender();
-		String logName = "MILLEE." + System.currentTimeMillis() + ".log";
-		ra.setRecordStoreName(logName);
+		ra.setRecordStoreName((new Date()).toString());
+		ra.setFormatter(p);
 		log.addAppender(ra);
-		log.info(logName);
 		
 		/* File logging - probably will not work...
 		FileAppender fileApp = new FileAppender();
