@@ -3,6 +3,8 @@
  */
 package millee.log;
 
+import java.io.IOException;
+
 import javax.microedition.lcdui.Alert;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
@@ -17,6 +19,7 @@ import javax.microedition.rms.RecordStore;
 import javax.microedition.rms.RecordStoreException;
 import javax.microedition.rms.RecordStoreNotFoundException;
 
+import net.sf.microlog.Formatter;
 import net.sf.microlog.Logger;
 import net.sf.microlog.appender.ConsoleAppender;
 import net.sf.microlog.format.PatternFormatter;
@@ -31,39 +34,64 @@ public class LogDumper extends MIDlet implements CommandListener {
 	// Logger instance to be used to write out
 	private static final Logger log = Logger.getLogger(LogDumper.class);
 	
+	private static final int HEADER_SIZE = 10;
+	
+	private String[] _logNames;
 	private Display _display;
 	private List _logList;
+	
+	private Command _exitCommand = new Command ("Exit", Command.EXIT, 0);
+	private Command _deleteCommand = new Command ("Delete", Command.ITEM, 1);
 
 	/**
 	 * @throws MIDletStateChangeException 
 	 * 
 	 */
-	public LogDumper() throws MIDletStateChangeException {
+	public LogDumper() { }
+	
+	/*
+	 * Sets up external 'logging' to the outside
+	 */
+	private void setupLogging() {
 		log.removeAllAppenders();
+		
 		ConsoleAppender ca = new ConsoleAppender();
+
+		// Make the pattern a simple dump of the existing logs
 		PatternFormatter p = new PatternFormatter();
-		//p.configure(new Properties());
+		p.setPattern("%m");
 		
 		ca.setFormatter(p);
 		log.addAppender(ca);
-		
-		//startApp();
-		dump();
 	}
-			
 	
+	/*
+	 * Returns true if there are logs, false if not. Populates the _logNames array.
+	 */
+	private boolean loadLogNames() {
+		_logNames = RecordStore.listRecordStores();
+		return !(_logNames == null);
+	}
+	
+	/*
+	 * Uses microlog to dump the logs from the RecordStore
+	 */
 	private void dump() {
-		String[] recordStores = RecordStore.listRecordStores();
-		if (recordStores == null) { return; }
+		if (!loadLogNames()) {
+			log.info("**No logs to dump**");
+			return;
+		}
+		
+		log.info("**BEGINNING LOG DUMP**");
 		
 		byte[] recordBytes = null;
 		RecordStore rs = null;
 		String rsName = null;
 		
 		// Iterate through the record stores on this Suite...
-		for (int i = 0; i < recordStores.length; i++) {
+		for (int i = 0; i < _logNames.length; i++) {
 			try {
-				rs = RecordStore.openRecordStore( recordStores[i], false );
+				rs = RecordStore.openRecordStore( _logNames[i], false );
 				rsName = rs.getName();
 				log.info("\n===" + rsName + "===");
 			
@@ -73,15 +101,13 @@ public class LogDumper extends MIDlet implements CommandListener {
 					recordBytes = re.nextRecord();
 					
 					// Process the retrieved bytes outwards
-					log.info(new String(recordBytes));
+					log.info(new String(recordBytes, HEADER_SIZE, recordBytes.length-HEADER_SIZE));
 					// TODO: Blast this out over bluetooth serial? Use microlog to dump the log?
 				}
 				
 				re.destroy();
 				rs.closeRecordStore();
 				
-				// TODO: Delete the record store afterwards?
-				//RecordStore.deleteRecordStore(rsName);				
 			} catch (RecordStoreException e) {
 				e.printStackTrace();
 			}
@@ -92,55 +118,54 @@ public class LogDumper extends MIDlet implements CommandListener {
 	 * @see javax.microedition.midlet.MIDlet#destroyApp(boolean)
 	 */
 	protected void destroyApp(boolean arg0) {
-		// TODO Auto-generated method stub
-
+		try {
+			log.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	/* (non-Javadoc)
 	 * @see javax.microedition.midlet.MIDlet#pauseApp()
 	 */
-	protected void pauseApp() {
-		// TODO Auto-generated method stub
-
-	}
+	protected void pauseApp() {	}
 
 	/* (non-Javadoc)
 	 * @see javax.microedition.midlet.MIDlet#startApp()
 	 */
 	protected void startApp() throws MIDletStateChangeException {
+		setupLogging();
 		_display = Display.getDisplay(this);
 
-		Command _exitCommand = new Command ("Exit", Command.EXIT, 0);
-		Command _deleteCommand = new Command ("Delete", Command.ITEM, 1);
-		
-		String[] logNames = RecordStore.listRecordStores();
+		/*
 		for (int i = 0; i<logNames.length; i++) {
 			System.out.println("Logname " + i + ": " + logNames[i]);
 		}
-		if (logNames != null) {
-			_logList = new List("Log Files", logNames.length, logNames, null);
+		*/
+		if (loadLogNames()) {
+			_logList = new List("Log Files", _logNames.length, _logNames, null);
 			_logList.addCommand(_exitCommand);
 			_logList.addCommand(_deleteCommand);
 			_logList.setCommandListener(this);
-			_display.setCurrent(_logList); //new LogDumpDisplay("Log Files", RecordStore.listRecordStores()));
+			_display.setCurrent(_logList);
 		}
 		else {
 			Alert a = new Alert("No log files to dump!");
 			a.addCommand(_exitCommand);
 			_display.setCurrent(a);
 		}
+		
+		dump();
 	}
-
 
 
 	public void commandAction(Command c, Displayable d) {
 		// TODO Auto-generated method stub
 		if (c.getCommandType() == Command.EXIT) {
-			System.out.println("Exit was hit");
 			destroyApp(true);
 			notifyDestroyed();
 		} else if (c.getCommandType() == Command.ITEM) {
-			System.out.println("ITEM was hit");
 			boolean[] checkedItems = new boolean[_logList.size()];
 			String individualItem = null;
 			

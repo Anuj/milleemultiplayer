@@ -1,4 +1,5 @@
 package millee.game;
+import java.io.IOException;
 import java.util.Vector;
 
 import javax.microedition.lcdui.Command;
@@ -80,26 +81,6 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 	private Displayable _previousDisplayable = null;
 	
 	public ApplicationMain () {
-		// Setup and begin logging
-		//log.configure(new Properties());
-		
-		log.removeAllAppenders();
-		log.addAppender(new ConsoleAppender());
-		
-		// RecordStore logging...
-		RecordStoreAppender ra = new RecordStoreAppender();
-		String logName = "MILLEE." + System.currentTimeMillis() + ".log";
-		ra.setRecordStoreName(logName);
-		log.addAppender(ra);
-		log.info(logName);
-		
-		/* File logging - probably will not work...
-		FileAppender fileApp = new FileAppender();
-		fileApp.setFileName("MILLEE." + System.currentTimeMillis() + ".log");
-		log.addAppender(fileApp);
-		log.addAppender(new ConsoleAppender());
-		*/
-		
 		theDisplay = display = Display.getDisplay(this);
 		_exitCommand = new Command ("Exit", Command.EXIT, 0);
 		_backCommand = new Command ("Back", Command.BACK, 1);
@@ -124,28 +105,54 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 		
 		winnerScreen = new WinnerScreen("Game Over");
 		winnerScreen.setCommandListener(this);
-		
 	}
+	
 	protected void destroyApp(boolean arg0) {
 		log.info("Destroying application...");
-		
+		try {
+			log.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	protected void pauseApp() {
 		log.info("Pausing application...");
-		
 	}
 
 	protected void startApp() throws MIDletStateChangeException {
+		setupLogging();
 		log.info("Starting application...");
+
 		numLevelsLeft = NUM_LEVELS;
 		numRoundsLeft = NUM_ROUNDS;
-		//game.start();
-		//display.setCurrent(game);
 		display.setCurrent(startScreen);
 	}
 	
-	void quit() {
+	/*
+	 * Setup and begin logging.
+	 */
+	private void setupLogging() {
+		log.removeAllAppenders();
+		log.addAppender(new ConsoleAppender());
+		
+		// RecordStore logging...
+		RecordStoreAppender ra = new RecordStoreAppender();
+		String logName = "MILLEE." + System.currentTimeMillis() + ".log";
+		ra.setRecordStoreName(logName);
+		log.addAppender(ra);
+		log.info(logName);
+		
+		/* File logging - probably will not work...
+		FileAppender fileApp = new FileAppender();
+		fileApp.setFileName("MILLEE." + System.currentTimeMillis() + ".log");
+		log.addAppender(fileApp);
+		log.addAppender(new ConsoleAppender());
+		*/
+	}
+	
+	private void quit() {
 		destroyApp(true);
 		notifyDestroyed();
 	}
