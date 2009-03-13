@@ -130,6 +130,7 @@ public class ClientServer implements DiscoveryListener {
     }
     
     void updateServerScreenStatus(String msg) {
+    	ApplicationMain.log.info("Current Status: " + msg);
     	new Thread(new ScreenUpdater(ApplicationMain.START_A_GAME, "Current status: " + msg)).start();
     }
     

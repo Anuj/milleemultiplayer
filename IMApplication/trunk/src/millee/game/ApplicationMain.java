@@ -66,7 +66,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 	
 	Round game;
 	Display display;
-	ChooseCharacter charForm;
+	//ChooseCharacter charForm;
 	StartScreen startScreen;
 	ChooseGame chooseGame;
 	JoinGame joinGame;
@@ -92,8 +92,6 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 
 		network = new Network(this);
 		
-		charForm = new ChooseCharacter("Choose your character");
-		charForm.setCommandListener(this);
 		startScreen = new StartScreen ("Colour Colour");		
 		startScreen.setCommandListener(this);
 		chooseGame = new ChooseGame ("Choose a Game");		
@@ -104,7 +102,6 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 		startOrJoinGame = new StartOrJoinGame("Start or join a game?");
 		startOrJoinGame.setCommandListener(this);
 		
-
 		startAGame = new StartAGame("Start a game?", network, this);
 		startAGame.setCommandListener(this);
 		
@@ -203,9 +200,11 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 		} else if (c == List.SELECT_COMMAND && d == _startOrJoinGameList) {
 			_previousDisplayable = getStartOrJoinGameList();
 			if (_startOrJoinGameList.getSelectedIndex() == 0) {
+				ApplicationMain.log.info("I am the server.");
 				isServer = true;
 				display.setCurrent(getChooseNumPlayersList());
 			} else {
+				ApplicationMain.log.info("I am the client");
 				isServer = false;
 				joinGame.initClient();
 				joinGame.setCharacterChoice(characterChoice);
@@ -214,6 +213,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 			}
 			// startMusic(); -- ...no
 		} else if (c == List.SELECT_COMMAND && d == _chooseNumPlayersList) {
+			ApplicationMain.log.info("Number of players = " + _chooseNumPlayersList.getSelectedIndex());
 			startAGame.start(_chooseNumPlayersList.getSelectedIndex());
 			display.setCurrent(startAGame);
 			startAGame.startNetwork();
@@ -262,7 +262,6 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 					game.start();
 					display.setCurrent(game);
 				}
-			//}
 		} else if (c == game.getNoCommand()) {
 			winnerScreen.start(isServer, network.clientServer.getServerName(), _players);
 			display.setCurrent(winnerScreen);
@@ -278,12 +277,6 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 		else {
 			ApplicationMain.log.info("Shouldn't come here: Sorry your keypresses didn't match anything here");
 		}
-		
-		/** TODO: Fix this incomplete statement
-		while (Thread.currentThread() == game) {
-			wait();
-		}
-		*/
     }
 
 	/*public void updateDevicesDiscovered(Vector devicesDiscoveredNames) {
@@ -310,7 +303,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 	public void replaceMsgOnGameScreen(int gameScreen, String msg) {
 		switch (gameScreen) {
 			case START_SCREEN: startScreen.replaceLastMessage(msg);
-			case CHOOSE_CHAR: charForm.replaceLastMessage(msg);
+			//case CHOOSE_CHAR: charForm.replaceLastMessage(msg);
 			case CHOOSE_GAME: chooseGame.replaceLastMessage(msg);
 			case JOIN_GAME: joinGame.replaceLastMessage(msg);
 			case LEVEL_START_PAGE: levelStartPage.replaceLastMessage(msg);
@@ -319,33 +312,30 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 			case START_A_GAME: startAGame.replaceLastMessage(msg);
 			//case INITIAL_LEVEL_GAME: initialLevelPage.replaceLastMessage(msg);
 		}
-		
-		ApplicationMain.log.info("replaced msg on the screen");
 	}
 	
 	
 	public void fullyConnected() {
 		
-		ApplicationMain.log.info("inside fullyConnected()");
 		myName = network.clientServer.getDeviceName();
 		initialLevelPage = new InitialLevelPage("Colour, Colour", network, this.characterChoice, isServer, myName, myImagePath, this);
 		initialLevelPage.setCommandListener(this);
-		ApplicationMain.log.info("About to display the levelStartPage");
 		display.setCurrent(initialLevelPage);
 		
 		if (isServer) {
+			ApplicationMain.log.debug("About to setup players");
 			_players = initialLevelPage.setupPlayers(myName, myImagePath);
-			ApplicationMain.log.info("before adding command to initialLevelPage");
+			ApplicationMain.log.debug("before adding command to initialLevelPage");
 			initialLevelPage.addCommand(initialLevelPage.getStartCommand());
-			ApplicationMain.log.info("after adding command");
+			ApplicationMain.log.debug("after adding command");
 		}
 		else {
-			System.out.println("is client");
 			localPlayerId = initialLevelPage.sendPlayerInfo(myName, myImagePath);
 			_players = initialLevelPage.createPlayersByClients();
 			
 			Message msg = network.receiveNow();
 			if (msg.msg().equals(Message.GO)) {
+				ApplicationMain.log.info("Waiting for server to start the game");
 				startGame();
 			}
 			
@@ -356,16 +346,22 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 		String input;
 
 		game.hideNotify();
+
+		ApplicationMain.log.info("Waiting for server to start the game");
+		
 		while (true) {
 			input = network.receiveNow().msg();
-
+			
+			
 			if (input.equals(Message.GAME_OVER)) {
+				ApplicationMain.log.info("Server ended the game");
 				winnerScreen.start(isServer, network.clientServer.getServerName(), _players);
 				network.clientServer.closeAllConnections();
 				display.setCurrent(winnerScreen);
 				break;
 			}
 			else if (input.equals(Message.GO)) {
+				ApplicationMain.log.info("Server started the game");
 				game = createNewRound();
 				game.start();
 				display.setCurrent(game);
