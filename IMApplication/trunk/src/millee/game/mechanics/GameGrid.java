@@ -115,7 +115,6 @@ public class GameGrid {
 		Player p = (Player) _players.elementAt(id);
 		Goodie g = p.dropGoodie();
 		
-		ApplicationMain.log.trace("Goodie dropped: " + g);
 		if (g == null) { return; }
 		
 		_tiledLayer.setCell(p.x, p.y, g.getType()+FRUIT_INDEX-1);
@@ -123,6 +122,7 @@ public class GameGrid {
 		_cells[p.y][p.x].setGoodie(g);
 		_nGoodies++;
 		
+		ApplicationMain.log.info("Player " + p.getID() + " dropped goodie on " + p.x + "," + p.y);
 		this.movePlayer(id, 0, -1);
 	}
 	

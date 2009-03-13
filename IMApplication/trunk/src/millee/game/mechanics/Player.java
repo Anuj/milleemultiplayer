@@ -4,6 +4,7 @@ import java.util.Hashtable;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.game.Sprite;
 
+import millee.game.ApplicationMain;
 import millee.game.initialize.Utilities;
 
 
@@ -238,14 +239,30 @@ public class Player {
 	
 	public void collect(Goodie g) {
 		_goodies.push(g);
-		if (g.getType() == this._assignedColor) { this.incrementScore(); }
-		else { this.decrementScore(); }
+		if (g.getType() == this._assignedColor) {
+			this.incrementScore();
+			ApplicationMain.log.info("Player " + _id + " collected CORRECT goodie at (" + g.x + "," + g.y + "): " + g.getType());
+		}
+		else {
+			this.decrementScore();
+			ApplicationMain.log.info("Player " + _id + " collected WRONG goodie at (" + g.x + "," + g.y + "): " + g.getType());
+		}
 	}
 	
 	public Goodie dropGoodie() {
-		if (_goodies.isEmpty()) { return null; }
+		if (_goodies.isEmpty()) {
+			ApplicationMain.log.info("Player " + _id + " tried to drop but he had no goodies.");
+			return null;
+		}
 		Goodie g = (Goodie) _goodies.pop();
-		if (g.getType() == this._assignedColor) { this.decrementScore(); }
+		
+		if (g.getType() == this._assignedColor) {
+			this.decrementScore();
+			ApplicationMain.log.info("Player " + _id + " dropped a CORRECT goodie: " + g.getType());
+		}
+		else {
+			ApplicationMain.log.info("Player " + _id + " dropped a WRONG goodie: " + g.getType());
+		}
 		return g;
 	}
 	
