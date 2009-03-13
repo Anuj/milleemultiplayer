@@ -70,14 +70,14 @@ public class Player {
 			avatar = Utilities.createImage("/dancer_1.png");
 			_imagePath = "/dancer_1.png";
 		} else if (virtualID == 1) {
-			avatar = Utilities.createImage("/dancer_2.png");
-			_imagePath = "/dancer_2.png";
+			avatar = Utilities.createImage("/tiger_avatar.png");
+			_imagePath = "/tiger_avatar.png";
 		} else if (virtualID == 2) {
-			avatar = Utilities.createImage("/dancer_3.png");
-			_imagePath = "/dancer_3.png";
+			avatar = Utilities.createImage("/bird_avatar.png");
+			_imagePath = "/bird_avatar.png";
 		} else if (virtualID == 3) {
-			avatar = Utilities.createImage("/dancer_1.png");
-			_imagePath = "/dancer_1.png";
+			avatar = Utilities.createImage("/dog_avatar.png");
+			_imagePath = "/dog_avatar.png";
 		}
 		
 		// Keep track of avatar usage counts
