@@ -14,6 +14,7 @@ import javax.microedition.lcdui.List;
 import javax.microedition.lcdui.Screen;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
+import javax.microedition.rms.RecordComparator;
 import javax.microedition.rms.RecordEnumeration;
 import javax.microedition.rms.RecordStore;
 import javax.microedition.rms.RecordStoreException;
@@ -65,6 +66,7 @@ public class LogDumper extends MIDlet implements CommandListener {
 		
 		ca.setFormatter(p);
 		ba.setFormatter(p);
+		
 		log.addAppender(ca);
 		log.addAppender(ba);
 	}
@@ -86,7 +88,7 @@ public class LogDumper extends MIDlet implements CommandListener {
 			return;
 		}
 		
-		log.info("**BEGINNING LOG DUMP**");
+		log.info("**BEGIN LOG DUMP**");
 		
 		byte[] recordBytes = null;
 		RecordStore rs = null;
@@ -115,7 +117,9 @@ public class LogDumper extends MIDlet implements CommandListener {
 			} catch (RecordStoreException e) {
 				e.printStackTrace();
 			}
-		}	
+		}
+		
+		log.info("**END LOG DUMP**");
 	}
 
 	/* (non-Javadoc)
@@ -209,4 +213,20 @@ public class LogDumper extends MIDlet implements CommandListener {
 			RecordStore.deleteRecordStore(rsName);
 		}
 	}
+	
+	/*
+	class Comparator implements RecordComparator {
+		public int compare(byte[] record1, byte[] record2) {
+			super(compare);
+		    String string1 = new String(record1), string2 = new String(record2);
+		    int comparison = string1.compareTo(string2);
+		    if (comparison == 0)
+		      return RecordComparator.EQUIVALENT;
+		    else if (comparison < 0)
+		      return RecordComparator.PRECEDES;
+		    else
+		      return RecordComparator.FOLLOWS;
+		  }
+		}
+		*/
 }
