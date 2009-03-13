@@ -41,7 +41,7 @@ public class StartAGame extends Screen {
         formElementNumber+=1;
 		//this.addCommand(backCommand);
         
-		this.addCommand(cancelCommand);
+		//this.addCommand(cancelCommand);
 	}
 	
 	public void startNetwork() {

@@ -53,12 +53,24 @@ public class Player {
 		
 		Image avatar = null;
 		
-		if (isLocal) {
+		// Avatars are now hardcoded based on the virtualID
+		/*if (isLocal) {
 			avatar = Utilities.createImage(imgPath);
 		}
 		else {
 			// Ignore the chosen avatar...
-			avatar = Utilities.createImage(Utilities.DEFAULT_IMAGE);
+			//avatar = Utilities.createImage(Utilities.DEFAULT_IMAGE);
+			avatar = Utilities.createImage(imgPath);
+		}*/
+		
+		if (virtualID == 0) {
+			avatar = Utilities.createImage("/dancer_1.png");
+		} else if (virtualID == 1) {
+			avatar = Utilities.createImage("/dancer_2.png");
+		} else if (virtualID == 2) {
+			avatar = Utilities.createImage("/dancer_3.png");
+		} else if (virtualID == 3) {
+			avatar = Utilities.createImage("/dancer_1.png");
 		}
 		
 		// Keep track of avatar usage counts
