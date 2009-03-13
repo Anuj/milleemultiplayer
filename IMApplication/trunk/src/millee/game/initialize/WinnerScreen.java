@@ -32,6 +32,7 @@ public class WinnerScreen extends Screen {
 		Player p;
 		for (int i = 0; i<_players.size(); i++) {
 			p = ((Player) _players.elementAt(i));
+			ApplicationMain.log.info(p.getName() + ": " + p.getScore());
 			congrats += "		" + p.getName() + ": " + p.getScore() + "\n";
 		}
 		
