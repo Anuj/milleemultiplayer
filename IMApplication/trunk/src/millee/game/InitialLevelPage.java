@@ -15,10 +15,12 @@ public class InitialLevelPage extends Screen {
 	
 	Network network;
 	private int _myID;
+	private String myName;
 	
 	public InitialLevelPage(String title, Network network, int characterChoice, boolean isServer, String myName, String myImagePath, ApplicationMain app) {
 		super(title);
 		
+		this.myName = myName;
 		//StringItem str = new StringItem("Colour Colour", network.clientServer.getDeviceName() + "'s game\n");
 		
 		//this.append(str);
@@ -31,7 +33,7 @@ public class InitialLevelPage extends Screen {
 		this.network = network;
 		//network.sendReceive();
 		
-		this.addCommand(exitCommand);
+		//this.addCommand(exitCommand);
 		
 		ApplicationMain.log.trace("in levelstartpage");
 		
@@ -42,6 +44,7 @@ public class InitialLevelPage extends Screen {
 		} else {
 			//this.addCommand(startCommand);
 			String serverName = network.clientServer.getServerName();
+			this.append("Your character name is " + myName.toUpperCase() + "\n");
 			this.append("You are connected to " + serverName + "'s game.\nWaiting for " + serverName + " to start the game . . .\n");
 			
 			//sendPlayerInfo(myName, myImagePath);
@@ -50,6 +53,8 @@ public class InitialLevelPage extends Screen {
 	
 	public Vector setupPlayers(String myName, String myImagePath) {
 		 ApplicationMain.log.trace("Server on!");       
+		 
+		 myName = this.myName;
 		 
 	     Vector newPlayers = new Vector();
 	     StringBuffer initialBroadcast = new StringBuffer("");

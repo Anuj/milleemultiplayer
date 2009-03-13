@@ -41,7 +41,7 @@ public class JoinGame extends Screen {
 		//msg = new StringItem(null, "You have joined game #" + gameChoice);
         //this.append(msg);
         
-        this.addCommand(cancelCommand);
+        //this.addCommand(cancelCommand);
 	}
 	
 	public void setCharacterChoice(int inChoice) {

@@ -42,12 +42,12 @@ public class LogDumper extends MIDlet implements CommandListener {
 		log.removeAllAppenders();
 		ConsoleAppender ca = new ConsoleAppender();
 		PatternFormatter p = new PatternFormatter();
-		p.configure(new Properties());
+		//p.configure(new Properties());
 		
 		ca.setFormatter(p);
 		log.addAppender(ca);
 		
-		startApp();
+		//startApp();
 		dump();
 	}
 			
@@ -114,10 +114,14 @@ public class LogDumper extends MIDlet implements CommandListener {
 		Command _deleteCommand = new Command ("Delete", Command.ITEM, 1);
 		
 		String[] logNames = RecordStore.listRecordStores();
+		for (int i = 0; i<logNames.length; i++) {
+			System.out.println("Logname " + i + ": " + logNames[i]);
+		}
 		if (logNames != null) {
 			_logList = new List("Log Files", logNames.length, logNames, null);
 			_logList.addCommand(_exitCommand);
 			_logList.addCommand(_deleteCommand);
+			_logList.setCommandListener(this);
 			_display.setCurrent(_logList); //new LogDumpDisplay("Log Files", RecordStore.listRecordStores()));
 		}
 		else {
