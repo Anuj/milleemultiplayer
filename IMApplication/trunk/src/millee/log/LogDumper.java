@@ -148,7 +148,7 @@ public class LogDumper extends MIDlet implements CommandListener {
 		}
 		*/
 		if (loadLogNames()) {
-			_logList = new List("Log Files", _logNames.length, _logNames, null);
+			_logList = new List("Log Files", List.MULTIPLE, _logNames, null);
 			_logList.addCommand(_exitCommand);
 			_logList.addCommand(_deleteCommand);
 			_logList.setCommandListener(this);
@@ -175,7 +175,7 @@ public class LogDumper extends MIDlet implements CommandListener {
 			boolean[] checkedItems = new boolean[_logList.size()];
 			_logList.getSelectedFlags(checkedItems);
 			
-			for (int i = 0; i < checkedItems.length; i++) {
+			for (int i = checkedItems.length-1; i >= 0; i--) {
 				if (checkedItems[i]) {
 					try {
 						deleteRecordStore(_logList.getString(i));
@@ -183,7 +183,13 @@ public class LogDumper extends MIDlet implements CommandListener {
 					} catch (RecordStoreException e) {
 						Alert a = new Alert("Problem deleting RecordStore #" + i);
 						a.setTimeout(3000);
+						a.addCommand(_exitCommand);
+						a.setCommandListener(this);
 						_display.setCurrent(a);
+						
+						// Uncheck the item from the list
+						checkedItems[i] = false;
+						_logList.setSelectedIndex(i, false);
 					}
 				}
 			}
@@ -192,6 +198,7 @@ public class LogDumper extends MIDlet implements CommandListener {
 	
 	private void deleteRecordStore(String rsName) throws RecordStoreException {
 		try {
+			// Ensure it's closed
 			RecordStore rs = RecordStore.openRecordStore(rsName, false);
 			rs.closeRecordStore();
 			rs.closeRecordStore();
