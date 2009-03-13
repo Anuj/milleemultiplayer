@@ -1,5 +1,6 @@
 package millee.game;
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Vector;
 
@@ -39,7 +40,7 @@ import net.sf.microlog.util.Properties;
 public class ApplicationMain extends MIDlet implements CommandListener {
 	
 	// Logger instance to be used everywhere
-	public static final Logger log = Logger.getLogger(ApplicationMain.class);
+	public static final Logger log = Logger.getLogger(); //ApplicationMain.class);
 	
 	private static final int NUM_ROUNDS = 2;
 	private static final int NUM_LEVELS = 2;
@@ -149,7 +150,8 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 		
 		// RecordStore logging...
 		RecordStoreAppender ra = new RecordStoreAppender();
-		ra.setRecordStoreName((new Date()).toString());
+		Date rightNow = new Date();
+		ra.setRecordStoreName(rightNow.toString());
 		ra.setMaxRecordEntries(100);
 		ra.setFormatter(p);
 		log.addAppender(ra);
