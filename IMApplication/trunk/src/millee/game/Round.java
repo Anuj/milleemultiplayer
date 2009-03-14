@@ -48,7 +48,7 @@ public class Round extends GameCanvas implements Runnable {
 	private Network _network;
 	
 	// Constants
-	private static final int SLEEP_TIME = 200;
+	private static final int SLEEP_TIME = 400;
 	private static final int TILE_DIMENSIONS = 20;
 
 	
