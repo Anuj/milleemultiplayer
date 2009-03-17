@@ -36,7 +36,7 @@ public class Round extends GameCanvas implements Runnable {
 	
 	// Status indicators
 	private boolean stopGame = false;
-	private String command = "";
+	private String _sCommand = "";
 	
 	private int _nPlayers;
 	private static int _roundID = 0;
@@ -48,7 +48,7 @@ public class Round extends GameCanvas implements Runnable {
 	private Network _network;
 	
 	// Constants
-	private static final int SLEEP_TIME = 400;
+	private static final int SLEEP_TIME = 200;
 	private static final int TILE_DIMENSIONS = 20;
 
 	
@@ -265,13 +265,14 @@ public class Round extends GameCanvas implements Runnable {
 			// If the game isn't over, look for inputs
 			if (!stopGame) {
 				checkUserInput();
+				
+				// If there is a command pending, broadcast it to all other players
+				if (!_sCommand.equals("")) {
+					_network.broadcast(_sCommand);
+					_sCommand = "";
+				}
+
 				checkRemotePlayerInput();
-			}
-			
-			// If there is a command pending, broadcast it to all other players
-			if (!command.equals("")) {
-				_network.broadcast(command);
-				command = "";
 			}
 			
 			// Draw stuff to screen
@@ -287,43 +288,12 @@ public class Round extends GameCanvas implements Runnable {
 	
 	private void checkRemotePlayerInput() {
 		Message msg = _network.receiveLater();
-		char command;
-		int clientId;
 		String[] msgs = null;
 		while (msg != null) {
-			
 			msgs = Utilities.split(msg.msg(), ",", 2);
-			clientId = Integer.parseInt(msgs[0]);
+			this.interpretCommand(Integer.parseInt(msgs[0]), msgs[1].charAt(0));
 			
-			if (clientId != localPlayerID) {
-				command = msgs[1].charAt(0);
-				
-				switch (command) {
-					case 'u':
-						_grid.movePlayer(clientId, 0, -1);
-						if (isServer) _network.broadcast(msg.msg());
-						break;
-					case 'd':
-						_grid.movePlayer(clientId, 0, 1);
-						if (isServer) _network.broadcast(msg.msg());
-						break;
-					case 'r':
-						_grid.movePlayer(clientId, 1, 0);
-						if (isServer) _network.broadcast(msg.msg());
-						break;
-					case 'l':
-						_grid.movePlayer(clientId, -1, 0);
-						if (isServer) _network.broadcast(msg.msg());
-						break;
-					case 'x':
-						_grid.playerDrop(clientId);
-						if (isServer) _network.broadcast(msg.msg());
-						break;
-					case 'n':
-						break;
-				}
-				
-			}
+			if (isServer) _network.broadcast(msg.msg());
 			msg = _network.receiveLater();
 		}
 	}
@@ -347,24 +317,50 @@ public class Round extends GameCanvas implements Runnable {
 	 * Detects key presses and moves player on grid
 	 */
 	private void checkUserInput() {
+		char command = 0;
+		
 		// Detect key presses
 		int state = getKeyStates();
 		if(( state & DOWN_PRESSED ) != 0 ){
-			_grid.movePlayer(localPlayerID, 0, 1);
-			 command += this.localPlayerID + ",d";
+			command = 'd';
 		} else if(( state & UP_PRESSED ) != 0 ){
-			_grid.movePlayer(localPlayerID, 0, -1);
-			command += this.localPlayerID + ",u";
+			command = 'u';
 		} else if (( state & LEFT_PRESSED ) != 0) {
-			_grid.movePlayer(localPlayerID, -1, 0);
-			command += this.localPlayerID + ",l";
+			command = 'l';
 		} else if (( state & RIGHT_PRESSED ) != 0) {
-			_grid.movePlayer(localPlayerID, 1, 0);
-			command += this.localPlayerID + ",r";
+			command = 'r';
 		} else if (( state & this.FIRE_PRESSED ) != 0) {
-			// Drop a goodie command
-			_grid.playerDrop(localPlayerID);
-			command += this.localPlayerID + ",x";
+			command = 'x';
+		} else { return; }
+		
+		_sCommand += this.localPlayerID + "," + command;
+		if (isServer) { this.interpretCommand(localPlayerID, command); }
+	}
+	
+	/**
+	 * Takes a player and a character 'command', executes it on the board
+	 * @param playerID
+	 * @param input
+	 */
+	private void interpretCommand(int playerID, char input) {
+		switch (input) {
+		case 'u':
+			_grid.movePlayer(playerID, 0, -1);
+			break;
+		case 'd':
+			_grid.movePlayer(playerID, 0, 1);
+			break;
+		case 'r':
+			_grid.movePlayer(playerID, 1, 0);
+			break;
+		case 'l':
+			_grid.movePlayer(playerID, -1, 0);
+			break;
+		case 'x':
+			_grid.playerDrop(playerID);
+			break;
+		case 'n':
+			break;
 		}
 	}
 
