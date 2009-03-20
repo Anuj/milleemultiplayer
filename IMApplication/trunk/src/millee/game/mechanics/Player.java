@@ -1,5 +1,6 @@
 package millee.game.mechanics;
 import java.util.Hashtable;
+import java.util.Vector;
 
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.game.Sprite;
@@ -36,6 +37,8 @@ public class Player {
 	public static final int GREEN = 3;
 	public static final int BLUE = 4;
 	
+	private static Vector avatars = null;
+	
 	private static Hashtable avatarUsageCounts = new Hashtable();
 	
 	/** virtualID is determined by the server, depending on what order the client
@@ -65,6 +68,7 @@ public class Player {
 			avatar = Utilities.createImage(imgPath);
 		}*/
 		
+		initializeAvatars();
 		_imagePath = "/dancer_0.png";
 		
 		if (virtualID == 0) {
@@ -97,6 +101,21 @@ public class Player {
 		//else {
 			sprite = new Sprite(avatar);
 		//}
+	}
+	
+	public void initializeAvatars() {
+		Image avatar;
+		if (avatars == null) {
+			avatars = new Vector();
+			avatar = Utilities.createImage("/dancer_0.png");
+			avatars.addElement(avatar);
+			avatar = Utilities.createImage("/dancer_1.png");
+			avatars.addElement(avatar);
+			avatar = Utilities.createImage("/dancer_2.png");
+			avatars.addElement(avatar);
+			avatar = Utilities.createImage("/dancer_3.png");
+			avatars.addElement(avatar);
+		}
 	}
 	
 	public static int getGroupScore() {
@@ -212,6 +231,10 @@ public class Player {
 	public void setColor(int color) {
 		_assignedColor = color;
 		_goodies = new GoodieStack(_assignedColor);
+		System.out.println("color = " + color);
+		
+		sprite = new Sprite((Image) avatars.elementAt(color-1));
+
 	}
 	
 	public int assignedColor() {

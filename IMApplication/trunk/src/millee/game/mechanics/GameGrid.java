@@ -113,6 +113,13 @@ public class GameGrid {
 	
 	public void playerDrop(int id) {
 		Player p = (Player) _players.elementAt(id);
+		
+		// Can't drop if the spot has a goodie already
+		if (_cells[p.y][p.x].hasGoodie()) {
+			ApplicationMain.log.info("Player " + p.getID() + " couldn't drop on a spot with a goodie already.");
+			return;
+		}
+		
 		Goodie g = p.dropGoodie();
 		
 		if (g == null) { return; }

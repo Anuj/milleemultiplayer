@@ -68,10 +68,10 @@ public class InitialLevelPage extends Screen {
 	     Player player = new Player(myName, myImagePath, 0, true);
 	     newPlayers.addElement(player);
 	     myImagePath = player.getImagePath();
-	     System.out.println("imagePath = " + myImagePath);
+	     //System.out.println("imagePath = " + myImagePath);
 	     Image img = Utilities.createImage(myImagePath);
-	     this.append("\n\nYour character is: ");
-	     this.append(img);
+	     //this.append("\n\nYour character is: ");
+	     //this.append(img);
 	     
 	     System.out.println("created player");
 	     
@@ -141,11 +141,11 @@ public class InitialLevelPage extends Screen {
 			
 			if (i == _myID) {
 				String myImagePath = tmpPlayer.getImagePath();
-				System.out.println("imagePath = " + myImagePath);
-			     Image img = Utilities.createImage(myImagePath);
-			     this.append("\n\nYour name is: " + tmpPlayer.getName().toUpperCase());
-			     this.append("\nYour character is: ");
-			     this.append(img);
+				//System.out.println("imagePath = " + myImagePath);
+			     //Image img = Utilities.createImage(myImagePath);
+			     //this.append("\n\nYour name is: " + tmpPlayer.getName().toUpperCase());
+			     //this.append("\nYour character is: ");
+			     //this.append(img);
 			     
 			}
 			// TODO: Assign the player a color to collect here?
