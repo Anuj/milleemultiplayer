@@ -19,6 +19,7 @@ import javax.microedition.rms.RecordEnumeration;
 import javax.microedition.rms.RecordStore;
 import javax.microedition.rms.RecordStoreException;
 import javax.microedition.rms.RecordStoreNotFoundException;
+import javax.microedition.rms.RecordStoreNotOpenException;
 
 import net.sf.microlog.Formatter;
 import net.sf.microlog.Logger;
@@ -117,8 +118,18 @@ public class LogDumper extends MIDlet implements CommandListener {
 			} catch (RecordStoreException e) {
 				e.printStackTrace();
 			}
+			
+			try {
+				log.info("Record store size = " + rs.getSize());
+				log.info("Record store available size = " + rs.getSizeAvailable());
+				
+			} catch (RecordStoreNotOpenException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 		}
-		
+
 		log.info("**END LOG DUMP**");
 	}
 

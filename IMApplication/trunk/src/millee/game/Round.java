@@ -48,7 +48,7 @@ public class Round extends GameCanvas implements Runnable {
 	private Network _network;
 	
 	// Constants
-	private static final int SLEEP_TIME = 200;
+	private static final int SLEEP_TIME = 300;
 	private static final int TILE_DIMENSIONS = 20;
 
 	
@@ -128,6 +128,11 @@ public class Round extends GameCanvas implements Runnable {
 				y = random.nextInt(_cellHeight);
 			}
 			
+
+			// Take this opportunity to assign players' colors - needs to be done before inserting
+			// player on the board because the color determines the player's avatar.
+			p.setColor((p.assignedColor()%_nPlayers)+1);
+			
 			_grid.insertPlayer(p, x, y);
 			broadcastString.append(i);
 			broadcastString.append(',');
@@ -136,8 +141,6 @@ public class Round extends GameCanvas implements Runnable {
 			broadcastString.append(y);
 			broadcastString.append(';');
 			
-			// Take this opportunity to assign players' colors
-			p.setColor((p.assignedColor()%_nPlayers)+1);
 		}
 		
 		broadcastString.append('|');
@@ -198,10 +201,14 @@ public class Round extends GameCanvas implements Runnable {
 			//new Player("PLAYER " + playerInfo[0], Utilities.createImage("/dancer_small.png"), Integer.parseInt(playerInfo[0]), 0);
 			x = Integer.parseInt(playerInfo[1]);
 			y = Integer.parseInt(playerInfo[2]);
+			
+			// Take this opportunity to assign players' colors - needs to be done before inserting
+			// player on the board because the color determines the player's avatar.
+			tmpPlayer.setColor((tmpPlayer.assignedColor()%_nPlayers)+1);
+			
 			_grid.insertPlayer(tmpPlayer, x, y);
 			
-			// Take this opportunity to assign players' colors
-			tmpPlayer.setColor((tmpPlayer.assignedColor()%_nPlayers)+1);
+			
 		}
 		
 		// Get the goodie information
@@ -290,8 +297,15 @@ public class Round extends GameCanvas implements Runnable {
 		Message msg = _network.receiveLater();
 		String[] msgs = null;
 		while (msg != null) {
-			msgs = Utilities.split(msg.msg(), ",", 2);
-			this.interpretCommand(Integer.parseInt(msgs[0]), msgs[1].charAt(0));
+			msgs = Utilities.split(msg.msg(), ",", 0);
+			//ApplicationMain.log.debug(msgs);
+			
+			for (int i = 0; i < msgs.length / 2; i++) {
+				//ApplicationMain.log.debug(msgs[i*2]);
+				//ApplicationMain.log.debug(msgs[i*2+1]);
+				
+				this.interpretCommand(Integer.parseInt(msgs[i*2]), msgs[i*2+1].charAt(0));
+			}
 			
 			if (isServer) _network.broadcast(msg.msg());
 			msg = _network.receiveLater();
@@ -321,20 +335,33 @@ public class Round extends GameCanvas implements Runnable {
 		
 		// Detect key presses
 		int state = getKeyStates();
+		ApplicationMain.log.trace(Integer.toBinaryString(state));
+		
 		if(( state & DOWN_PRESSED ) != 0 ){
 			command = 'd';
-		} else if(( state & UP_PRESSED ) != 0 ){
+			_sCommand += this.localPlayerID + "," + command + ",";
+			if (isServer) { this.interpretCommand(localPlayerID, command); }
+		}
+		if(( state & UP_PRESSED ) != 0 ){
 			command = 'u';
-		} else if (( state & LEFT_PRESSED ) != 0) {
+			_sCommand += this.localPlayerID + "," + command + ",";
+			if (isServer) { this.interpretCommand(localPlayerID, command); }
+		}
+		if (( state & LEFT_PRESSED ) != 0) {
 			command = 'l';
-		} else if (( state & RIGHT_PRESSED ) != 0) {
+			_sCommand += this.localPlayerID + "," + command + ",";
+			if (isServer) { this.interpretCommand(localPlayerID, command); }
+		}
+		if (( state & RIGHT_PRESSED ) != 0) {
 			command = 'r';
-		} else if (( state & this.FIRE_PRESSED ) != 0) {
+			_sCommand += this.localPlayerID + "," + command + ",";
+			if (isServer) { this.interpretCommand(localPlayerID, command); }
+		}
+		if (( state & this.FIRE_PRESSED ) != 0) {
 			command = 'x';
-		} else { return; }
-		
-		_sCommand += this.localPlayerID + "," + command;
-		if (isServer) { this.interpretCommand(localPlayerID, command); }
+			_sCommand += this.localPlayerID + "," + command + ",";
+			if (isServer) { this.interpretCommand(localPlayerID, command); }
+		}
 	}
 	
 	/**
