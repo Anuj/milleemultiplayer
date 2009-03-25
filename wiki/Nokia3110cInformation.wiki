@@ -3,10 +3,3 @@
 = Introduction =
 
 Screen size (Width x Height) = 120 x 115 pixels
-
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
