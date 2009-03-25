@@ -11,15 +11,15 @@ import millee.network.Network;
 
 public class JoinGame extends Screen {
 
-	private int characterChoice, gameChoice;
+	//private int characterChoice, gameChoice;
 	StringItem msg;
 	Gauge gauge;
-	private Command cancelCommand;
+	//private Command cancelCommand;
 	private Network network;
 	
 	public static ClientServer clientServer;
-	private boolean m_bRunThread = false;
-	private boolean m_bIsServer = false, isServer = false;
+	//private boolean m_bRunThread = false;
+	//private boolean m_bIsServer = false, isServer = false;
 	private ApplicationMain _app = null;
 	
 	public JoinGame(String title, Network network, ApplicationMain _app) {
@@ -43,7 +43,7 @@ public class JoinGame extends Screen {
         
         //this.addCommand(cancelCommand);
 	}
-	
+	/*
 	public void setCharacterChoice(int inChoice) {
 		this.characterChoice = inChoice;
 	}
@@ -51,6 +51,7 @@ public class JoinGame extends Screen {
 	public void setGameChoice (int gameChoice) {
 		this.gameChoice = gameChoice;
 	}
+	*/
 	
 	public void initClient() {
 		

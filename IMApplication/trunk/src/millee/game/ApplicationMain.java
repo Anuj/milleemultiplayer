@@ -1,7 +1,5 @@
 package millee.game;
 import java.io.IOException;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.Vector;
 
 import javax.microedition.lcdui.Command;
@@ -13,9 +11,6 @@ import javax.microedition.lcdui.List;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 
-import com.sun.j2me.global.DateTimeFormat;
-
-import millee.game.initialize.ChooseCharacter;
 import millee.game.initialize.ChooseGame;
 import millee.game.initialize.JoinGame;
 import millee.game.initialize.StartAGame;
@@ -27,11 +22,8 @@ import millee.network.Message;
 import millee.network.Network;
 import net.sf.microlog.Logger;
 import net.sf.microlog.appender.ConsoleAppender;
-import net.sf.microlog.appender.FileAppender;
 import net.sf.microlog.appender.RecordStoreAppender;
 import net.sf.microlog.format.PatternFormatter;
-import net.sf.microlog.time.DateFormatter;
-import net.sf.microlog.util.Properties;
 /**
  * @author Priyanka
  *
@@ -44,7 +36,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 	
 	private static final int NUM_ROUNDS = 2;
 	private static final int NUM_LEVELS = 2;
-	private static final String GAME_LOOP_SOUND = "/game_loop.wav";
+	//private static final String GAME_LOOP_SOUND = "/game_loop.wav";
 	
 	public static final int START_SCREEN = 0;
 	public static final int CHOOSE_CHAR = 1;
@@ -81,7 +73,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 	private Vector _players;
 	
 	private List _charList = null, _startOrJoinGameList = null, _chooseNumPlayersList = null;
-	private Command listSelection = null;
+	//private Command listSelection = null;
 	private Command _exitCommand = null, _backCommand = null;
 	
 	private Displayable _previousDisplayable = null;
@@ -210,8 +202,8 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 				ApplicationMain.log.info("I am the client");
 				isServer = false;
 				joinGame.initClient();
-				joinGame.setCharacterChoice(characterChoice);
-				joinGame.setGameChoice(gameChoice);
+				//joinGame.setCharacterChoice(characterChoice);
+				//joinGame.setGameChoice(gameChoice);
 				display.setCurrent(joinGame);
 			}
 			// startMusic(); -- ...no
@@ -431,7 +423,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 	private List getStartOrJoinGameList() {
 		
 		if (_startOrJoinGameList == null) {
-			listSelection = new Command("Select",Command.OK,0);
+			//listSelection = new Command("Select",Command.OK,0);
 	
 			_startOrJoinGameList = new List("Start or Join game?", List.IMPLICIT);
 			
@@ -450,7 +442,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 	private List getChooseNumPlayersList() {
 		
 		if (_chooseNumPlayersList == null) {
-			listSelection = new Command("Select",Command.OK,0);
+			//listSelection = new Command("Select",Command.OK,0);
 	
 			_chooseNumPlayersList = new List("How many players in the game?", List.IMPLICIT);
 			

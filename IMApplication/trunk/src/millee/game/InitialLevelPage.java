@@ -3,8 +3,6 @@ package millee.game;
 
 import java.util.Vector;
 
-import javax.microedition.lcdui.Image;
-
 import millee.game.initialize.Screen;
 import millee.game.initialize.StartAGame;
 import millee.game.initialize.Utilities;
@@ -69,7 +67,7 @@ public class InitialLevelPage extends Screen {
 	     newPlayers.addElement(player);
 	     myImagePath = player.getImagePath();
 	     //System.out.println("imagePath = " + myImagePath);
-	     Image img = Utilities.createImage(myImagePath);
+	     //Image img = Utilities.createImage(myImagePath);
 	     //this.append("\n\nYour character is: ");
 	     //this.append(img);
 	     
@@ -139,16 +137,17 @@ public class InitialLevelPage extends Screen {
 			playerInfo = Utilities.split(sPlayers[i], ",", 3);
 			tmpPlayer = new Player(playerInfo[1], playerInfo[2], Integer.parseInt(playerInfo[0]), (i == _myID));
 			
+			/*
 			if (i == _myID) {
 				String myImagePath = tmpPlayer.getImagePath();
-				//System.out.println("imagePath = " + myImagePath);
-			     //Image img = Utilities.createImage(myImagePath);
-			     //this.append("\n\nYour name is: " + tmpPlayer.getName().toUpperCase());
-			     //this.append("\nYour character is: ");
-			     //this.append(img);
-			     
+				System.out.println("imagePath = " + myImagePath);
+			    Image img = Utilities.createImage(myImagePath);
+			    this.append("\n\nYour name is: " + tmpPlayer.getName().toUpperCase());
+			    this.append("\nYour character is: ");
+			    this.append(img);
 			}
-			// TODO: Assign the player a color to collect here?
+			*/
+			
 			players.addElement(tmpPlayer);
 		}
 		

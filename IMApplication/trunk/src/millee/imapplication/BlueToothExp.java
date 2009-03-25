@@ -12,11 +12,9 @@ import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.List;
 import javax.microedition.lcdui.TextBox;
-import javax.microedition.lcdui.game.LayerManager;
 import javax.microedition.midlet.MIDlet;
 
 import millee.game.ApplicationMain;
-import millee.game.Round;
 
 /** BlueToothExp is where the Application gets initialized and run
  * 
@@ -45,9 +43,6 @@ public class BlueToothExp extends MIDlet implements CommandListener, Runnable {
     Image tomatoThrower;
     Image tomato;
     Image stain;
-    private LayerManager mLayerManager;
-    
-    private Round testCanvas;
  
     public BlueToothExp() {
         initialize();
@@ -59,7 +54,7 @@ public class BlueToothExp extends MIDlet implements CommandListener, Runnable {
     	
         if (displayable == menu) {
             
-            if (command == menu.SELECT_COMMAND) {
+            if (command == List.SELECT_COMMAND) {
             	
             	if (m_bRunThread == false) {
             		if (getMenu().getSelectedIndex() == 1) {
@@ -85,7 +80,7 @@ public class BlueToothExp extends MIDlet implements CommandListener, Runnable {
     		//testCanvas = new Round(0, 0, 0, 0, m_bIsServer, null, null, null, null, null, null, null, 0);
     		//testCanvas.showNotify();
     		
-    		MIDlet sampleApp = new ApplicationMain();
+    		//MIDlet sampleApp = new ApplicationMain();
     		//getDisplay().setCurrent(testCanvas);  //getMenu());
     	} catch (Exception e) {
     		e.printStackTrace();

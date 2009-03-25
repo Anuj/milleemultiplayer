@@ -41,8 +41,8 @@ public class Round extends GameCanvas implements Runnable {
 	private int _nPlayers;
 	private static int _roundID = 0;
 
-	private boolean _bLastRound;
-	private String _levelName;
+	//private boolean _bLastRound;
+	//private String _levelName;
 	private int localPlayerID;
 	private boolean isServer;
 	private Network _network;
@@ -357,7 +357,7 @@ public class Round extends GameCanvas implements Runnable {
 			_sCommand += this.localPlayerID + "," + command + ",";
 			if (isServer) { this.interpretCommand(localPlayerID, command); }
 		}
-		if (( state & this.FIRE_PRESSED ) != 0) {
+		if (( state & Round.FIRE_PRESSED ) != 0) {
 			command = 'x';
 			_sCommand += this.localPlayerID + "," + command + ",";
 			if (isServer) { this.interpretCommand(localPlayerID, command); }

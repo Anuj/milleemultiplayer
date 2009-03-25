@@ -7,7 +7,6 @@ import javax.microedition.lcdui.Form;
 import javax.microedition.lcdui.TextField;
 
 import millee.network.ClientServer;
-import millee.network.ReceiverThread;
 import millee.network.SenderThread;
 
 /** IMApplication is a sample application that allows for instant messaging over 
@@ -63,7 +62,7 @@ public class IMApplication extends Application {
 			clientServer.printToScreen("IMApplication", "Starting IMApplication...");
 			
     		SenderThread sendThread = null;
-    		ReceiverThread recvThread = null;
+    		//ReceiverThread recvThread = null;
     		
     		// StreamConnections represents the number of devices this device is 
     		// directly connected to.  If it's a client, it should only hold
@@ -77,19 +76,19 @@ public class IMApplication extends Application {
     		if (isServer) {
     			sendThread = new SenderThread(streamConns);
 				//recvThread = new ReceiverThread(streamConns[0], sendThread, isServer);
-				recvThread.start();
+				//recvThread.start();
 		    	sendThread.start();
     		}
     		else {
     			sendThread = new SenderThread(streamConns);
     			//recvThread = new ReceiverThread(streamConns[0], sendThread, isServer);
-    			recvThread.start();
+    			//recvThread.start();
     	    	sendThread.start();
     		}
     		
     		// Started all the sending and receiving threads by now
     		
-	    	String msg = null;
+	    	//String msg = null;
 	    	
     		Form form = new Form("IM Application");
     		cmSend = new Command("Send", Command.OK, 2);

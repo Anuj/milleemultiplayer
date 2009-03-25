@@ -10,7 +10,7 @@ import millee.game.ApplicationMain;
 public class Network implements Runnable {
 	
 	public ClientServer clientServer = null;
-	private boolean m_bRunThread = true;
+	//private boolean m_bRunThread = true;
 	private boolean isServer;
 	private int numClients;
 	Vector sendBuffer, receiverBuffer;
@@ -22,7 +22,7 @@ public class Network implements Runnable {
 	public boolean isConnected = false;
 	
 	//Constants
-	private static final int SLEEP_TIME = 300;
+	//private static final int SLEEP_TIME = 300;
 
 	
 	private ApplicationMain _app;
@@ -49,8 +49,8 @@ public class Network implements Runnable {
         			clientServer.InitServer(numClients);
         			ApplicationMain.log.info("Done connecting to all clients");
         		} else {
-        			int numDevicesDiscovered = 0;
-        			int temp = 0;
+        			//int numDevicesDiscovered = 0;
+        			//int temp = 0;
         			clientServer.InitClient();
         			try {
         				

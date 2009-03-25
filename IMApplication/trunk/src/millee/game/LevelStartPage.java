@@ -11,7 +11,7 @@ public class LevelStartPage extends Screen {
 	
 	Network network;
 	int characterChoice;
-	private ApplicationMain _app;
+	//private ApplicationMain _app;
 
 	public LevelStartPage(String title, Network network, int characterChoice, boolean isServer, String myName, String myImagePath, ApplicationMain app) {
 		super(title);
@@ -30,7 +30,7 @@ public class LevelStartPage extends Screen {
 		this.network = network;
 		//network.sendReceive();
 		
-		this._app = app;
+		//this._app = app;
 		
 		this.addCommand(exitCommand);
 		
