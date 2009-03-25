@@ -52,18 +52,18 @@ public class Utilities {
 	        }
 	        
 	        // enabling switches based on the 'limit' parameter
-	        boolean arrayCanHaveAnyLength = false;
+	        //boolean arrayCanHaveAnyLength = false;
 	        int maximumSplits = Integer.MAX_VALUE;
 	        boolean dropTailingDelimiters = true;
 	        if (limit < 0)
 	        {
-	            arrayCanHaveAnyLength = true;
+	            //arrayCanHaveAnyLength = true;
 	            maximumSplits = Integer.MAX_VALUE;
 	            dropTailingDelimiters = false;
 	        }
 	        else if (limit > 0)
 	        {
-	            arrayCanHaveAnyLength = false;
+	            //arrayCanHaveAnyLength = false;
 	            maximumSplits = limit - 1;
 	            dropTailingDelimiters = false;
 	        }

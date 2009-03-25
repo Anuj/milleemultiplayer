@@ -1,6 +1,5 @@
 package millee.game.mechanics;
 
-import java.util.Random;
 import java.util.Vector;
 
 import javax.microedition.lcdui.Graphics;
@@ -30,14 +29,14 @@ public class GameGrid {
 	private static final int TILE_DIMENSIONS = 20;
 	private static final String TILED_IMAGE = "/tiles.png";
 	private static final int FRUIT_INDEX = 3; // Where fruit tiles begin
-	private static final int CHARACTER_INDEX = 8;
+	//private static final int CHARACTER_INDEX = 8;
 	
 	// Drawing stuff
 	private LayerManager _layers = new LayerManager();
 	private TiledLayer _tiledLayer;
 	
 	// Utility variables
-	private Random random;
+	//private Random random;
 	
 	private int _nGoodies = 0;
 	
@@ -49,7 +48,7 @@ public class GameGrid {
 
 		_tiledLayer = new TiledLayer(_width, _height, Utilities.createImage(TILED_IMAGE), TILE_DIMENSIONS, TILE_DIMENSIONS);
 		
-		random = new Random();
+		//random = new Random();
 		
 		// Populate GameCell arrays and tiledArray
 		for (int i = 0; i < _height; i++) {

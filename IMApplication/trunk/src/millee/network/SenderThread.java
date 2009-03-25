@@ -12,7 +12,7 @@ import javax.microedition.io.StreamConnection;
 public class SenderThread extends Thread {
 
     private Vector msgQueue;
-    private Vector msgHashcodeQueue;	/* holds the hashcode of the sender of the msg */
+    //private Vector msgHashcodeQueue;	/* holds the hashcode of the sender of the msg */
     
     private DataOutputStream[] outputStreams = null;
     private int[] outputStreamsHashcodes = null;	/* holds the hashcodes of each of the devices */
@@ -25,7 +25,7 @@ public class SenderThread extends Thread {
     public SenderThread (StreamConnection[] streamConns) {
 		
 		msgQueue = new Vector();
-		msgHashcodeQueue = new Vector();
+		//msgHashcodeQueue = new Vector();
 		
 		try {
 			
@@ -81,7 +81,7 @@ public class SenderThread extends Thread {
 						
 						//data[data.length] = 0;	// need to end a string terminator
 						//int hashcode = ((Integer) msgHashcodeQueue.elementAt(i)).intValue();
-						int hashcode = msg.hashCode();
+						//int hashcode = msg.hashCode();
 						
 						
 						// TODO: deal with sending a client's data back to the client

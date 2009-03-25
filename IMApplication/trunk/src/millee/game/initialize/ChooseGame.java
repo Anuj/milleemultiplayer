@@ -12,7 +12,7 @@ import millee.game.ApplicationMain;
 
 public class ChooseGame extends Screen {
 
-	private Image horrorImage, comedyImage, actionImage;
+	private Image horrorImage; //, comedyImage, actionImage;
 	
 	public ChooseGame(String title) {
 		super(title);

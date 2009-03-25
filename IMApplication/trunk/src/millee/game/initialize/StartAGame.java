@@ -8,11 +8,11 @@ import millee.network.Network;
 public class StartAGame extends Screen {
 	
 	public static ClientServer clientServer;
-	private boolean m_bRunThread = false;
-	private boolean m_bIsServer = true, isServer = true;
+	//private boolean m_bRunThread = false;
+	//private boolean m_bIsServer = true, isServer = true;
 	private Network network;
 	private ApplicationMain _app = null;
-	private Object replaceObject = new Object();
+	//private Object replaceObject = new Object();
 
 	// TODO: move NUMCLIENTS + setupPlayers code elsewhere
 	//public static final int NUMCLIENTS = 2;
@@ -28,8 +28,8 @@ public class StartAGame extends Screen {
 	
 	public void start(int numClients) {
 		
-		this.numClients = numClients;
-		network.initializeNetwork(true, this.numClients, _app);
+		StartAGame.numClients = numClients;
+		network.initializeNetwork(true, StartAGame.numClients, _app);
 		
 	
 		String gameName = network.clientServer.getDeviceName();

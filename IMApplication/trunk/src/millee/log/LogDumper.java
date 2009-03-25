@@ -11,22 +11,17 @@ import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.List;
-import javax.microedition.lcdui.Screen;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
-import javax.microedition.rms.RecordComparator;
 import javax.microedition.rms.RecordEnumeration;
 import javax.microedition.rms.RecordStore;
 import javax.microedition.rms.RecordStoreException;
-import javax.microedition.rms.RecordStoreNotFoundException;
 import javax.microedition.rms.RecordStoreNotOpenException;
 
-import net.sf.microlog.Formatter;
 import net.sf.microlog.Logger;
 import net.sf.microlog.appender.ConsoleAppender;
 import net.sf.microlog.bluetooth.BluetoothSerialAppender;
 import net.sf.microlog.format.PatternFormatter;
-import net.sf.microlog.util.Properties;
 
 /**
  * @author Simon

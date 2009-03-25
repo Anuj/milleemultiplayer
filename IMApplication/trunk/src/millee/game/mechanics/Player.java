@@ -1,5 +1,4 @@
 package millee.game.mechanics;
-import java.util.Hashtable;
 import java.util.Vector;
 
 import javax.microedition.lcdui.Graphics;

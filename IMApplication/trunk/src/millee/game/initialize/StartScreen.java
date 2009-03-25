@@ -14,8 +14,8 @@ public class StartScreen extends Screen {
 	private Image startImage;
 	
 	// Nokia parameters
-	private static final int SCREEN_WIDTH = 120;
-	private static final int SCREEN_HEIGHT = 115;
+	//private static final int SCREEN_WIDTH = 120;
+	//private static final int SCREEN_HEIGHT = 115;
 	
 	private static final String GAME_INTRO_SOUND = "/game_intro.wav";
 	
