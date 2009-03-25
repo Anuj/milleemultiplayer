@@ -2,6 +2,7 @@ package millee.game.mechanics;
 import java.util.Hashtable;
 import java.util.Vector;
 
+import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.game.Sprite;
 
@@ -19,6 +20,9 @@ public class Player {
 	
 	// Sprite must have its own coordinates
 	protected Sprite sprite;
+	private Sprite _originalSprite;
+	private Sprite _alternateSprite;
+	private boolean _hasCorrectGoodies = true;
 	
 	// Assigned color to collect -- TODO: Are these related?
 	private int _assignedColor;
@@ -39,7 +43,7 @@ public class Player {
 	
 	private static Vector avatars = null;
 	
-	private static Hashtable avatarUsageCounts = new Hashtable();
+	//private static Hashtable avatarUsageCounts = new Hashtable();
 	
 	/** virtualID is determined by the server, depending on what order the client
 	 * sends their initial message.  physicalID is the order that the clients join. 
@@ -51,26 +55,29 @@ public class Player {
 		
 		this._name = name;
 		this._id = virtualID;
+		this._imagePath = "/dancer_0.png";
 		
 		// The color that this character must collect is its ID+1
 		this._assignedColor = virtualID+1;
-		//_goodies = new GoodieStack(_assignedColor);
-		
+
+		/** Avatar images handled in setColor();
 		Image avatar = null;
 		
 		// Avatars are now hardcoded based on the virtualID
-		/*if (isLocal) {
+		if (isLocal) {
 			avatar = Utilities.createImage(imgPath);
 		}
 		else {
 			// Ignore the chosen avatar...
 			//avatar = Utilities.createImage(Utilities.DEFAULT_IMAGE);
 			avatar = Utilities.createImage(imgPath);
-		}*/
+		}
+		*/
 		
 		initializeAvatars();
-		_imagePath = "/dancer_0.png";
 		
+		/*
+		_imagePath = "/dancer_0.png";
 		if (virtualID == 0) {
 			avatar = Utilities.createImage("/dancer_0.png");
 			_imagePath = "/dancer_0.png";
@@ -84,7 +91,7 @@ public class Player {
 			avatar = Utilities.createImage("/panda_avatar.png");
 			_imagePath = "/panda_avatar.png";
 		}
-		
+
 		// Keep track of avatar usage counts
 		int nUsage = 1; // Default
 		if (avatarUsageCounts.containsKey(_imagePath)) {
@@ -99,23 +106,20 @@ public class Player {
 		//	sprite = new Sprite(applyVariation(avatar,nUsage));
 		//}
 		//else {
-			sprite = new Sprite(avatar);
+			sprite = _originalSprite = new Sprite((Image) avatars.elementAt(0));
+			_alternateSprite = new Sprite(applyVariation(avatar,RED));
 		//}
+		*/
 	}
 	
-	public void initializeAvatars() {
-		Image avatar;
-		if (avatars == null) {
-			avatars = new Vector();
-			avatar = Utilities.createImage("/dancer_0.png");
-			avatars.addElement(avatar);
-			avatar = Utilities.createImage("/dancer_1.png");
-			avatars.addElement(avatar);
-			avatar = Utilities.createImage("/dancer_2.png");
-			avatars.addElement(avatar);
-			avatar = Utilities.createImage("/dancer_3.png");
-			avatars.addElement(avatar);
-		}
+	private void initializeAvatars() {
+		if (avatars != null) { return; }
+		
+		avatars = new Vector();
+		avatars.addElement(Utilities.createImage("/dancer_0.png"));
+		avatars.addElement(Utilities.createImage("/dancer_1.png"));
+		avatars.addElement(Utilities.createImage("/dancer_2.png"));
+		avatars.addElement(Utilities.createImage("/dancer_3.png"));
 	}
 	
 	public static int getGroupScore() {
@@ -233,8 +237,9 @@ public class Player {
 		_goodies = new GoodieStack(_assignedColor);
 		System.out.println("color = " + color);
 		
-		sprite = new Sprite((Image) avatars.elementAt(color-1));
-
+		Image avatar = (Image) avatars.elementAt(color-1);
+		sprite = _originalSprite = new Sprite(avatar);
+		_alternateSprite = new Sprite(this.applyVariation(avatar, RED));
 	}
 	
 	public int assignedColor() {
@@ -268,6 +273,8 @@ public class Player {
 		}
 		else {
 			this.decrementScore();
+			this.setAltAvatar();
+			this._hasCorrectGoodies = false;
 			ApplicationMain.log.info("Player " + _id + " collected WRONG goodie at (" + g.x + "," + g.y + "): " + g.getType());
 		}
 	}
@@ -285,6 +292,10 @@ public class Player {
 		}
 		else {
 			ApplicationMain.log.info("Player " + _id + " dropped a WRONG goodie: " + g.getType());
+			if (this.hasCorrectGoodies()) {
+				this.setOrigAvatar();
+				this._hasCorrectGoodies = true;
+			}
 		}
 		return g;
 	}
@@ -305,5 +316,37 @@ public class Player {
 		}
 		
 		return true;
+	}
+	
+	private void flipAvatar() {
+		if (this.sprite == _originalSprite) {
+			setAltAvatar();
+		}
+		else if (this.sprite == _alternateSprite) {
+			setOrigAvatar();
+		}
+	}
+	
+	private void setAltAvatar() {
+		_originalSprite.setVisible(false);
+		_alternateSprite.setVisible(true);
+		
+		_alternateSprite.setPosition(_originalSprite.getX(), _originalSprite.getY());
+		this.sprite = _alternateSprite;
+	}
+	
+	private void setOrigAvatar() {
+		_alternateSprite.setVisible(false);
+		_originalSprite.setVisible(true);
+		
+		_originalSprite.setPosition(_alternateSprite.getX(), _alternateSprite.getY());
+		this.sprite = _originalSprite;
+	}
+	
+	public void redraw(Graphics g) {
+		// Flash (flipAvatar()) if player is holding someone else's goodie?
+		if (!_hasCorrectGoodies) { flipAvatar(); }
+		
+		this.sprite.paint(g);
 	}
 }

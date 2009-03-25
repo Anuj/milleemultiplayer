@@ -136,6 +136,13 @@ public class GameGrid {
 	// Tells the entire grid to redraw itself, players and all
 	public void redraw(Graphics g) {
 		_layers.paint(g, 0, 0);
+		Player p = null;
+		
+		// Check that each player has only his respective color goodies
+		for (int i = 0; i < _players.size(); i++) {
+			p = (Player) _players.elementAt(i);
+			p.redraw(g);
+		}
 	}
 	
 	public boolean isWon() {
