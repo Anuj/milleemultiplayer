@@ -232,12 +232,14 @@ public class Player {
 	
 	// Get and set this player's assigned color and refresh their GoodieStack
 	public void setColor(int color) {
-		_assignedColor = color;
+		//_assignedColor = color;
 		_goodies = new GoodieStack(_assignedColor);
-		System.out.println("color = " + color);
+		//System.out.println("color = " + color);
 		
-		Image avatar = (Image) avatars.elementAt(color-1);
-		sprite = _originalSprite = new Sprite(avatar);
+		Image avatar = (Image) avatars.elementAt(_assignedColor-1);
+		sprite = new Sprite(avatar);
+		//Image avatar = (Image) avatars.elementAt(color-1);
+		//sprite = _originalSprite = new Sprite(avatar);
 		_alternateSprite = new Sprite(this.applyVariation(avatar, RED));
 	}
 	
