@@ -237,7 +237,7 @@ public class Player {
 		//System.out.println("color = " + color);
 		
 		Image avatar = (Image) avatars.elementAt(_assignedColor-1);
-		sprite = new Sprite(avatar);
+		sprite = _originalSprite = new Sprite(avatar);
 		//Image avatar = (Image) avatars.elementAt(color-1);
 		//sprite = _originalSprite = new Sprite(avatar);
 		_alternateSprite = new Sprite(this.applyVariation(avatar, RED));
