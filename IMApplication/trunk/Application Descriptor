@@ -1,7 +1,7 @@
 MIDlet-3: LogDumper,,millee.log.LogDumper
 MIDlet-2: LogViewer,,net.sf.microlog.ui.RecordStoreLogViewer
 MIDlet-1: V2ColourGame,,millee.game.ApplicationMain
-MIDlet-Jar-URL: ColourColourV2.jar
+MIDlet-Jar-URL: ColourColour2.jar
 MicroEdition-Configuration: CLDC-1.1
 MIDlet-Version: 1.4.4
 MIDlet-Name: V2 ColourColour Game
