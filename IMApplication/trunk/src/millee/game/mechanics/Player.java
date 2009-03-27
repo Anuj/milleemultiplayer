@@ -1,11 +1,11 @@
 package millee.game.mechanics;
 import java.util.Vector;
 
-import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.game.Sprite;
 
 import millee.game.ApplicationMain;
+import millee.game.Round;
 import millee.game.initialize.Utilities;
 
 
@@ -21,7 +21,8 @@ public class Player {
 	protected Sprite sprite;
 	private Sprite _originalSprite;
 	private Sprite _alternateSprite;
-	private boolean _hasCorrectGoodies = true;
+	private boolean isInGoodStanding = true;
+	private boolean _isFinished = false;
 	
 	// Assigned color to collect -- TODO: Are these related?
 	private int _assignedColor;
@@ -226,9 +227,11 @@ public class Player {
 //		return _possibleCommands[index];
 //	}
 	
+	/*
 	public Sprite getSprite() {
 		return sprite;
 	}
+	*/
 	
 	// Get and set this player's assigned color and refresh their GoodieStack
 	public void setColor(int color) {
@@ -243,7 +246,7 @@ public class Player {
 		_alternateSprite = new Sprite(this.applyVariation(avatar, RED));
 	}
 	
-	public int assignedColor() {
+	public int getColor() {
 		return _assignedColor;
 	}
 	
@@ -266,16 +269,19 @@ public class Player {
 		return _name;
 	}
 	
-	public void collect(Goodie g) {
+	public void collectGoodie(Goodie g) {
 		_goodies.push(g);
 		if (g.getType() == this._assignedColor) {
 			this.incrementScore();
+			// TODO: Check if this player _isFinished
+			
 			ApplicationMain.log.info("Player " + _id + " collected CORRECT goodie at (" + g.x + "," + g.y + "): " + g.getType());
 		}
 		else {
 			this.decrementScore();
 			this.setAltAvatar();
-			this._hasCorrectGoodies = false;
+			this.isInGoodStanding = false;
+			this._isFinished = false;
 			ApplicationMain.log.info("Player " + _id + " collected WRONG goodie at (" + g.x + "," + g.y + "): " + g.getType());
 		}
 	}
@@ -289,14 +295,17 @@ public class Player {
 		
 		if (g.getType() == this._assignedColor) {
 			this.decrementScore();
+			this._isFinished = false;
 			ApplicationMain.log.info("Player " + _id + " dropped a CORRECT goodie: " + g.getType());
 		}
 		else {
 			ApplicationMain.log.info("Player " + _id + " dropped a WRONG goodie: " + g.getType());
 			if (this.hasCorrectGoodies()) {
 				this.setOrigAvatar();
-				this._hasCorrectGoodies = true;
+				this.isInGoodStanding = true;
 			}
+			// TODO: Check if this player _isFinished
+			
 		}
 		return g;
 	}
@@ -344,10 +353,11 @@ public class Player {
 		this.sprite = _originalSprite;
 	}
 	
-	public void redraw(Graphics g) {
-		// Flash (flipAvatar()) if player is holding someone else's goodie?
-		if (!_hasCorrectGoodies) { flipAvatar(); }
-		
-		this.sprite.paint(g);
+	protected void flipAvatarIfNeeded() {
+		// Flash (flipAvatar()) if player is holding someone else's goodie
+		if (!isInGoodStanding) {
+			flipAvatar();
+			this.sprite.paint(Round.graphics);
+		}
 	}
 }

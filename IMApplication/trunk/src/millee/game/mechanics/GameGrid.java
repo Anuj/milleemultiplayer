@@ -1,12 +1,7 @@
 package millee.game.mechanics;
 
-import java.util.Vector;
-
-import javax.microedition.lcdui.Graphics;
-import javax.microedition.lcdui.game.LayerManager;
 import javax.microedition.lcdui.game.TiledLayer;
 
-import millee.game.ApplicationMain;
 import millee.game.initialize.Utilities;
 
 /**
@@ -16,158 +11,100 @@ import millee.game.initialize.Utilities;
  */
 public class GameGrid {
 	// Dimensions in cells
-	private int _width;
-	private int _height;
+	protected int width;
+	protected int height;
 	
 	// Data structure backing the grid
-	private GameCell[][] _cells;
+	private GameCell[][] cells;
 	
 	// Player objects
-	private Vector _players = new Vector();
+	//private Vector _players = new Vector();
 	
 	// Constants
-	private static final int TILE_DIMENSIONS = 20;
+	//private static final int TILE_DIMENSIONS = 20;
 	private static final String TILED_IMAGE = "/tiles.png";
 	private static final int FRUIT_INDEX = 3; // Where fruit tiles begin
 	//private static final int CHARACTER_INDEX = 8;
 	
 	// Drawing stuff
-	private LayerManager _layers = new LayerManager();
 	private TiledLayer _tiledLayer;
 	
 	// Utility variables
 	//private Random random;
 	
-	private int _nGoodies = 0;
+	//private int _nGoodies = 0;
 	
 	// Builds the game world and prepares to draw it
-	public GameGrid(int width, int height) { //, Image backgroundImage, int tileDimensions) {
-		_width = width;
-		_height = height;
-		_cells = new GameCell[_height][_width];
+	protected GameGrid(int cellWidth, int cellHeight, int tileDimensions) { //, Image backgroundImage, int tileDimensions) {
+		width = cellWidth;
+		height = cellHeight;
+		cells = new GameCell[height][width];
 
-		_tiledLayer = new TiledLayer(_width, _height, Utilities.createImage(TILED_IMAGE), TILE_DIMENSIONS, TILE_DIMENSIONS);
-		
-		//random = new Random();
+		_tiledLayer = new TiledLayer(width, height, Utilities.createImage(TILED_IMAGE), tileDimensions, tileDimensions);
 		
 		// Populate GameCell arrays and tiledArray
-		for (int i = 0; i < _height; i++) {
-			for (int j = 0; j < _width; j++) {
-				// Currently, empty cell can be one of two tiles (id: 1 or 2)
-				_cells[i][j] =  new GameCell();
+		for (int i = 0; i < height; i++) {
+			for (int j = 0; j < width; j++) {
+				// Currently, empty cell are only of one type
+				cells[i][j] =  new GameCell();
 				_tiledLayer.setCell(j, i, 1); //FRUIT_INDEX-1);// random.nextInt(NUM_EMPTY_TILES)+1);
 			}
 		}
-
-		_layers.append(_tiledLayer);
 	}
 	
-	// Place one player on the field
-	public void insertPlayer(Player p, int cellX, int cellY) {
-		p.x = cellX;
-		p.y = cellY;
-		p.sprite.setPosition(TILE_DIMENSIONS*cellX, TILE_DIMENSIONS*cellY);
-		
-		_players.addElement(p);
-		_cells[cellY][cellX].addPlayer(p);
-		_layers.insert(p.sprite, 0);
+	protected GameCell getCellAt(int cellX, int cellY) {
+		return cells[cellY][cellX];
 	}
+
 	
 	// Place one "token" on the field
-	public void insertGoodie(Goodie g, int cellX, int cellY) {
+	protected void insertGoodie(Goodie g, int cellX, int cellY) {
 		g.x = cellX;
 		g.y = cellY;
 		
 		_tiledLayer.setCell(cellX, cellY, g.getType()+FRUIT_INDEX-1);
-		//g.sprite.setPosition(_tileDimensions*cellX, _tileDimensions*cellY);
-		_cells[cellY][cellX].setGoodie(g);
-		//_layers.insert(g.sprite, 0);
-		_nGoodies++;
+		cells[cellY][cellX].setGoodie(g);
+	}
+	/*
+	protected Goodie removeGoodie(int cellX, int cellY) {
+		GameCell c = cells[cellY][cellX];
+		if (!c.hasGoodie()) { return null; }
+		
+		Goodie g = c.getGoodie();
+		c.unsetGoodie();
+		
+		return g;
 	}
 	
-	// Moves one player character in terms of cells
-	public void movePlayer(int id, int dx, int dy) {
-		Player p = (Player) _players.elementAt(id);
+	protected void insertPlayer(Player p, int cellX, int cellY) {
+		p.x = cellX;
+		p.y = cellY;
 		
-		_cells[p.y][p.x].removePlayer(p);
-		
-		// Wraps around borders
-		p.x = (p.x + _width + dx) % _width;
-		p.y = (p.y + _height + dy) % _height;
-		//ApplicationMain.log.trace("P: " + p.x + ", " + p.y);
-		p.sprite.setPosition(TILE_DIMENSIONS*p.x, TILE_DIMENSIONS*p.y);
-		
-		GameCell cNew = _cells[p.y][p.x];
-		cNew.addPlayer(p);
-		
-		// Now check for 'collisions' with goodies
-		if (cNew.hasGoodie()) { // && p.assignedColor() == cNew.getGoodie().getType()) {
-			p.collect(cNew.getGoodie());
-			ApplicationMain.log.trace("Picked up Goodie: " + cNew.getGoodie());
-			cNew.unsetGoodie();
-			_tiledLayer.setCell(p.x, p.y, 1); //FRUIT_INDEX-1);
-			_nGoodies--;
-		}
+		cells[cellY][cellX].addPlayer(p);
+	}
+	/*
+	protected void removePlayer(Player p, int cellX, int cellY) {
+		cells[cellY][cellX].removePlayer(p);
+	}
+	*/
+	
+	/**
+	 * Sets a tile location to be the base type (no fruit)
+	 * @param x
+	 * @param y
+	 */
+	protected void setTileGrass(int x, int y) {
+		_tiledLayer.setCell(x, y, 1);
 	}
 	
-	public void playerDrop(int id) {
-		Player p = (Player) _players.elementAt(id);
-		
-		// Can't drop if the spot has a goodie already
-		if (_cells[p.y][p.x].hasGoodie()) {
-			ApplicationMain.log.info("Player " + p.getID() + " couldn't drop on a spot with a goodie already.");
-			return;
-		}
-		
-		Goodie g = p.dropGoodie();
-		
-		if (g == null) { return; }
-		
-		_tiledLayer.setCell(p.x, p.y, g.getType()+FRUIT_INDEX-1);
-		//g.sprite.setPosition(_tileDimensions*p.x, _tileDimensions*p.y);
-		_cells[p.y][p.x].setGoodie(g);
-		_nGoodies++;
-		
-		ApplicationMain.log.info("Player " + p.getID() + " dropped goodie on " + p.x + "," + p.y);
-		this.movePlayer(id, 0, -1);
-	}
-	
-	// Tells the entire grid to redraw itself, players and all
-	public void redraw(Graphics g) {
-		_layers.paint(g, 0, 0);
-		Player p = null;
-		
-		// Check that each player has only his respective color goodies
-		for (int i = 0; i < _players.size(); i++) {
-			p = (Player) _players.elementAt(i);
-			p.redraw(g);
-		}
-	}
-	
-	public boolean isWon() {
-		if (!(_nGoodies == 0)) { return false; }
-		
-		Player p = null;
-		
-		// Check that each player has only his respective color goodies
-		for (int i = 0; i < _players.size(); i++) {
-			p = (Player) _players.elementAt(i);
-			if (!p.hasCorrectGoodies()) { return false; }
-		}
-		
-		return true;
-		
-		
-		/* Dumb search
-		for (int i = 0; i < _height; i++) {
-			for (int j = 0; j < _width; j++) {
-				if (_cells[i][j].hasGoodie()) {
-					return false;
-				}
-			}
-		}
-		return true;
-		*/
+	/**
+	 * Sets a tile location to show a fruit
+	 * @param x
+	 * @param y
+	 * @param type
+	 */
+	protected void setTileGoodie(int x, int y, int type) {
+		_tiledLayer.setCell(x, y, type+FRUIT_INDEX-1);
 	}
 	
 	/**
@@ -176,12 +113,15 @@ public class GameGrid {
 	 * @param y
 	 * @return boolean
 	 */
-	public boolean hasGoodieAt(int x, int y) {
-		return _cells[y][x].hasGoodie();
+	protected boolean hasGoodieAt(int x, int y) {
+		return cells[y][x].hasGoodie();
 	}
 	
-	public boolean hasPlayerAt(int x, int y) {
-		return _cells[y][x].hasPlayer();
+	protected boolean hasPlayerAt(int x, int y) {
+		return cells[y][x].hasPlayer();
 	}
 
+	protected TiledLayer getTiledLayer() {
+		return _tiledLayer;
+	}
 }
