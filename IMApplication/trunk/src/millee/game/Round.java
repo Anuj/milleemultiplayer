@@ -83,6 +83,9 @@ public class Round extends GameCanvas implements Runnable {
 			_game.buildFromConfiguration(config.toString());
 		}
 		
+		// Pick which GoodieStack to render
+		_game.loadGoodieStackVisual(_localPlayerID);
+		
 		// Kick off the thread
 		showNotify();
 	}
@@ -101,7 +104,7 @@ public class Round extends GameCanvas implements Runnable {
 	/**
 	 * The main game loop. Runs continuously as long as this canvas is active.
 	 */
-	public void run(){
+	public void run() {
 		while( thread == Thread.currentThread() && !_bStop) {
 			
 			// Check if the game believes it's over
@@ -196,6 +199,9 @@ public class Round extends GameCanvas implements Runnable {
 			msgs = Utilities.split(msg.msg(), ",", 0);
 			//ApplicationMain.log.debug(msgs);
 			
+			// Server - broadcast it first to minimize everyone else's lag
+			if (isServer) _network.broadcast(msg.msg());
+			
 			for (int i = 0; i < msgs.length / 2; i++) {
 				//ApplicationMain.log.debug(msgs[i*2]);
 				//ApplicationMain.log.debug(msgs[i*2+1]);
@@ -203,7 +209,6 @@ public class Round extends GameCanvas implements Runnable {
 				_game.interpretCommand(Integer.parseInt(msgs[i*2]), msgs[i*2+1].charAt(0));
 			}
 			
-			if (isServer) _network.broadcast(msg.msg());
 			msg = _network.receiveLater();
 		}
 	}
@@ -265,7 +270,7 @@ public class Round extends GameCanvas implements Runnable {
 	 * Getter for the OK command
 	 * @return Command OkCommand
 	 */
-	public Command getOkCommand() {
+	protected Command getOkCommand() {
 		return this.okCmd;
 	}
 	
@@ -273,7 +278,7 @@ public class Round extends GameCanvas implements Runnable {
 	 * Getter for the Exit command
 	 * @return Command ExitCommand
 	 */
-	public Command getNoCommand() {
+	protected Command getNoCommand() {
 		return this.noCmd;
 	}
 }

@@ -4,55 +4,37 @@ import java.util.Vector;
 
 public class GameCell {
 	
+	// Things that this cell might hold
 	private Vector _occupants = new Vector();
 	private Goodie _item = null;
 
-	public GameCell() {
-		/*
-		if (players == null) {
-			_occupants = new Vector();
-		}
-		else {
-			_occupants = new Vector(players.length);
-			for (int i = 0; i < players.length; i++) {
-				_occupants.addElement(players[i]);
-			}
-		}
-		
-		
-		_item = g;
-		*/
-	}
+	protected GameCell() {	}
 	
-	public void addPlayer(Player p) {
+	protected void addPlayer(Player p) {
 		_occupants.addElement(p);
 	}
 	
-	public void removePlayer(Player p) {
+	protected void removePlayer(Player p) {
 		_occupants.removeElement(p);
 	}
 	
-	public boolean hasPlayer() {
+	protected boolean hasPlayer() {
 		return !(_occupants.size() == 0);
 	}
 	
-	
-	public boolean hasGoodie() {
+	protected boolean hasGoodie() {
 		return (_item != null);
 	}
 	
-	public void setGoodie(Goodie g) {
+	protected void setGoodie(Goodie g) {
 		_item = g;
-		//_item.sprite.setVisible(true);
 	}
 	
-	public void unsetGoodie() {
-		//_item.sprite.setVisible(false);
+	protected void unsetGoodie() {
 		_item = null;
 	}
 	
-	public Goodie getGoodie() {
+	protected Goodie getGoodie() {
 		return _item;
 	}
-
 }

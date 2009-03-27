@@ -2,65 +2,67 @@ package millee.game.mechanics;
 import java.util.Vector;
 
 import javax.microedition.lcdui.Image;
+import javax.microedition.lcdui.game.LayerManager;
 import javax.microedition.lcdui.game.Sprite;
 
 import millee.game.ApplicationMain;
-import millee.game.Round;
 import millee.game.initialize.Utilities;
 
 
 public class Player {
+	// Personalized information
 	private String _name;
-	private String _imagePath;
+	//private String _imagePath;
 	
 	// Location in cell coordinates
 	protected int x;
 	protected int y;
 	
-	// Sprite must have its own coordinates
-	protected Sprite sprite;
+	// Player sprites/avatar variables
+	private Sprite sprite;
 	private Sprite _originalSprite;
 	private Sprite _alternateSprite;
-	private boolean isInGoodStanding = true;
-	private boolean _isFinished = false;
+	private static Vector avatars = null;
+	//private static Hashtable avatarUsageCounts = new Hashtable();
 	
-	// Assigned color to collect -- TODO: Are these related?
+	// State variables
+	private int _targetNumGoodies = 2;
+	protected boolean isInGoodStanding = true;
+	protected boolean isFinished = false;
+	
+	// Assigned color to collect -- Currently related to ID
 	private int _assignedColor;
 	private int _id;
 	
 	// Player keeps track of his own score & goodies collected
 	private int _score = 0;
-	private GoodieStack _goodies;
+	protected int timeFinished = Integer.MAX_VALUE; 
+	protected GoodieStack goodies;
 	
 	// Group Score is a total of all the players scores.
-	private static int _groupScore = 0;
+	public static int groupScore = 0;
 	
-	// Player sprite color variations
-	public static final int BLACK = 1;
-	public static final int RED = 2;
-	public static final int GREEN = 3;
-	public static final int BLUE = 4;
+	// Constants
+	private static final int SCORE_INCREMENT = 10;
 	
-	private static Vector avatars = null;
-	
-	//private static Hashtable avatarUsageCounts = new Hashtable();
-	
-	/** virtualID is determined by the server, depending on what order the client
-	 * sends their initial message.  physicalID is the order that the clients join. 
-	 * @param name
-	 * @param avatar
+	/**
+	 * virtualID is determined by the server, depending on what order the client
+	 * sends their initial message. PhysicalID is the order that the clients join. 
+	 * @param name personalized name
+	 * @param imgPath avatar image
 	 * @param virtualID
 	 */
-	public Player(String name, String imgPath, int virtualID, boolean isLocal) { //, int physicalID) {
-		
+	public Player(String name, String imgPath, int virtualID) {
 		this._name = name;
+		//this._imagePath = imgPath;
 		this._id = virtualID;
-		this._imagePath = "/dancer_0.png";
 		
 		// The color that this character must collect is its ID+1
 		this._assignedColor = virtualID+1;
+		
+		initializeAvatars();
 
-		/** Avatar images handled in setColor();
+		/* Avatar images handled elsewhere...
 		Image avatar = null;
 		
 		// Avatars are now hardcoded based on the virtualID
@@ -72,11 +74,7 @@ public class Player {
 			//avatar = Utilities.createImage(Utilities.DEFAULT_IMAGE);
 			avatar = Utilities.createImage(imgPath);
 		}
-		*/
-		
-		initializeAvatars();
-		
-		/*
+
 		_imagePath = "/dancer_0.png";
 		if (virtualID == 0) {
 			avatar = Utilities.createImage("/dancer_0.png");
@@ -103,12 +101,12 @@ public class Player {
 
 		// Alter color if necessary
 		//if (nUsage > 1) {
-		//	sprite = new Sprite(applyVariation(avatar,nUsage));
-		//}
-		//else {
+			sprite = new Sprite(applyVariation(avatar,nUsage));
+		}
+		else {
 			sprite = _originalSprite = new Sprite((Image) avatars.elementAt(0));
 			_alternateSprite = new Sprite(applyVariation(avatar,RED));
-		//}
+		}
 		*/
 	}
 	
@@ -122,14 +120,12 @@ public class Player {
 		avatars.addElement(Utilities.createImage("/dancer_3.png"));
 	}
 	
-	public static int getGroupScore() {
-		return _groupScore;
-	}
-	
-	public String getImagePath() {
-		return _imagePath;
-	}
-	
+	/**
+	 * Alters an image by a certain color you choose.
+	 * @param img
+	 * @param var
+	 * @return Image - new altered image
+	 */
 	private Image applyVariation(Image img, int var) {
 		// Pull out ARGB data
 		int[] rgbData = new int[img.getWidth()*img.getHeight()];
@@ -138,23 +134,21 @@ public class Player {
 		// Affect the ARGB data according to the variation type
 		switch (var) {
 		
-		// TODO: Verify color change works; otherwise, just use preset images
-		
-		case BLUE:
+		case (ColourEnum.BLUE):
 			for (int i = 0; i < rgbData.length; i++) {
 				//rgbData[i] = (30 + (rgbData[i] & 0xFF)) | (rgbData[i] & 0xFFFFFF00);
 				rgbData[i] = rgbData[i] & 0xFF0000FF;
 			}
 			break;
 			
-		case GREEN:
+		case (ColourEnum.GREEN):
 			for (int i = 0; i < rgbData.length; i++) {
 				//rgbData[i] = (30 + (rgbData[i] & 0xFF)) | (rgbData[i] & 0xFFFFFF00);
 				rgbData[i] = rgbData[i] & 0xFF00FF00;
 			}
 			break;
 			
-		case RED:
+		case (ColourEnum.RED):
 			for (int i = 0; i < rgbData.length; i++) {
 				//rgbData[i] = (30 + (rgbData[i] & 0xFF)) | (rgbData[i] & 0xFFFFFF00);
 				rgbData[i] = rgbData[i] & 0xFFFF0000;
@@ -174,91 +168,53 @@ public class Player {
 		return Image.createRGBImage(rgbData, img.getWidth(), img.getHeight(), true);
 	}
 
-	public int getID() {
+	protected int getID() {
 		return _id;
 	}
 	
-	/** Avoid using this
-	public void setPosition(int inX, int inY) {
-		this.x = inX;
-		this.y = inY;
-	}
-	*/
-	
-//	public void interpretMove() {
-//		if (!finishedRound) {
-//			char command = getCommand();
-//			
-//			switch (command) {
-//				case 'U':
-//					y--;
-//					sprite.move(0, -15);
-//					break;
-//				case 'D':
-//					y++;
-//					sprite.move(0, 15);
-//					break;
-//				case 'R':
-//					x++;
-//					sprite.move(15, 0);
-//					break;
-//				case 'L':
-//					x--;
-//					sprite.move(-15, 0);
-//					break;
-//			}
-//
-//			/*
-//			if (command == 'U')
-//				sprite.setPosition(x, y-1);
-//			else if (command == 'D')
-//				sprite.setPosition(x, y+1);
-//			else if (command == 'R')
-//				sprite.setPosition(x+1, y);
-//			else if (command == 'L')
-//				sprite.setPosition(x-1, y);
-//				
-//				*/
-//		}
-//	}
-//	
-//	private char getCommand() {
-//		int index = random.nextInt(4);
-//		return _possibleCommands[index];
-//	}
-	
-	/*
-	public Sprite getSprite() {
-		return sprite;
-	}
-	*/
-	
 	// Get and set this player's assigned color and refresh their GoodieStack
-	public void setColor(int color) {
-		//_assignedColor = color;
-		_goodies = new GoodieStack(_assignedColor);
-		//System.out.println("color = " + color);
-		
+	protected void setColor(int color) {
+		_assignedColor = color;
+		goodies = new GoodieStack(_assignedColor);
+	}
+	
+	protected int getColor() {
+		return _assignedColor;
+	}
+	
+	protected void setupSprites(LayerManager l) {
 		Image avatar = (Image) avatars.elementAt(_assignedColor-1);
 		sprite = _originalSprite = new Sprite(avatar);
-		//Image avatar = (Image) avatars.elementAt(color-1);
-		//sprite = _originalSprite = new Sprite(avatar);
-		_alternateSprite = new Sprite(this.applyVariation(avatar, RED));
+		_alternateSprite = new Sprite(this.applyVariation(avatar, ColourEnum.RED));
+		_alternateSprite.setVisible(false);
+		
+		l.insert(_originalSprite, 0);
+		l.insert(_alternateSprite, 0);
 	}
 	
-	public int getColor() {
-		return _assignedColor;
+	protected void placeSprites(int x, int y) {
+		_originalSprite.setPosition(x, y);
+		_alternateSprite.setPosition(x, y);
 	}
 	
 	// Update the player's score in game-like ways
 	private void incrementScore() {
-		_score += 10;
-		_groupScore += 10;
+		_score += SCORE_INCREMENT;
+		groupScore += SCORE_INCREMENT;
+	}
+	
+	/**
+	 * Give a bonus to this player.
+	 * @param bonusValue
+	 */
+	protected void incrementScore(int bonusValue) {
+		_score += bonusValue;
+		groupScore += bonusValue;
 	}
 	
 	private void decrementScore() {
-		_score -= 10;
-		_groupScore -= 10;
+		_score -= SCORE_INCREMENT;
+		groupScore -= SCORE_INCREMENT;
 	}
 	
 	public int getScore() {
@@ -269,63 +225,77 @@ public class Player {
 		return _name;
 	}
 	
-	public void collectGoodie(Goodie g) {
-		_goodies.push(g);
+	protected void collectGoodie(Goodie g) {
+		goodies.push(g);
 		if (g.getType() == this._assignedColor) {
 			this.incrementScore();
-			// TODO: Check if this player _isFinished
-			
+			checkStatus();
 			ApplicationMain.log.info("Player " + _id + " collected CORRECT goodie at (" + g.x + "," + g.y + "): " + g.getType());
 		}
 		else {
 			this.decrementScore();
-			this.setAltAvatar();
+			//this.setAltAvatar();
 			this.isInGoodStanding = false;
-			this._isFinished = false;
+			this.isFinished = false;
 			ApplicationMain.log.info("Player " + _id + " collected WRONG goodie at (" + g.x + "," + g.y + "): " + g.getType());
 		}
 	}
 	
-	public Goodie dropGoodie() {
-		if (_goodies.isEmpty()) {
+	protected Goodie dropGoodie() {
+		if (goodies.isEmpty()) {
 			ApplicationMain.log.info("Player " + _id + " tried to drop but he had no goodies.");
 			return null;
 		}
-		Goodie g = (Goodie) _goodies.pop();
+		Goodie g = (Goodie) goodies.pop();
 		
 		if (g.getType() == this._assignedColor) {
 			this.decrementScore();
-			this._isFinished = false;
+			this.isFinished = false;
 			ApplicationMain.log.info("Player " + _id + " dropped a CORRECT goodie: " + g.getType());
 		}
 		else {
+			checkStatus();
 			ApplicationMain.log.info("Player " + _id + " dropped a WRONG goodie: " + g.getType());
-			if (this.hasCorrectGoodies()) {
-				this.setOrigAvatar();
-				this.isInGoodStanding = true;
-			}
-			// TODO: Check if this player _isFinished
-			
 		}
 		return g;
 	}
-	
-	public GoodieStack getGoodieStack() {
-		return _goodies;
-	}
-	/*
-	public void flushGoodieStack() {
-		_goodies = new GoodieStack(_assignedColor);
-	}
-	*/
-	public boolean hasCorrectGoodies() {
+
+	private boolean hasCorrectGoodies() {
 		Goodie g = null;
-		for (int i = 0; i < _goodies.size(); i++) {
-			g = (Goodie) _goodies.elementAt(i);
+		for (int i = goodies.size()-1; i >= 0; i--) {
+			g = (Goodie) goodies.elementAt(i);
 			if (g.getType() != this._assignedColor) { return false; }
 		}
 		
 		return true;
+	}
+	
+	protected void setTargetNumGoodies(int target) {
+		this._targetNumGoodies = target;
+	}
+	
+	/**
+	 * Runs a check and sets the state variables
+	 * isFinished
+	 * isInGoodStanding
+	 */
+	private void checkStatus() {
+		if (this.hasCorrectGoodies()) {
+			setOrigAvatar();
+			isInGoodStanding = true;
+			
+			if (goodies.size() == _targetNumGoodies) {
+				isFinished = true;
+				timeFinished = GameController.clock;
+				ApplicationMain.log.info("Player " + _id + " FINISHES at time: " + timeFinished);
+			}
+			else { isFinished = false; }
+		}
+		else {
+			setAltAvatar();
+			isInGoodStanding = false;
+			isFinished = false;
+		}
 	}
 	
 	private void flipAvatar() {
@@ -341,7 +311,7 @@ public class Player {
 		_originalSprite.setVisible(false);
 		_alternateSprite.setVisible(true);
 		
-		_alternateSprite.setPosition(_originalSprite.getX(), _originalSprite.getY());
+		//_alternateSprite.setPosition(_originalSprite.getX(), _originalSprite.getY());
 		this.sprite = _alternateSprite;
 	}
 	
@@ -349,15 +319,15 @@ public class Player {
 		_alternateSprite.setVisible(false);
 		_originalSprite.setVisible(true);
 		
-		_originalSprite.setPosition(_alternateSprite.getX(), _alternateSprite.getY());
+		//_originalSprite.setPosition(_alternateSprite.getX(), _alternateSprite.getY());
 		this.sprite = _originalSprite;
 	}
 	
-	protected void flipAvatarIfNeeded() {
+	protected void animateIfNeeded() {
 		// Flash (flipAvatar()) if player is holding someone else's goodie
 		if (!isInGoodStanding) {
-			flipAvatar();
-			this.sprite.paint(Round.graphics);
+			this.flipAvatar();
+			//this.sprite.paint(Round.graphics);
 		}
 	}
 }
