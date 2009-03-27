@@ -6,6 +6,7 @@ import java.util.Vector;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.game.LayerManager;
+import javax.microedition.lcdui.game.TiledLayer;
 
 import millee.game.ApplicationMain;
 import millee.game.Round;
@@ -26,11 +27,12 @@ public class GameController {
 	// State variables
 	private int _nGoodies = 0;
 	//private boolean _isDone = false;
-	private int _timeCounter = 0;
+	protected static int clock;
 	
 	// Constants
 	private static final int TILE_DIMENSIONS = 20;
 	private static final int NUM_GOODIES_PER_PLAYER = 2;
+	private static final int BONUS_SCORE = 100;
 	
 	// Utilities
 	private Random random = new Random();
@@ -53,6 +55,7 @@ public class GameController {
 				);
 		
 		_layers.append(_grid.getTiledLayer());
+		clock = 0;
 	}
 	
 	/**
@@ -82,7 +85,8 @@ public class GameController {
 			
 			// Take this opportunity to assign players' colors - needs to be done before inserting
 			// player on the board because the color determines the player's avatar.
-			p.setColor((p.getColor()%nPlayers)+1);
+			// Uncomment the rest below to have colors change each round.
+			p.setColor(p.getColor()); //%nPlayers)+1);
 			
 			this.insertPlayer(p, x, y);
 			broadcastString.append(i);
@@ -144,7 +148,8 @@ public class GameController {
 			
 			// Take this opportunity to assign players' colors - needs to be done before inserting
 			// player on the board because the color determines the player's avatar.
-			tmpPlayer.setColor((tmpPlayer.getColor()%_players.size())+1);
+			// Uncomment the rest below to have colors change each round.
+			tmpPlayer.setColor(tmpPlayer.getColor()); //%_players.size())+1);
 			
 			this.insertPlayer(tmpPlayer, x, y);
 		}
@@ -165,12 +170,20 @@ public class GameController {
 	
 	// Place one player on the field
 	private void insertPlayer(Player p, int cellX, int cellY) {
+		p.setupSprites(_layers);
+		p.setTargetNumGoodies(NUM_GOODIES_PER_PLAYER);
+		
 		p.x = cellX;
 		p.y = cellY;
-		p.sprite.setPosition(TILE_DIMENSIONS*cellX, TILE_DIMENSIONS*cellY);
+		p.placeSprites(TILE_DIMENSIONS*cellX, TILE_DIMENSIONS*cellY);
 		
 		_grid.getCellAt(cellX, cellY).addPlayer(p);
-		_layers.insert(p.sprite, 0);
+	}
+	
+	public void loadGoodieStackVisual(int playerID) {
+		TiledLayer tl = ((Player) _players.elementAt(playerID)).goodies.getTiledLayer();
+		tl.setPosition(0, _screenHeight-TILE_DIMENSIONS+5);
+		_layers.insert(tl, 0);
 	}
 
 	/**
@@ -211,7 +224,7 @@ public class GameController {
 		p.x = (p.x + _grid.width + dx) % _grid.width;
 		p.y = (p.y + _grid.height + dy) % _grid.height;
 		//ApplicationMain.log.trace("P: " + p.x + ", " + p.y);
-		p.sprite.setPosition(TILE_DIMENSIONS*p.x, TILE_DIMENSIONS*p.y);
+		p.placeSprites(TILE_DIMENSIONS*p.x, TILE_DIMENSIONS*p.y);
 		
 		// Get destination cell (where the player landed)
 		GameCell cNew = _grid.getCellAt(p.x, p.y);
@@ -251,33 +264,24 @@ public class GameController {
 	 * Draw things to the screen
 	 */
 	public void updateScreen(int localID) {
-		//ApplicationMain.log.trace("Your score: " + scores[localID]);
-		// Tell the grid to redraw itself
-		this.redraw();
-
-		// Display messages for local player
-		Player p = (Player) _players.elementAt(localID);
-		//setStatusMessage("" + p.getScore());
-
-		// Draw goodie stack
-		p.getGoodieStack().redraw(Round.graphics, 0, _screenHeight-TILE_DIMENSIONS+5);
-		if (!p.hasCorrectGoodies()) { setFloatingStatusMessage("DROP!"); }
-
-		showLowerStatusMessage("Collect " + colorFromID(p.getColor()));
-	}
-	
-	// Tells the entire game to redraw itself, players and grid
-	private void redraw() {
-		_layers.paint(Round.graphics, 0, 0);
-		
+		// Animate the players and their goodies if necessary
 		Player p = null;
-		// Check that each player has only his respective color goodies
 		for (int i = 0; i < _players.size(); i++) {
 			p = (Player) _players.elementAt(i);
-			p.flipAvatarIfNeeded();
+			p.animateIfNeeded();
 		}
+		
+		_layers.paint(Round.graphics, 0, 0);
+		
+		// Status messages specific to the local player
+		p = (Player) _players.elementAt(localID);
+		if (!p.isInGoodStanding) {
+			setFloatingStatusMessage("DROP!");
+			p.goodies.animate();
+		}
+		showLowerStatusMessage("Collect " + colorFromID(p.getColor()) + " | " + clock);
 	}
-
+	
 	public void setFloatingStatusMessage(String msg) {
 		Round.graphics.setColor(0,0,0);
 		Round.graphics.setFont(Font.getFont(Font.FACE_SYSTEM, Font.STYLE_BOLD, Font.SIZE_LARGE));
@@ -296,15 +300,16 @@ public class GameController {
 	 */
 	public String generateScoreReport() {
 		String scoreReport = "";
-		Player p;
+		Vector rankedPlayers = generateRankedPlayers();
+		Player p = null;
 		
 		scoreReport += "---------------------------------------------------\n";
-		scoreReport += "Group Score is " + Player.getGroupScore() + "\n";
+		scoreReport += "Group Score is " + Player.groupScore + "\n";
 		scoreReport += "---------------------------------------------------\n";
 		
-		for (int i = 0; i<_players.size(); i++) {
-			p = ((Player) _players.elementAt(i));
-			scoreReport += "		" + p.getName() + ": " + p.getScore() + "\n";
+		for (int i = 0; i < rankedPlayers.size(); i++) {
+			p = ((Player) rankedPlayers.elementAt(i));
+			scoreReport += "#" + (i+1) + ": " + p.getName() + " - " + p.getScore() + "\n";
 		}
 		return scoreReport;
 	}
@@ -332,7 +337,7 @@ public class GameController {
 		// Check that each player has only his respective color goodies
 		for (int i = 0; i < _players.size(); i++) {
 			p = (Player) _players.elementAt(i);
-			if (!p.hasCorrectGoodies()) { return false; }
+			if (!p.isFinished) { return false; }
 		}
 		
 		return true;
@@ -342,7 +347,43 @@ public class GameController {
 	 * Increment time counter
 	 */
 	public void clockTick() {
-		_timeCounter++;
+		clock++;
 	}
-
+	
+	private Vector generateRankedPlayers() {
+		final int nPlayers = _players.size();
+		
+		Vector rankedPlayers = new Vector();
+		Player[] playerPool = new Player[nPlayers];
+		_players.copyInto(playerPool);
+		
+		// Find each 'minimum time' Player, entering them into rankedPlayers
+		int i, min, winnerIndex = 0;
+		while (rankedPlayers.size() != nPlayers) {
+			min = Integer.MAX_VALUE;
+			
+			// Find the minimum score out of those that are left
+			for (i = 0; i < nPlayers; i++) {
+				if (playerPool[i] == null) { continue; }
+				
+				if (playerPool[i].timeFinished < min) {
+					min = playerPool[i].timeFinished;
+					winnerIndex = i;
+				}
+			}
+			
+			// Take the player out of the pool
+			rankedPlayers.addElement(playerPool[winnerIndex]);
+			playerPool[winnerIndex] = null;
+		}
+		
+		// Award the players by rank
+		Player pTmp = null;
+		for (i = 0; i < nPlayers; i++) {
+			pTmp = (Player) rankedPlayers.elementAt(i);
+			pTmp.incrementScore(BONUS_SCORE*(nPlayers-i));
+		}
+		
+		return rankedPlayers;
+	}
 }

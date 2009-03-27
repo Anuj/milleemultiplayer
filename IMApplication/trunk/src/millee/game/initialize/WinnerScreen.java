@@ -25,8 +25,8 @@ public class WinnerScreen extends Screen {
 			this.append("-----------------------------\n");
 		}
 		
-		ApplicationMain.log.info("Your group finished with score = " + Player.getGroupScore());
-		String congrats = new String("Your group finished with score = " + Player.getGroupScore());
+		ApplicationMain.log.info("Your group finished with score = " + Player.groupScore);
+		String congrats = new String("Your group finished with score = " + Player.groupScore);
 		congrats += "\n-----------------------------\n";
 
 		Player p;

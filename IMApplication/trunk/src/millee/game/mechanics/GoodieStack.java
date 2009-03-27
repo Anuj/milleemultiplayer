@@ -2,8 +2,6 @@ package millee.game.mechanics;
 
 import java.util.Stack;
 
-import javax.microedition.lcdui.Graphics;
-import javax.microedition.lcdui.game.LayerManager;
 import javax.microedition.lcdui.game.TiledLayer;
 
 import millee.game.ApplicationMain;
@@ -14,7 +12,6 @@ import millee.game.initialize.Utilities;
  *
  */
 public class GoodieStack extends Stack {
-
 	// Constants
 	private static final int TILE_DIMENSIONS = 15;
 	private static final String TILED_IMAGE = "/goodie_stack.png";
@@ -24,7 +21,6 @@ public class GoodieStack extends Stack {
 	private int _correctType;
 	
 	// Drawing stuff
-	private LayerManager _layers = new LayerManager();
 	private TiledLayer _tiledLayer;
 	
 	// Animated tile indices
@@ -34,21 +30,19 @@ public class GoodieStack extends Stack {
 	/**
 	 * Constructor of Stack.
 	 */
-	public GoodieStack(int type) {
+	protected GoodieStack(int type) {
 		super();
 		this._correctType = type;
 		
 		_tiledLayer = new TiledLayer(MAX_FRUIT, 1, Utilities.createImage(TILED_IMAGE), TILE_DIMENSIONS, TILE_DIMENSIONS);
 		
 		// Create animated tiles
-		_blackAnimatedTileIndex = _tiledLayer.createAnimatedTile(Goodie.BLACK_BERRY);
-		_redAnimatedTileIndex = _tiledLayer.createAnimatedTile(Goodie.RED_TOMATO);
-		_greenAnimatedTileIndex = _tiledLayer.createAnimatedTile(Goodie.GREEN_BANANA);
-		_blueAnimatedTileIndex = _tiledLayer.createAnimatedTile(Goodie.BLUE_BERRY);
+		_blackAnimatedTileIndex = _tiledLayer.createAnimatedTile(ColourEnum.BLACK);
+		_redAnimatedTileIndex = _tiledLayer.createAnimatedTile(ColourEnum.RED);
+		_greenAnimatedTileIndex = _tiledLayer.createAnimatedTile(ColourEnum.GREEN);
+		_blueAnimatedTileIndex = _tiledLayer.createAnimatedTile(ColourEnum.BLUE);
 		
 		ApplicationMain.log.trace("Animated tiles: " +  _blackAnimatedTileIndex + _redAnimatedTileIndex + _greenAnimatedTileIndex + _blueAnimatedTileIndex);
-		
-		_layers.append(_tiledLayer);
 	}
 	
 	public Object push(Object o) {
@@ -76,12 +70,15 @@ public class GoodieStack extends Stack {
 		return g;
 	}
 	
-	public void redraw(Graphics g, int x, int y) {
+	protected void animate() {
 		_flipCounter = (_flipCounter+1)%2;
-		_tiledLayer.setAnimatedTile(_blackAnimatedTileIndex, (Goodie.BLACK_BERRY*2)-1+_flipCounter);
-		_tiledLayer.setAnimatedTile(_redAnimatedTileIndex, (Goodie.RED_TOMATO*2)-1+_flipCounter);
-		_tiledLayer.setAnimatedTile(_greenAnimatedTileIndex, (Goodie.GREEN_BANANA*2)-1+_flipCounter);
-		_tiledLayer.setAnimatedTile(_blueAnimatedTileIndex, (Goodie.BLUE_BERRY*2)-1+_flipCounter);
-		_layers.paint(g, x, y);
+		_tiledLayer.setAnimatedTile(_blackAnimatedTileIndex, (ColourEnum.BLACK*2)-1+_flipCounter);
+		_tiledLayer.setAnimatedTile(_redAnimatedTileIndex, (ColourEnum.RED*2)-1+_flipCounter);
+		_tiledLayer.setAnimatedTile(_greenAnimatedTileIndex, (ColourEnum.GREEN*2)-1+_flipCounter);
+		_tiledLayer.setAnimatedTile(_blueAnimatedTileIndex, (ColourEnum.BLUE*2)-1+_flipCounter);
+	}
+	
+	protected TiledLayer getTiledLayer() {
+		return _tiledLayer;
 	}
 }
