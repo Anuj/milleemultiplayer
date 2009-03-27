@@ -9,6 +9,9 @@ import millee.game.ApplicationMain;
 
 public class Network implements Runnable {
 	
+	//Constants
+	private static final int SLEEP_TIME = 300;
+	
 	public ClientServer clientServer = null;
 	//private boolean m_bRunThread = true;
 	private boolean isServer;
@@ -47,14 +50,21 @@ public class Network implements Runnable {
             	if (isServer) {
             		// Blocks until it connects to numClients
         			clientServer.InitServer(numClients);
+        			try {
+        				synchronized(clientServer.connected) {
+        					clientServer.connected.wait();
+        				}
+        			} catch (Exception e) {
+        				e.printStackTrace();
+        			}
         			ApplicationMain.log.info("Done connecting to all clients");
         		} else {
-        			//int numDevicesDiscovered = 0;
-        			//int temp = 0;
+        			int numDevicesDiscovered = 0;
+        			int temp = 0;
         			clientServer.InitClient();
         			try {
         				
-        				/*while (true) {
+        				while (true) {
         					if ((temp = clientServer.numDevicesDiscovered) > numDevicesDiscovered) {
         						ApplicationMain.log.trace("discovered a new device");
         						numDevicesDiscovered = temp;
@@ -64,7 +74,7 @@ public class Network implements Runnable {
         							break;
         						}
         					}
-        				}*/
+        				}
         				// need to manually wait for client to be connected to server
         				// because client doesn't block until it's connected.
         				synchronized(clientServer.connected) {

@@ -74,5 +74,18 @@ public class Screen extends Form {
 			}
 		//}
 	}
+	
+	public synchronized void addMsgToGameScreen (String msg) {
+		//synchronized (replaceObject) {
+			ApplicationMain.log.trace("in addMsgToGameScreen");
+			ApplicationMain.log.trace("adding msg = " + msg);
+			try {
+				this.append(msg);
+			} catch (IndexOutOfBoundsException e) {
+				ApplicationMain.log.trace("from add command");
+				e.printStackTrace();
+			}
+		//}
+	}
 
 }
