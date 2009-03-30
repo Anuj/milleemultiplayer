@@ -182,8 +182,12 @@ public class Player {
 		return _assignedColor;
 	}
 	
+	protected Image getAvatar() {
+		return (Image) avatars.elementAt(_assignedColor-1);
+	}
+	
 	protected void setupSprites(LayerManager l) {
-		Image avatar = (Image) avatars.elementAt(_assignedColor-1);
+		Image avatar = getAvatar();
 		sprite = _originalSprite = new Sprite(avatar);
 		_alternateSprite = new Sprite(this.applyVariation(avatar, ColourEnum.RED));
 		_alternateSprite.setVisible(false);
