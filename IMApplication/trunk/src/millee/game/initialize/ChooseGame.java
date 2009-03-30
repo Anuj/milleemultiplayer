@@ -49,7 +49,6 @@ public class ChooseGame extends Screen {
         }
         //this.addCommand(joinCommand);
         this.addCommand(backCommand);
-        this.addCommand(okCommand);
 	}
 	
 	

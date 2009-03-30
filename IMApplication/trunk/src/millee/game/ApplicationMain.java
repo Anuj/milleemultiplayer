@@ -12,7 +12,6 @@ import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 
 import millee.game.initialize.ChooseGame;
-import millee.game.initialize.Join;
 import millee.game.initialize.JoinGame;
 import millee.game.initialize.StartAGame;
 import millee.game.initialize.StartOrJoinGame;
@@ -48,8 +47,6 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 	public static final int START_OR_JOIN_SCREEN = 6;
 	public static final int START_A_GAME = 7;
 	public static final int INITIAL_LEVEL_GAME = 8;
-	public static final int JOIN = 9;
-	
 	
 	public static Display theDisplay;
 	
@@ -72,7 +69,6 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 	StartAGame startAGame;
 	Network network;
 	InitialLevelPage initialLevelPage;
-	Join join;
 	
 	private Vector _players;
 	
@@ -81,8 +77,6 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 	private Command _exitCommand = null, _backCommand = null;
 	
 	private Displayable _previousDisplayable = null;
-	
-	Vector devicesDiscovered = null;
 	
 	public ApplicationMain () {
 		theDisplay = display = Display.getDisplay(this);
@@ -106,9 +100,6 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 		
 		winnerScreen = new WinnerScreen("Game Over");
 		winnerScreen.setCommandListener(this);
-
-		join = new Join("Game Over", network, this);
-		join.setCommandListener(this);
 	}
 	
 	protected void destroyApp(boolean arg0) {
@@ -171,18 +162,11 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 	}
 	
 	public void commandAction(Command c, Displayable d) {
-        System.out.println("join = " + join.okCommand());
-        System.out.println("c = " + c.getLabel());
+        		
 		if (c.getCommandType() == Command.EXIT) {
 			quit();
 		} else if (c.getCommandType() == Command.BACK) {
 			display.setCurrent(_previousDisplayable);
-		}  else if (c == chooseGame.okCommand()) {
-			System.out.println("got join.okcommand");
-			int selection = chooseGame.getListSelection();
-			join.initClient((String) devicesDiscovered.elementAt(selection), network.clientServer);
-			display.setCurrent(join);
-			
 		} else if (c == startScreen.getStartCommand()) {
 			_previousDisplayable = startScreen;
 			//display.setCurrent(getCharacterChoiceList());
@@ -290,28 +274,26 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 		}
     }
 
-	public void updateDevicesDiscovered(Vector devicesDiscoveredNames) {
+	/*public void updateDevicesDiscovered(Vector devicesDiscoveredNames) {
 		ApplicationMain.log.info("in updateDevicesDiscovered");
 		chooseGame = new ChooseGame ("Choose a Game", devicesDiscoveredNames);
 		chooseGame.setCommandListener(this);
 		display.setCurrent(chooseGame);
-		this.devicesDiscovered = devicesDiscoveredNames;
-	}
+	}*/
 	
-	public void addMsgToGameScreen(int gameScreen, String msg) {
+	/*public void addMsgToGameScreen(int gameScreen, String msg) {
 		switch (gameScreen) {
-			case JOIN: join.addMsgToGameScreen(msg);
-			case START_SCREEN: startScreen.addMsgToGameScreen(msg);
-			//case CHOOSE_CHAR: charForm.addMessage(msg);
-			case CHOOSE_GAME: chooseGame.addMsgToGameScreen(msg);
-			case JOIN_GAME: joinGame.addMsgToGameScreen(msg);
-			case LEVEL_START_PAGE: levelStartPage.addMsgToGameScreen(msg);
-			case WINNER_SCREEN: winnerScreen.addMsgToGameScreen(msg);
-			case START_OR_JOIN_SCREEN: startOrJoinGame.addMsgToGameScreen(msg);
-			case START_A_GAME: startAGame.addMsgToGameScreen(msg);
-			case INITIAL_LEVEL_GAME: initialLevelPage.addMsgToGameScreen(msg);
+			case START_SCREEN: startScreen.addMessage(msg);
+			case CHOOSE_CHAR: charForm.addMessage(msg);
+			case CHOOSE_GAME: chooseGame.addMessage(msg);
+			case JOIN_GAME: joinGame.addMessage(msg);
+			case LEVEL_START_PAGE: levelStartPage.addMessage(msg);
+			case WINNER_SCREEN: winnerScreen.addMessage(msg);
+			case START_OR_JOIN_SCREEN: startOrJoinGame.addMessage(msg);
+			case START_A_GAME: startAGame.addMessage(msg);
+			case INITIAL_LEVEL_GAME: initialLevelPage.addMessage(msg);
 		}
-	}
+	}*/
 	
 	public void replaceMsgOnGameScreen(int gameScreen, String msg) {
 		switch (gameScreen) {
