@@ -412,7 +412,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 		possibleTokenText[3] = "Yellow";
 		*/
 		
-		Round game = new Round(this, _players, isServer, network, localPlayerId);
+		Round game = new Round(this, network, _players, localPlayerId, isServer);
 		game.setCommandListener(this);
 		return game;
 	}
