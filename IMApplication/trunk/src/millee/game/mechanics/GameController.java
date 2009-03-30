@@ -5,6 +5,7 @@ import java.util.Vector;
 
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
+import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.game.LayerManager;
 import javax.microedition.lcdui.game.TiledLayer;
 
@@ -33,6 +34,7 @@ public class GameController {
 	private static final int TILE_DIMENSIONS = 20;
 	private static final int NUM_GOODIES_PER_PLAYER = 2;
 	private static final int BONUS_SCORE = 100;
+	private static final int INITIAL_SCREEN_TIME = 18;
 	
 	// Utilities
 	private Random random = new Random();
@@ -57,7 +59,7 @@ public class GameController {
 		_layers.append(_grid.getTiledLayer());
 		clock = 0;
 	}
-	
+
 	/**
 	 * Takes current players and builds a complete gamegrid configuration
 	 * @return String configuration
@@ -279,7 +281,51 @@ public class GameController {
 			setFloatingStatusMessage("DROP!");
 			p.goodies.animate();
 		}
-		showLowerStatusMessage("Collect " + colorFromID(p.getColor()) + " | " + clock);
+		
+		if (clock < INITIAL_SCREEN_TIME) {
+			showInitialScreen(p);
+		} else {
+			showLowerStatusMessage("Collect " + colorFromID(p.getColor()));
+		}
+		
+	}
+	
+	
+	private void showInitialScreen(Player localPlayer) {
+		
+		Round.graphics.setColor(0,0,0);
+		
+		Round.graphics.fillRect(_grid.width, _grid.height, _grid.width*(TILE_DIMENSIONS-2), _grid.height*(TILE_DIMENSIONS-2));
+		Round.graphics.setColor(255, 255, 255);
+		Round.graphics.drawRect(_grid.width, _grid.height, _grid.width*(TILE_DIMENSIONS-2), _grid.height*(TILE_DIMENSIONS-2));
+		
+		int line = 1;
+		int startX = 3*_grid.width/2;
+		int startY = 3*_grid.height/2;
+		
+		Round.graphics.setFont(Font.getFont(Font.FACE_SYSTEM, Font.STYLE_BOLD, Font.SIZE_MEDIUM));
+		Round.graphics.drawString("New round!", startX, startY*line++, Graphics.TOP | Graphics.LEFT);
+		
+		Round.graphics.drawString("----------------", startX, startY*line++, Graphics.TOP | Graphics.LEFT);
+		Round.graphics.drawString("", startX, startY*line++, Graphics.TOP | Graphics.LEFT);
+
+		String colorToCollect = colorFromID(localPlayer.getColor());
+		//Round.graphics.drawString("In this round, you must ", startX, startY*line++, Graphics.TOP | Graphics.LEFT);
+		Round.graphics.drawString("Collect color: ", startX, startY*line++, Graphics.TOP | Graphics.LEFT);
+		Round.graphics.drawString("", startX, startY*line++, Graphics.TOP | Graphics.LEFT);
+
+		Round.graphics.drawString("		" + colorToCollect.toUpperCase(), startX, startY*line++, Graphics.TOP | Graphics.LEFT);
+		
+		Round.graphics.drawString("", startX, startY*line++, Graphics.TOP | Graphics.LEFT);
+
+		String avatarString = "Your avatar is: ";
+		Round.graphics.drawString(avatarString, startX, startY*line, Graphics.TOP | Graphics.LEFT);
+		
+		Image img = localPlayer.getAvatar();
+		Round.graphics.drawImage(img, startX + 5*avatarString.length()+4, startY*line++, Graphics.TOP | Graphics.LEFT);
+		
+		Round.graphics.drawString("", startX, startY*line++, Graphics.TOP | Graphics.LEFT);		
+		Round.graphics.drawString("Starting in " + (INITIAL_SCREEN_TIME - clock)/3 + " s", startX, startY*line++, Graphics.TOP | Graphics.LEFT);
 	}
 	
 	public void setFloatingStatusMessage(String msg) {
@@ -309,7 +355,7 @@ public class GameController {
 		
 		for (int i = 0; i < rankedPlayers.size(); i++) {
 			p = ((Player) rankedPlayers.elementAt(i));
-			scoreReport += "#" + (i+1) + ": " + p.getName() + " - " + p.getScore() + "\n";
+			scoreReport += "#" + (i+1) + ": " + p.getName() + " = " + p.getScore() + "\n";
 		}
 		return scoreReport;
 	}
