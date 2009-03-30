@@ -88,7 +88,7 @@ public class GameController {
 			// Take this opportunity to assign players' colors - needs to be done before inserting
 			// player on the board because the color determines the player's avatar.
 			// Uncomment the rest below to have colors change each round.
-			p.setColor(p.getColor()); //%nPlayers)+1);
+			p.setColor((p.getColor()%nPlayers)+1);
 			
 			this.insertPlayer(p, x, y);
 			broadcastString.append(i);
@@ -151,7 +151,7 @@ public class GameController {
 			// Take this opportunity to assign players' colors - needs to be done before inserting
 			// player on the board because the color determines the player's avatar.
 			// Uncomment the rest below to have colors change each round.
-			tmpPlayer.setColor(tmpPlayer.getColor()); //%_players.size())+1);
+			tmpPlayer.setColor((tmpPlayer.getColor()%_players.size())+1);
 			
 			this.insertPlayer(tmpPlayer, x, y);
 		}
