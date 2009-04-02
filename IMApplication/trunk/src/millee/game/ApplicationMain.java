@@ -328,11 +328,11 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 			localPlayerId = initialLevelPage.sendPlayerInfo(myName, myImagePath);
 			_players = initialLevelPage.createPlayersByClients();
 			
-			Message msg = network.receiveNow();
-			if (msg.msg().equals(Message.GO)) {
+			//Message msg = network.receiveNow();
+			//if (msg.msg().startsWith(Message.GO)) { //.equals(Message.GO)) {
 				ApplicationMain.log.info("Waiting for server to start the round.");
 				startGame();
-			}
+			//}
 			
 		}
 	}

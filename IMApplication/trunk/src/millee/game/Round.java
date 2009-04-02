@@ -78,7 +78,9 @@ public class Round extends GameCanvas implements Runnable {
 		}
 		else {
 			// Poll the network until we get the configuration
-			while (!(config = _network.receiveNow().msg()).startsWith(Message.GO)) { }
+			while (!(config = _network.receiveNow().msg()).startsWith(Message.GO)) {
+				ApplicationMain.log.info("client waiting for go...");
+			}
 			ApplicationMain.log.info("Client receives configuration: " + config.toString().substring(2));
 			_game.buildFromConfiguration(config.toString());
 		}
