@@ -28,7 +28,7 @@ import millee.imapplication.BlueToothExp;
  */
 public class ClientServer implements DiscoveryListener {
 	
-    UUID[] RFCOMM_UUID = {new UUID(0x0003), new UUID(0x0004), new UUID(0x0005)};
+    UUID[] RFCOMM_UUID = {new UUID(0x0004), new UUID(0x0004), new UUID(0x0004)};
     private DiscoveryAgent m_DscrAgent = null;
     public Object connected = new Object();
         
@@ -199,6 +199,27 @@ public class ClientServer implements DiscoveryListener {
     
     // Starts the inquiry process for a client.
     public void InitClient() {
+    	/*RemoteDevice[] dev = m_DscrAgent.retrieveDevices(m_DscrAgent.CACHED);
+    	for (int j = 0; j<dev.length; j++) {
+    		RemoteDevice btDevice = dev[j];
+    		try {
+                System.out.println("btDevice name: " + btDevice.getFriendlyName(true));
+                System.out.println("btDevice addr: " + btDevice.getBluetoothAddress());
+                serverName += ", " + btDevice.getFriendlyName(true);
+                UUID uuidSet[] = new UUID[1];
+                
+                //if (btDevice.getFriendlyName(true).equals("Neha")) {
+    		        for (int i = 0; i <3; i++) {
+    		                uuidSet[0] = RFCOMM_UUID[i];
+    		                int searchID = m_DscrAgent.searchServices(null, uuidSet, btDevice, this);
+    		                System.out.println("after searchServices #" + i + " with searchID = " + searchID);
+    		        }
+                //}
+    	    } catch (Exception e) {
+    	            System.out.println("Exception in deviceDiscovered");
+    	        e.printStackTrace();
+    	    }
+    	}*/
     	ApplicationMain.log.trace("initializing the client");
     	SearchAvailDevices();
     }
@@ -231,8 +252,6 @@ public class ClientServer implements DiscoveryListener {
         if (m_bServerFound) {
             
             try {
-
-            	//this.printToScreen("Application", "Connecting...");
             	ApplicationMain.log.trace("Client Connecting...");
             	StreamConnection m_StrmConn = (StreamConnection) Connector.open(m_strUrl);
             	ApplicationMain.log.trace("m_StrmConn = " + m_StrmConn);
@@ -240,7 +259,8 @@ public class ClientServer implements DiscoveryListener {
             	
             	streamConnections[0] = m_StrmConn;
             	ApplicationMain.log.trace("Connected");
-            	//this.printToScreen("Application", "Connected.");
+            	
+            	//m_DscrAgent.cancelInquiry(this);
             	
             	synchronized(connected) {
             		connected.notifyAll();
@@ -267,7 +287,8 @@ public class ClientServer implements DiscoveryListener {
                 // doesn't get reset.
                 // Turn off all device discovery and search discovery once the client is connected.
                 try {
-					serverName = records[i].getHostDevice().getFriendlyName(true);
+                	//serverName = records[i].getHostDevice().getFriendlyName(true);
+					records[i].getHostDevice().getFriendlyName(true);
 				} catch (IOException e) {
 					ApplicationMain.log.error("Couldn't access the remove Device");
 					// TODO Auto-generated catch block
@@ -283,12 +304,15 @@ public class ClientServer implements DiscoveryListener {
             System.out.println("btDevice name: " + btDevice.getFriendlyName(true));
             System.out.println("btDevice addr: " + btDevice.getBluetoothAddress());
             UUID uuidSet[] = new UUID[1];
-        
-	        for (int i = 0; i <numClients; i++) {
-	                uuidSet[0] = RFCOMM_UUID[i];
-	                int searchID = m_DscrAgent.searchServices(null, uuidSet, btDevice, this);
-	                System.out.println("after searchServices #" + i + " with searchID = " + searchID);
-	        }
+            
+            if (btDevice.getFriendlyName(true).toLowerCase().startsWith("cc")) {
+                serverName += ", " + btDevice.getFriendlyName(true);
+		        for (int i = 0; i <3; i++) {
+		                uuidSet[0] = RFCOMM_UUID[i];
+		                int searchID = m_DscrAgent.searchServices(null, uuidSet, btDevice, this);
+		                System.out.println("after searchServices #" + i + " with searchID = " + searchID);
+		        }
+            }
 	    } catch (Exception e) {
 	            System.out.println("Exception in deviceDiscovered");
 	        e.printStackTrace();

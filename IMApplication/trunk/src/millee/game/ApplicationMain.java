@@ -144,7 +144,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 		RecordStoreAppender ra = new RecordStoreAppender();
 		//Date rightNow = new Date();
 		ra.setRecordStoreName("MILLEE." + System.currentTimeMillis() + ".log");
-		ra.setMaxRecordEntries(100);
+		ra.setMaxRecordEntries(1000);
 		ra.setFormatter(p);
 		log.addAppender(ra);
 		
@@ -450,6 +450,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 			_chooseNumPlayersList.append("2 players", null);
 			_chooseNumPlayersList.append("3 players", null);
 			_chooseNumPlayersList.append("4 players", null);
+			_chooseNumPlayersList.append("5 players", null);
 			
 			_chooseNumPlayersList.setCommandListener(this);
 			_chooseNumPlayersList.addCommand(_exitCommand);
