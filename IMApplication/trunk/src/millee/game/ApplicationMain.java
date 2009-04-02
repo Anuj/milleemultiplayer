@@ -216,8 +216,9 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 			//network.broadcast(Message.GO);
 			game = createNewRound();
 			numLevelsLeft--;
-			game.start();
+			game.start(null);
 			display.setCurrent(game);
+			//waitForServer();
 		} else if (c == game.getOkCommand()) {
 			
 			/*if (numLevelsLeft <= 0 && numRoundsLeft <= 0) {		// end of game
@@ -254,7 +255,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 				if (isServer) {
 					//network.broadcast(Message.GO);
 					game = createNewRound();
-					game.start();
+					game.start(null);
 					display.setCurrent(game);
 				}
 		} else if (c == game.getNoCommand()) {
@@ -331,7 +332,8 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 			//Message msg = network.receiveNow();
 			//if (msg.msg().startsWith(Message.GO)) { //.equals(Message.GO)) {
 				ApplicationMain.log.info("Waiting for server to start the round.");
-				startGame();
+				//startGame();
+				waitForServer();
 			//}
 			
 		}
@@ -340,13 +342,17 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 	public void waitForServer() {
 		String input;
 
-		game.hideNotify();
+		//game.hideNotify();
 
 		ApplicationMain.log.info("Waiting for server to start the round.");
 		
 		while (true) {
 			input = network.receiveNow().msg();
 			
+			
+			/*while (!(config = _network.receiveNow().msg()).startsWith(Message.GO)) {
+				ApplicationMain.log.info("client waiting for go...");
+			}*/
 			
 			if (input.equals(Message.GAME_OVER)) {
 				ApplicationMain.log.info("Server ended the game");
@@ -355,10 +361,10 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 				display.setCurrent(winnerScreen);
 				break;
 			}
-			else if (input.equals(Message.GO)) {
+			else if (input.startsWith(Message.GO)) {
 				ApplicationMain.log.info("Server started the game");
 				game = createNewRound();
-				game.start();
+				game.start(input.substring(2));
 				display.setCurrent(game);
 				break;
 			}
@@ -366,12 +372,12 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 		
 	}
 	
-	public void startGame() {
+	/*public void startGame() {
 		game = createNewRound();
 		numLevelsLeft--;
 		game.start();
 		display.setCurrent(game);
-	}
+	}*/
 	
 	private Round createNewRound() {
 		/* Not needed any more...

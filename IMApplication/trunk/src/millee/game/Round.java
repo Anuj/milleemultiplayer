@@ -65,7 +65,7 @@ public class Round extends GameCanvas implements Runnable {
 	/**
 	 * How to tell the Round to begin.
 	 */
-	public void start() {
+	public void start(String client_config) {
 		// Initialize the graphics
 		graphics = getGraphics();
 
@@ -78,11 +78,9 @@ public class Round extends GameCanvas implements Runnable {
 		}
 		else {
 			// Poll the network until we get the configuration
-			while (!(config = _network.receiveNow().msg()).startsWith(Message.GO)) {
-				ApplicationMain.log.info("client waiting for go...");
-			}
-			ApplicationMain.log.info("Client receives configuration: " + config.toString().substring(2));
-			_game.buildFromConfiguration(config.toString());
+			
+			ApplicationMain.log.info("Client receives configuration: " + client_config);
+			_game.buildFromConfiguration(client_config);
 		}
 		
 		// Pick which GoodieStack to render
