@@ -28,7 +28,7 @@ import millee.imapplication.BlueToothExp;
  */
 public class ClientServer implements DiscoveryListener {
 	
-    UUID[] RFCOMM_UUID = {new UUID(0x1001), new UUID(0x1002), new UUID(0x1003)};
+    UUID[] RFCOMM_UUID = {new UUID(0x0004), new UUID(0x0004), new UUID(0x0004)};
     private DiscoveryAgent m_DscrAgent = null;
     public Object connected = new Object();
         
