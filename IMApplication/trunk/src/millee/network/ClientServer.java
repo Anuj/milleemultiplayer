@@ -28,7 +28,7 @@ import millee.imapplication.BlueToothExp;
  */
 public class ClientServer implements DiscoveryListener {
 	
-    UUID[] RFCOMM_UUID = {new UUID(0x0004), new UUID(0x0004), new UUID(0x0004)};
+    UUID[] RFCOMM_UUID = {new UUID(0x1001), new UUID(0x1002), new UUID(0x1003)};
     private DiscoveryAgent m_DscrAgent = null;
     public Object connected = new Object();
         
@@ -287,8 +287,7 @@ public class ClientServer implements DiscoveryListener {
                 // doesn't get reset.
                 // Turn off all device discovery and search discovery once the client is connected.
                 try {
-                	//serverName = records[i].getHostDevice().getFriendlyName(true);
-					records[i].getHostDevice().getFriendlyName(true);
+					serverName = records[i].getHostDevice().getFriendlyName(true);
 				} catch (IOException e) {
 					ApplicationMain.log.error("Couldn't access the remove Device");
 					// TODO Auto-generated catch block
@@ -305,14 +304,14 @@ public class ClientServer implements DiscoveryListener {
             System.out.println("btDevice addr: " + btDevice.getBluetoothAddress());
             UUID uuidSet[] = new UUID[1];
             
-            if (btDevice.getFriendlyName(true).toLowerCase().startsWith("cc")) {
+            //if (btDevice.getFriendlyName(true).toLowerCase().startsWith("cc")) {
                 serverName += ", " + btDevice.getFriendlyName(true);
 		        for (int i = 0; i <3; i++) {
 		                uuidSet[0] = RFCOMM_UUID[i];
 		                int searchID = m_DscrAgent.searchServices(null, uuidSet, btDevice, this);
 		                System.out.println("after searchServices #" + i + " with searchID = " + searchID);
 		        }
-            }
+            //}
 	    } catch (Exception e) {
 	            System.out.println("Exception in deviceDiscovered");
 	        e.printStackTrace();
