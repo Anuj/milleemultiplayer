@@ -213,7 +213,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 			display.setCurrent(startAGame);
 			startAGame.startNetwork();
 		} else if (c == initialLevelPage.getStartCommand()) {
-			network.broadcast(Message.GO);
+			//network.broadcast(Message.GO);
 			game = createNewRound();
 			numLevelsLeft--;
 			game.start();
@@ -252,7 +252,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 				game.hideNotify();
 				
 				if (isServer) {
-					network.broadcast(Message.GO);
+					//network.broadcast(Message.GO);
 					game = createNewRound();
 					game.start();
 					display.setCurrent(game);
@@ -262,13 +262,13 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 			display.setCurrent(winnerScreen);
 			network.broadcast(Message.GAME_OVER);
 			network.clientServer.closeAllConnections();
-		} else if (c == levelStartPage.getStartCommand()) {
+		}/* else if (c == levelStartPage.getStartCommand()) {
 			game = createNewRound();
 			game.start();
 			if (isServer) network.broadcast(Message.GO);
 			if (!isServer && (network.receiveNow().equals(Message.GO)));
 			display.setCurrent(game);
-		}
+		}*/
 		else {
 			ApplicationMain.log.info("Shouldn't come here: Sorry your keypresses didn't match anything here");
 		}

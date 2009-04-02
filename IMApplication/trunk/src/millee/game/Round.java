@@ -73,13 +73,13 @@ public class Round extends GameCanvas implements Runnable {
 		if (isServer) {
 			// Build and Broadcast configuration to all clients
 			config = _game.buildConfiguration().toString();
-			_network.broadcast(config);
+			_network.broadcast(Message.GO + config);
 			ApplicationMain.log.info("Server broadcasts configuration: " + config);
 		}
 		else {
 			// Poll the network until we get the configuration
-			while ((config = _network.receiveNow().msg()).indexOf("|") < 0) { }
-			ApplicationMain.log.info("Client receives configuration: " + config.toString());
+			while (!(config = _network.receiveNow().msg()).startsWith(Message.GO)) { }
+			ApplicationMain.log.info("Client receives configuration: " + config.toString().substring(2));
 			_game.buildFromConfiguration(config.toString());
 		}
 		
