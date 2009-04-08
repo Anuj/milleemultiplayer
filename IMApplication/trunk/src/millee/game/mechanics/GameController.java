@@ -311,7 +311,7 @@ public class GameController {
 
 		String colorToCollect = colorFromID(localPlayer.getColor());
 		//Round.graphics.drawString("In this round, you must ", startX, startY*line++, Graphics.TOP | Graphics.LEFT);
-		Round.graphics.drawString("Collect color: ", startX, startY*line++, Graphics.TOP | Graphics.LEFT);
+		Round.graphics.drawString("Collect colour: ", startX, startY*line++, Graphics.TOP | Graphics.LEFT);
 		Round.graphics.drawString("", startX, startY*line++, Graphics.TOP | Graphics.LEFT);
 
 		Round.graphics.drawString("		" + colorToCollect.toUpperCase(), startX, startY*line++, Graphics.TOP | Graphics.LEFT);

@@ -322,6 +322,7 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 			ApplicationMain.log.debug("About to setup players");
 			_players = initialLevelPage.setupPlayers(myName, myImagePath);
 			ApplicationMain.log.debug("before adding command to initialLevelPage");
+			initialLevelPage.replaceLastMessage("Press START to begin the game!");
 			initialLevelPage.addCommand(initialLevelPage.getStartCommand());
 			ApplicationMain.log.debug("after adding command");
 		}
@@ -456,7 +457,6 @@ public class ApplicationMain extends MIDlet implements CommandListener {
 			_chooseNumPlayersList.append("2 players", null);
 			_chooseNumPlayersList.append("3 players", null);
 			_chooseNumPlayersList.append("4 players", null);
-			_chooseNumPlayersList.append("5 players", null);
 			
 			_chooseNumPlayersList.setCommandListener(this);
 			_chooseNumPlayersList.addCommand(_exitCommand);

@@ -11,13 +11,13 @@
             <symbol name="JSR211" value="1.0"/>
             <symbol name="JSR238" value="1.0"/>
             <symbol name="JSR239" value="1.0"/>
-            <symbol name="SATSA-APDU" value="1.0"/>
             <symbol name="JSR75" value="1.0"/>
+            <symbol name="SATSA-APDU" value="1.0"/>
             <symbol name="JSR234" value="1.0"/>
             <symbol name="screen.isTouch" value="false"/>
             <symbol name="J2ME-XMLRPC" value="1.0"/>
-            <symbol name="SATSA-CRYPTO" value="1.0"/>
             <symbol name="JSR184" value="1.1"/>
+            <symbol name="SATSA-CRYPTO" value="1.0"/>
             <symbol name="version.profile" value="MIDP-2.1"/>
             <symbol name="MMAPI" value="1.1"/>
             <symbol name="JSR180" value="1.0.1"/>
@@ -31,8 +31,8 @@
             <symbol name="JSR82" value="1.1"/>
             <symbol name="JSR179" value="1.0.1"/>
             <symbol name="SATSA-JCRMI" value="1.0"/>
-            <symbol name="CLDC" value="1.1"/>
             <symbol name="WMA" value="2.0"/>
+            <symbol name="CLDC" value="1.1"/>
             <symbol name="J2ME-WS" value="1.0"/>
          </symbolSet>
       </configuration>

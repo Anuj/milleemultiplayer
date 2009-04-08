@@ -117,7 +117,7 @@ public class ClientServer implements DiscoveryListener {
         	}
         	
         	// TODO: find out why this update message causes an IndexOutOfBounds error
-        	updateServerScreenStatus("All players have joined.\n.  Push START to begin.");
+        	//updateServerScreenStatus("All players have joined.\n.  Push START to begin.");
         	
             ApplicationMain.log.trace("finished connecting");
 
@@ -305,7 +305,7 @@ public class ClientServer implements DiscoveryListener {
             UUID uuidSet[] = new UUID[1];
             
             //if (btDevice.getFriendlyName(true).toLowerCase().startsWith("cc")) {
-                serverName += ", " + btDevice.getFriendlyName(true);
+                //serverName += ", " + btDevice.getFriendlyName(true);
 		        for (int i = 0; i <3; i++) {
 		                uuidSet[0] = RFCOMM_UUID[i];
 		                int searchID = m_DscrAgent.searchServices(null, uuidSet, btDevice, this);
