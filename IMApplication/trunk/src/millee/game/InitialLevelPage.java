@@ -38,7 +38,8 @@ public class InitialLevelPage extends Screen {
 		ApplicationMain.log.trace("in levelstartpage");
 		
 		if (isServer) {
-			this.append("All players are now connected.\nPress START to begin the game!\n");
+			this.append("All players are now connected.\n"); //Press START to begin the game!\n");
+			this.append("Please wait for START...");
 			//this.addCommand(startCommand);
 			ApplicationMain.log.trace("after adding command");
 		} else {

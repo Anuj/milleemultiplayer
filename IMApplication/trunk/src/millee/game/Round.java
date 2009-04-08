@@ -58,7 +58,11 @@ public class Round extends GameCanvas implements Runnable {
 		
 		_game = new GameController(players, getWidth(), getHeight());
 		
-		noCmd = new Command("No", Command.STOP, 0);
+		if (isServer) {
+			noCmd = new Command("No", Command.STOP, 0);
+		} else {
+			noCmd = new Command("Exit", Command.STOP, 0);
+		}
 		_roundID++;
 	}
 	
@@ -131,7 +135,7 @@ public class Round extends GameCanvas implements Runnable {
 			graphics.fillRect(0,0,getWidth(),getHeight());
 			
 			// Draw stuff on it depending on whether the game is over or not
-			if (_bStop) { showEndGame(); }
+			if (_bStop) { showEndRound(); }
 			else { _game.updateScreen(_localPlayerID); }
 			flushGraphics();
 			
@@ -213,7 +217,7 @@ public class Round extends GameCanvas implements Runnable {
 		}
 	}
 	
-	private void showEndGame() {
+	private void showEndRound() {
 		// Add new commands to the screen
 		this.addCommand(noCmd);
 		okCmd = new Command("Yes", Command.OK, 1);
@@ -221,11 +225,11 @@ public class Round extends GameCanvas implements Runnable {
 		showFullNotification("Current Scores", _game.generateScoreReport());
 		
 		if (isServer) {
-			_game.setFloatingStatusMessage("Round Complete!");
-			show2LineStatusMessage("Round Complete!", "Start New Round?");
+			//_game.setFloatingStatusMessage("Round Complete!");
+			show1LineStatusMessage("Start New Round?");
 			this.addCommand(okCmd);
 		} else {
-			show3LineStatusMessage("Round Complete!", "Waiting for server to", "start next round . . .");
+			show1LineStatusMessage("Waiting for server...");
 			Thread thread = new Thread(new Runnable () {public void run() {_app.waitForServer();}});
 			thread.start();
 		}
@@ -247,6 +251,13 @@ public class Round extends GameCanvas implements Runnable {
 		for (int i = 0; i < lines.length; i++) {
 			graphics.drawString(lines[i], 0, (i+1)*fontHeight, Graphics.TOP | Graphics.LEFT);
 		}
+	}
+	
+	private void show1LineStatusMessage(String msg1) {
+		graphics.setColor(255,255,255);
+		graphics.setFont(Font.getFont(Font.FACE_SYSTEM, Font.STYLE_BOLD, Font.SIZE_MEDIUM));
+		int fontHeight = graphics.getFont().getHeight();
+		graphics.drawString(msg1, 0, getHeight(), Graphics.BOTTOM | Graphics.LEFT);
 	}
 	
 	private void show2LineStatusMessage(String msg1, String msg2) {
