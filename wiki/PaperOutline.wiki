@@ -1,13 +1,15 @@
+<wiki:toc max_depth="1" />
+
 =Video Observations=
 
 ==Participant Profile==
-* Kids whose first language is not English
-* Grades 4, 5, 6
-* Fairly high-caste
-* Farmers' Kids
-* Are they friends or new acquaintances?
-* ESL level is lower than urban kids
-* From comparatively higher caste - higher in power structure
+ * Kids whose first language is not English
+ * Grades 4, 5, 6
+ * Fairly high-caste
+ * Farmers' Kids
+ * Are they friends or new acquaintances?
+ * ESL level is lower than urban kids
+ * From comparatively higher caste - higher in power structure
 
 ==What's wrong with the procedure==
 * Deepti (admin) says 'whoever is the fastest' - this affects our results
