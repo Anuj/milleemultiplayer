@@ -1,6 +1,5 @@
 <wiki:toc max_depth="3" />
 
-=The Paper Outline=
 This is going to be a CHI (due September) or CSCW (due June 1) Note/Paper depending on further results from a second deployment by Anuj Tewari this May.
 
 The focus of this paper is the difference between cooperative and collaborative game modes (or differences in instruction) for a multiplayer game for boys in India.
@@ -105,7 +104,7 @@ When starting a game, one  player needs to be designated as the Leader and will 
 
  * Description of a collaborative set of instructions and a competitive one
  * Procedure for setting up the phones (connecting)
- * How we arranged ourselves and how the kids started out [diagram]
+ * How we arranged ourselves and how the kids started out (diagram)
  * Asking questions afterwards
      * What is your score?
      * Did you have any difficulties?
@@ -174,7 +173,7 @@ The variables in this experiment.
  * Kids are still interested in playing the 1-player version, and other kids will huddle next to people playing a 1-player version (bystanders common)
 
 ===Quantitative Results===
-[to be determined after looking at extended logs]
+(to be determined after looking at extended logs)
 
 ==Conclusion==
 ===Implications for Design===
@@ -184,47 +183,3 @@ The variables in this experiment.
      * Multiple cell phones - one per player, may or may not be useful for collaborative games
      * Basing digital multiplayer games on physical multiplayer games may or may not be effective
          * Perhaps can be successful if elements of presentation are considered
-
-
-
-
-=Comments from John=
- * Strategy for a competitive game: collect everything on the screen, then just drop what isn't yours so you're the first to finish
- * We need to have a baseline. May be observations from kids playing in single player mode could serve as the baseline.
- * Key presses will not work - change it so it's intuitive, and one keypress doesn't translate to 2
-
-Retention? Since colors is something that is very general, we can still test the retention of the game concepts. It will be tough to design the questions though!
-
-=Comments from Matt=
- * Create still photos of videos
- * Video submission
- * CHI 2010 Paper on Cooperative vs. Collaborative (given diff instructions for both)
-    * Exploratory Research Section: traditional physical multiplayer games -> don't transfer to digital multiplayer games
-
-=Video Observations=
-==Timing Notes==
-* 675.mpg: inconsistent game state
-* 677.mpg: 3 player game
-* 680: They try to help each other (around 1 min) but grabs phone out of his hand but takes it back
-* 684: 2 guys are talking to each other, other guy is talking to Deepti
-    * saw the game finish
-    * One guy gets inconsistent state
-* 688: collab w/players w/no phones
-* 689: so proud of his score, he sings it out loud
-    * His score is up to 400 - a long game?
-* 2 player games (M2U00674.mpg) - Brij, Maneesh, etc. (Are they friends?)
-* at the end of 690: Game perhaps restarted?
-* 692: kid claims a score of 1000 - confirm if it's a lie?
-* 4:26 of 693: Kid says he's stuck, pushes some button - was it 'drop'? Pushes drop for the other player
-* 6:50 of 693: Scores are 350 and 440, with total = 790
-
-==Priyanka's Random Notes==
-* Wanted triangular shape (??)
-* Can't tell who is playing together
-* Server = "leader"
-* Why 1-player?
-* Why is there always a bystander?
-
-=Things to Do for the Game Before Next Deployment=
-* Bold Group score and local player's score
-* Maybe make message show up when a player is 'done'
