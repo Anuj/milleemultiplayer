@@ -1,257 +1,160 @@
 <wiki:toc max_depth="3" />
 
-=Video Observations=
-
-==Participant Profile==
- * Kids whose first language is not English
- * Grades 4, 5, 6
- * Fairly high-caste
- * Farmers' Kids
- * Are they friends or new acquaintances?
- * ESL level is lower than urban kids
- * From comparatively higher caste - higher in power structure
-
-==What's wrong with the procedure==
-* Deepti (admin) says 'whoever is the fastest' - this affects our results
-* People are watching, preparing for their turn
-* Admin is advertising games as competitive w/no previous instructions
-* Admins need to play the game beforehand
-* Kids think they can handle the phones
-* Admin should understand the point of the games
-    * Need to use CONTROLLED wording
-* Need to define "drop" better
-* "Let's see who wins this stage" Anuj
-* shouldn't encourage competition
-* "Group" score is interpreted as individual score - "my score is the same as yours!"
-* Kids always under the impression that they're always neck-in-neck in score
-* Anuj asks for score continuously - does not encourage collaborativeness
-* Admin tells the "losing" player to "buck up" when he has a lower score.
-* Anuj says "Whoever hits 500 first wins"
-* Rules of the game should be clearly stated at the beginning...not reiterated doing the games.
-
-==General Observations==
-* Collaboration to get to his turn faster
-* Get so proud of the score, he starts singing it
-* Kids grab phones from each other
-* Keep phones close to each other when playing
-* Why are they playing 1 player game?  w/bystander
-* There were instances of kids grabbing the cellphone from other kids to complete the stage.
-* One kid would rather watch than play
-* One kid says he doesn't want to play and would rather watch, but later says he think he can play better than the other
-* Repeat color in their native languages
-* Kids compare scores - believe group score is their individual score
-* Kids exaggerates his score ("1000")
-* One kid says "I'm stuck because of you" and grabs for the other kid's phone.  He might have pushed "drop", but didn't grab it out of his hand.
-* Kid grabs it again and holds on to it for 30 seconds
-* Both kids look at the last score (maybe they don't know who they are?, they spend very little time on the score screen)
-* Kids swap phones to "start" something.  Possibly to make the other player drop his color fruit.
-
-==Timing Notes==
-* 675.mpg: inconsistent game state
-* 677.mp: 3 player game
-* 680: They try to help each other (around 1 min) but grabs phone out of his hand but takes it back
-* 684: 2 guys are talking to each other, other guy is talking to Deepti
-    * saw the game finish
-    * One guy gets inconsistent state
-* 688: collab w/players w/no phones
-* 689: so proud of his score, he sings it out loud
-    * His score is up to 400 - a long game?
-* 2 player games (M2U00674.mpg) - Brij, Maneesh, etc. (Are they friends?)
-* at the end of 690: Game perhaps restarted?
-* 692: kid claims a score of 1000 - confirm if it's a lie?
-* 4:26 of 693: Kid says he's stuck, pushes some button - was it 'drop'? Pushes drop for the other player
-* 6:50 of 693: Scores are 350 and 440, with total = 790
-
-==Kids' Reactions to the Games==
-* Doesn't understand that he needs to drop - asks Deepti b/c she's there
-* Kids watch each other to learn how to play b/c they're playing next
-* Kids think they can handle phones - no patience.  "We've played this game before"
-* 1 guy gets inconsistent state - others blame guy with error
-* Blaming guy with error - first off
-* advertise group score as their own
-
-==Priyanka's Random Notes==
-* Wanted triangular shape (??)
-* Can't tell who is playing together
-* Server = "leader"
-* Why 1-player?
-* Why is there always a bystander?
-
-
-=Things to Do for the Game=
-* Bold Group score and local player's score
-* Maybe make message show up when a player is 'done'
-
-
-
 =The Paper Outline=
+This is going to be a CHI (due September) or CSCW (due June 1) Note/Paper depending on further results from a second deployment by Anuj Tewari this May.
+
+The focus of this paper is the difference between cooperative and collaborative game modes (or differences in instruction) for a multiplayer game for boys in India.
 
 ==Abstract==
+[abstract of the paper to be written afterwards]
 
 ==Introduction==
-    * How children are using mobile phones in the rural world, today
-        * Are they sharing? Not sharing?
-        * Gender differences in use
-        * Common 'configurations' of people (diagram?)
-        * (How) Are they communicating?
-    * How we'd like to improve on the situation with our system
-        * Make case that having each person have their own phone will lead to collaboration
-    * THE PURPOSE
-        * Games deployed up until now (MILLEE) are standalone games
-        * Games based on traditional, multiplayer games
-        * Yet there is a lack of multiple players interacting among each other
-        * A huge part of the fun and engagement that these games offer is the multiplayer nature, and the scope for multiple players to contribute towards a final goal.
-        * We'd like to bring this element into our games, and test out various mutiplayer interaction paradigms, to establish a case for the same in the developing world.
+ * How children are using mobile phones in the rural world, today
+     * Are they sharing? Not sharing?
+     * Gender differences in use
+     * Common 'configurations' of people while using mobile phones (diagram)
+     * How/Are they communicating?
+ * How we'd like to improve on the situation with our system: OUR PURPOSE
+     * Games deployed up until now (in MILLEE) are standalone games
+     * Games are based on traditional, multiplayer games
+     * Yet there is a lacking feature: multiple players interacting amongst themselves
+     * A huge part of the fun and engagement that these games offer is the multiplayer nature, and the scope for multiple players to contribute towards a final goal.
+     * We'd like to bring this element into our games, and test out various mutiplayer interaction paradigms, to establish a case for the same in the developing world.
+ * Questions we are trying to answer
+     * Can traditionally physical multiplayer games be converted into digital multiplayer games while retaining their collaborative natures?
+     * Does allowing each player to have their own phone lead to / encourage collaboration as opposed to competition (over control of one phone)?
+     * Will competitive elements be drawn out of a collaborative game?
 
 ==Related Work==
-* Multimouse paper
-* Anuj's papers
-* CSCW readings
+ * Multimouse paper
+ * Anuj's papers
+ * CSCW readings
 
 ==System Design==
-* Client-server model
-* How this affects how the game is played
-    * For example, server having an unfair advantage
-* Storyboard created by Priyanka
+===Choice of Colour Colour===
+ * Talk about motivation behind using "Colour Colour" as our choice of multiplayer game
+ * Storyboard created by Priyanka
 
-===Motivation===
-* Talk about motivation behind using "Colour Colour" as our choice of multiplayer game
-* Motivation behind technology
-    * J2ME
-    * Bluetooth vs. Wi-fi
-    * Server-client model vs. P2P (P2P is impossible..)
-    * Use of synchronization mechanism
-        * message passing, fixing inconsistent states
+===Technology Used===
+Rationalize the use of the following technology:
+ * J2ME
+ * Bluetooth vs. Wi-fi
+ * Client-server model vs. P2P
+     * How this affects how the game is played
+         * E.g. server having an unfair advantage and control over the timing of rounds
+ * Use of our synchronization mechanism in the game
+     * message passing, avoiding inconsistent states
 
-===Limitations of the Technology===
-* Bluetooth
-    * client-server
-    * Slow to connect
-    * latency problems
-    * Conflicts with other Bluetooth devices
-        * Cannot run two multiplayer games at once
+====Limitations of the Technology====
+ * Bluetooth client-server
+     * Slow to connect
+     * Latency problems
+     * Conflicts with other Bluetooth devices - hence we cannot run two multiplayer games at once
 
-* J2ME
-    * Graphics library
-    * GUI toolkit
-    * Security certificates
+ * J2ME
+     * Minimal graphics library / GUI toolkit
+     * Security certificates
 
+===Problems with the Design===
+ * Kids are not really able perform the connection on their own (takes a long time and patience); hence they rely on adults
+ * Concept of 'Drop' is not too straightforward, and has no mirror in 'pick up'
 
-==Problems with the Design==
-* Kids need to be able to do the connection on their own
-* Setting up the phones takes a while - impossible for kids to set it up themselves and they rely on adults
+===Iterations in the design===
+ * Based on the "versions" we gave to Matt/Anuj - what differed between them
 
-==Iterations in the design==
-* Based on the "versions" we gave to Matt/Anuj - what differed between them
-
-==Envisioned Behaviours==
-* Kids will discuss strategy among themselves
-* Kids will help each other to find the correct fruit / drop the incorrect ones
-* The kids will organize in groups
-* They might exhibit some power structures since one of them was the "leader" (server) in the session.
-* Kids will pinpoint who has their fruit by asking around
-* Kids will compare scores - GROUP score vs. INDIVIDUAL score
-* Diagram of how we think the kids would be arranged
-* Initial briefing to  kids: 
-"Kids need to be told about  the cooperative aspect of the game before they start playing.   They should understand that each kid will be assigned a different color  each round and is responsible for collecting all goodies of that color  on the screen.  At the same time, he should not pick up any goodies  that are not his color.  However, he needs to know that he is working  together with his teammates to get the highest group score.  The  team gets points when each person in the team picks up goodies of their  color.  The team loses points if a person picks up a goodie that  is not their color.  When they pick up a goodie that is not their  color, they have to drop it so that the other player can pick it up.   The round ends only when everyone picks up their own colored goodies. 
-When starting a game, one  player needs to be designated as the Leader and will start the game.   Once he starts the game, all the other players will join the game."
+==Envisioned/Predicted Behaviours==
+ * Kids will discuss strategy among themselves
+ * Kids will (verbally) help each other to find the correct fruit / drop the incorrect ones
+ * The kids will organize in groups, each one with his own phone
+     * [Diagram of how we think the kids would be arranged]
+ * Kids might exhibit some power structures since one of them was the "leader" (server) in the session
+ * Kids will pinpoint who has their fruit by asking around
+ * Kids will compare scores - GROUP score as well as INDIVIDUAL score
 
 ==Procedure==
-* One paragraph on how the games were introduced (the briefing) - CLEARLY
-* Patterns of kids' locations
-* Settings up the phones
-* Letting the kids go at it
-* Asking questions
-    * What is your score?
-    * Did you have any difficulties?
-    * What was your strategy?
-* Debriefing the kids
+One paragraph on how the game was introduced (the briefing):
+
+"Kids need to be told about the cooperative aspect of the game before they start playing.   They should understand that each kid will be assigned a different color  each round and is responsible for collecting all goodies of that color  on the screen.  At the same time, he should not pick up any goodies  that are not his color.  However, he needs to know that he is working  together with his teammates to get the highest group score.  The  team gets points when each person in the team picks up goodies of their  color.  The team loses points if a person picks up a goodie that  is not their color.  When they pick up a goodie that is not their  color, they have to drop it so that the other player can pick it up.   The round ends only when everyone picks up their own colored goodies. 
+When starting a game, one  player needs to be designated as the Leader and will start the game.   Once he starts the game, all the other players will join the game."
+
+ * Description of a collaborative set of instructions and a competitive one
+ * Procedure for setting up the phones (connecting)
+ * How we arranged ourselves and how the kids started out [diagram]
+ * Asking questions afterwards
+     * What is your score?
+     * Did you have any difficulties?
+     * What was your strategy?
+     * Did you strategy change over time?
+ * Debriefing the kids
+ 
 [see video from Menlo-Atherton for more detailed procedure]
 
-==Experiment==
-* Unstructured (the first deployment)
-* Later deployment by Anuj should be more structured
+==The Experiments==
+ * First deployment was quite unstructured
+ * Second deployment by Anuj should be more structured
 
 ===Data Collected===
-* Videos, notes, daily reports, logs
+ * Videos
+ * Notes, daily reports
+ * Logging by the game
 
-==Metrics==
-===Quantitative===
-* What are the variables in this experiment?
-    * Time for task
-    * Total Movement
-    * Rate of errors
-    * Rate of repeated errors
+===Quantitative Metrics===
+The variables in this experiment.
+
+ * Time for task
+ * Total Movement
+ * Rate of errors
+ * Rate of repeated errors
  
-===Qualitative===
-* Collaboration
-* Power structures within a group of kids (relationship to being a server, may be?)
-* Communication
-* Decision making
-* Conflict
+===Qualitative Metrics===
+ * The extent of collaboration
+ * Power structures within a group of kids (relationship to being a server, maybe?)
+ * Amount of Communication happening
+ * Decision making by the kids, strategies developed
+ * Conflict between kids
 
 ==Results==
-===Qualitative Results (Observations)===
-* Kids will 'collaborate' in order to get to their turns  faster
-* Kids get so proud of the score, some start singing it
-* Kids grab phones from each other
-* Kids keep phones close to each other when playing
-* There were instances of kids grabbing the cellphone from other kids to complete the stage.
-* One kid would rather watch than play
-* One kid says he doesn't want to play and would rather watch, but later says he think he can play better than the other
-* Kids repeat color in their native languages
-* Kids compare scores - believe group score is their individual score
-* Kids exaggerates his score ("1000")
-* One kid says "I'm stuck because of you" and grabs for the other kid's phone.  He might have pushed "drop", but didn't grab it out of his hand.
-* Kid grabs it again and holds on to it for 30 seconds
-* Both kids look at the last score (maybe they don't know who they are?)
-* Kids spend very little time on the score screen)
-* Kids swap phones to "start" something.  Possibly to make the other player drop his color fruit.
-* Kid doesn't understand that he needs to drop - asks Deepti b/c she's there
-* Kids watch each other to learn how to play b/c they're playing next
-* Kids think they can handle phones - no patience.  "We've played this game before"
-* 1 guy gets inconsistent state - others blame guy with error
-* Kids advertise group score as their own
-* Diagram of how the kids arranged themselves during gameplay
+===Qualitative Results (Key Observations)===
+
+====How the kids organized themselves====
+ * Diagram of how the kids arranged themselves during gameplay
+     * Shows patterns of kids' locations
 
 ====The Phases of 'Helping'====
-* Kid tells the other kid what to do
-* Kid points at screen
-* Kid points at the button to press
-* Kid pushes the button for him
-* Kid takes the phone from him
-* If that fails, kid walks away
+ * Kid tells the other kid what to do
+ * Kid points at screen
+ * Kid points at the button to press
+ * Kid pushes the button for him
+ * Kid takes the phone from him
+ * If that fails, kid walks away
+
+====Other Observations====
+ * Kids will 'collaborate' in order to get to their turns faster
+ * Kids get so proud of the score, some start singing it
+ * Kids grab phones from each other quite often in order to do things for each other
+     * For example, to quickly complete the stage ("Sujat")
+ * Kids keep phones close to each other when playing (Priyanka - clarify?)
+ * One kid would rather watch than play, but later says he think he can play better than the other kids
+ * Kids repeat color in their native languages
+ * Kids compare scores - initially believe group score is their individual score
+ * Kids exaggerate their score ("1000")
+ * One kid says "I'm stuck because of you" and grabs for the other kid's phone.  He might have pushed "drop", but didn't grab it out of his hand.
+ * Kid grabs it again and holds on to it for 30 seconds
+ * Both kids look at the last score on the screen (perhaps they are unsure of which character they are?)
+ * Kids spend very little time on the score screen
+ * Kids who don't understand what they need to drop/do - asks Deepti/Admin b/c she's there
+ * Kids watch each other to learn how to play b/c they're playing next
+ * Kids think they can handle phones - yet have no patience. "We've played this game before, we know how to do it"
+ * One person who ends up in an inconsistent state from the other - others blame him for error
 
 ===Quantitative Results===
-
+[to be determined after looking at extended logs]
 
 ==Conclusion==
 ===Implications for Design===
-* Things to consider for future multiplayer games
-    * Setup should be easy enough
-    * Competitive vs. Collaborative should be clearly stated
-        * No ambiguity or conflicting instructions should be given
-
-
-
-
-==Comments from John==
-
-* Strategy for a competitive game: collect everything on the screen, then just drop what isn't yours so you're the first to finish
-We need to have a baseline. May be observations from kids playing in single player mode could serve as the baseline.
-* Key presses will not work - change it so it's intuitive, and one keypress doesn't translate to 2
-
-
-
-
-
-Retention? Since colors is something that is very general, we can still test the retention of the game concepts. It will be tough to design the questions though!
-
-
-==Comments from Matt==
-* Create still photos of videos
-* Video submission
-* CSCW Note - yes, we know that
-* Due date : June 1st
-* CHI 2010 Paper on Cooperative vs. Collaborative (given diff instructions for both)
-    * Exploratory Research Section: traditional physical multiplayer games -> don't transfer to digital multiplayer games
+ * Things to consider for future multiplayer games in MILLEE
+     * Competitive vs. Collaborative gameplay should be clearly stated
+         * No ambiguity or conflicting instructions should be given
+     * Multiple cell phones - one per player, may or may not be useful for collaborative games
+     * Basing digital multiplayer games on physical multiplayer games may or may not be effective
+         * Perhaps can be successful if elements of presentation are considered
